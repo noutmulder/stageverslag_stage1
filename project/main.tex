@@ -334,7 +334,7 @@ identified problem and the available solutions.
 \begin{enumerate}[leftmargin=*]
   \item \textit{Which fault types and status indicators from the stairlift
     controller are most relevant for spatial visualization?}
-    The firmware produces over 168 message types. Before any visualization can
+    The firmware defines over 140 message types. Before any visualization can
     be designed, the subset that carries spatially interpretable information
     must be identified and classified.
     \label{q:faults}
@@ -381,7 +381,7 @@ is concretely applied, and what criteria determine completion.
 \subsection{Fault Relevance (Observation Study)}
 \label{sec:method-q1}
 \textbf{Method:} Observation study of the existing telemetry protocol.\\
-\textbf{Justification:} The stairlift controller firmware defines over 168
+\textbf{Justification:} The stairlift controller firmware defines over 140
 message types. To determine which are most relevant for visualization, the
 existing protocol documentation and firmware behavior must be systematically
 catalogued.\\
@@ -488,8 +488,9 @@ to display update.
 
 \subsection{Fault Types and Telemetry Classification}
 \label{sec:results-q1}
-Analysis of the stairlift firmware protocol reveals 168 message types, of which
-six are directly relevant for real-time spatial visualization. These are
+Analysis of the stairlift firmware protocol reveals 145 defined message types
+(with IDs ranging from 0 to 221), of which six are directly relevant for
+real-time spatial visualization. These are
 classified in Table~\ref{tab:telemetry}.
 
 \begin{table*}[t]
@@ -503,7 +504,7 @@ classified in Table~\ref{tab:telemetry}.
 \midrule
 MSG\,110 & Traction encoder (32-bit) & 20\,Hz & Rail position \\
 MSG\,111 & Spindle encoder (16-bit) & 20\,Hz & Seat tilt angle \\
-MSG\,168 & Swivel encoder (16-bit) & 20\,Hz & Seat rotation \\
+MSG\,168 & Swivel via AppToBus (16-bit) & 20\,Hz & Seat rotation \\
 MSG\,114 & System status bits & 0.5\,Hz & Arm/seatbelt state \\
 MSG\,113 & Footrest status & 0.5\,Hz & Footrest position \\
 MSG\,44  & Pilot state & On demand & Calibration run \\
@@ -549,18 +550,21 @@ on the lift controller. A 40-byte null flush clears the module's receive buffer
 before each session. Message counters increment from 1 to 200 and wrap around.
 
 \textbf{Protocol parser.} A six-state finite state machine~\cite{graham2014fsm}
-processes the byte stream: \texttt{WAIT\_START} $\to$ \texttt{MSG\_NUMBER} $\to$
-\texttt{COMMAND\_ID} $\to$ \texttt{LENGTH} $\to$ \texttt{DATA} $\to$
-\texttt{CHECKSUM}. The wire format is:
-\begin{equation}
+processes the incoming byte stream: \texttt{WAIT\_START} $\to$
+\texttt{MSG\_NUMBER} $\to$ \texttt{COMMAND\_ID} $\to$ \texttt{LENGTH} $\to$
+\texttt{DATA} $\to$ \texttt{CHECKSUM}. The wire format is asymmetric: outgoing
+messages (app to lift) include a ReadWriteId byte, while incoming responses
+(lift to app) omit it:
+\begin{align}
 \label{eq:wireformat}
-[\texttt{0x0A}][\text{MsgNr}][\text{RwId}][\text{CmdId}][\text{Len}][\text{Data}_{0..39}][\text{Chk}]
-\end{equation}
-where the checksum is computed as:
+\text{App} \!\to\! \text{Lift:}\ & [\texttt{0x0A}][\text{Nr}][\text{Rw}][\text{Cmd}][\text{Len}][\text{Data}][\text{Chk}] \nonumber\\
+\text{Lift} \!\to\! \text{App:}\ & [\texttt{0x0A}][\text{Nr}][\text{Cmd}][\text{Len}][\text{Data}][\text{Chk}]
+\end{align}
+The checksum covers all preceding bytes:
 \begin{equation}
 \label{eq:checksum}
-\resizebox{0.9\columnwidth}{!}{$\displaystyle
-\text{Chk} = \bigl(\texttt{0x0A} + \text{MsgNr} + \text{RwId} + \text{CmdId}
+\resizebox{0.88\columnwidth}{!}{$\displaystyle
+\text{Chk} = \bigl(\texttt{0x0A} + \text{MsgNr} + \text{CmdId}
   + \text{Len} + {\textstyle\sum} \text{Data}_i\bigr) \bmod 256
 $}
 \end{equation}
@@ -573,7 +577,10 @@ link cooperatively:
   \item \textit{Fast loop} ($\sim$20\,Hz): alternates traction (MSG\,110) and
     spindle (MSG\,111) requests each frame tick.
   \item \textit{Swivel loop} ($\sim$20\,Hz): polls the swivel angle via the
-    APP\_TO\_BUS multiplexed channel (MSG\,168) at 50\,ms intervals.
+    APP\_TO\_BUS multiplexed channel (MSG\,168) with a two-step handshake
+    (send request, poll for response) at 50\,ms intervals. Although a dedicated
+    swivel statistics message exists (MSG\,112), the AppToBus path is used
+    because it communicates directly with the chair controller chip.
   \item \textit{Slow loop} (0.5\,Hz): polls system status (MSG\,114) and
     footrest state (MSG\,113) every 2\,s.
 \end{itemize}
@@ -945,7 +952,7 @@ performance~\cite{marek2015mobile3d}.
 \subsection{Answers to Research Questions}
 
 \textbf{Fault types.}
-The classification of 168 firmware message types revealed that only six carry
+The classification of 145 firmware message types revealed that only six carry
 spatially interpretable information. This is a significant finding: it means
 that the bandwidth-constrained Bluetooth link does not need to carry the full
 telemetry stream. By targeting only these six messages with a multi-rate polling
