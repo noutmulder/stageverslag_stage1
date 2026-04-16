@@ -530,6 +530,15 @@ sections, vertical bends (up/down), and horizontal bends (left/right), each
 measured via incremental encoders~\cite{bolton2019mechatronics}. Each block
 specifies a type and an amount. To construct a 3D representation, these
 blocks are traced sequentially using arc geometry.
+Figure~\ref{fig:rail-segments} shows the three segment types and their
+arc-tracing geometry.
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.85\columnwidth}{\centering\vspace{2cm}\textit{PLACEHOLDER: rail\_segment\_types.png}\vspace{2cm}}}
+\caption{The three rail segment types: straight (left), vertical bend (center), and horizontal bend (right), with their respective arc-tracing geometry and encoder pulse costs.}
+\label{fig:rail-segments}
+\end{figure}
 
 The direction vector at any point along the rail is determined by the current
 yaw ($\psi$) and pitch ($\phi$):
@@ -755,6 +764,16 @@ interpretability:
     information panels, optimized for both desktop and tablet rendering.
 \end{enumerate}
 
+Figure~\ref{fig:ghost-chair} shows the ghost chair visualization tracking the
+stairlift position in real time along a curved rail with ghost stairs.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.85\textwidth]{images/ghost_chair_screenshot.png}
+\caption{The virtual ghost visualization: the 3D ghost chair follows the rail in real time based on live telemetry. Semi-transparent ghost stairs provide spatial context. Rail annotations identify segment boundaries along the rail.}
+\label{fig:ghost-chair}
+\end{figure*}
+
 The ghost chair model combined with ghost stairs proved most effective for
 spatial fault diagnosis: the chair's position on the staircase is immediately
 apparent, and deviations in tilt or position are visible as misalignment
@@ -767,6 +786,13 @@ installations. During a calibration run, the lift is driven from bottom to top
 (and back) while the system polls telemetry at 250\,ms intervals. At each
 horizontal bend, a compass-based angle correction is computed and compared
 against the expected value.
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.85\columnwidth}{\centering\vspace{2cm}\textit{PLACEHOLDER: calibration\_run.png}\vspace{2cm}}}
+\caption{The calibration run in progress: the ghost chair tracks the physical lift position while compass-based angle corrections are applied at horizontal bends.}
+\label{fig:calibration-run}
+\end{figure}
 
 \textbf{Calibration run protocol.} The service polls six data points per tick:
 lock state, traction encoder, pilot state (keep-alive), spindle encoder, lift
