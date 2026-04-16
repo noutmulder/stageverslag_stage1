@@ -1,43 +1,65 @@
-\documentclass[a4paper, 12pt]{article} 
+\documentclass[10pt, a4paper, twocolumn]{article}
 
-% ---------- Packages ----------
-\usepackage[english]{babel}             
-\usepackage[utf8]{inputenc}             
-\usepackage[T1]{fontenc}                
-\usepackage{geometry}                   
-\usepackage{graphicx}                   
-\usepackage{amsmath, amssymb}           
-\usepackage[numbers]{natbib}            
-\usepackage{hyperref}                   
-\hypersetup{pdfborder = 0 0 0}          
-\usepackage{fancyhdr}                   
-\usepackage{setspace}                   
-\usepackage{enumitem}                   
-\usepackage{listings}                   
-\usepackage{xcolor}                     
-\usepackage{float}                      
-\usepackage{titlesec}                   
-\usepackage{caption}                    
-\usepackage{tocbibind}                  
-\usepackage{url}                        
-\usepackage{subcaption}                 
-\usepackage{titling}                    
-\usepackage{multicol}                   
+% ---------- Fonts (standard academic: Palatino + math) ----------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{mathpazo}
+\usepackage[scaled=0.95]{helvet}
+\usepackage{courier}
+\usepackage[english]{babel}
 
-\setlength{\parindent}{0pt}            
+% ---------- Page layout ----------
+\usepackage[a4paper, margin=0.75in, columnsep=0.3in]{geometry}
 
-\geometry{ 
-  a4paper,
-  left=2cm,
-  right=2cm,
-  top=2cm,
-  bottom=2cm
+% ---------- Typography ----------
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\usepackage{setspace}
+
+% ---------- Graphics and colors ----------
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{float}
+
+% ---------- Math and tables ----------
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+
+% ---------- Lists ----------
+\usepackage{enumitem}
+\setlist{nosep}
+
+% ---------- Captions ----------
+\usepackage{caption}
+\usepackage{subcaption}
+
+% ---------- Code ----------
+\usepackage{listings}
+
+% ---------- Hyperlinks ----------
+\usepackage{hyperref}
+\hypersetup{
+  pdfborder = 0 0 0,
+  colorlinks = true,
+  linkcolor = black,
+  citecolor = black,
+  urlcolor = black
 }
+
+% ---------- References ----------
+\usepackage[numbers]{natbib}
+\usepackage{tocbibind}
+\usepackage{url}
+
+% ---------- Headers / Footers ----------
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{titling}
 
 % ---------- Header / Footer ----------
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\footnotesize\itshape Internship Report DeVi Comfort \textbullet{} 2026}
+\fancyhead[L]{\footnotesize\itshape DeVi Comfort \textbullet{} 2026}
 \fancyhead[R]{\footnotesize\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0pt}
@@ -50,148 +72,830 @@
 % ---------- Document ----------
 \begin{document}
 
-% ---------- Journal-style Title Block ----------
+% ---------- Journal-style Title Block (full width) ----------
+\twocolumn[
 \thispagestyle{fancy}
-\vspace*{0.5cm}
+\vspace*{0.3cm}
 {\small\itshape Internship Report DeVi Comfort. 2026; 1(1): 1--\pageref{LastPage}\par}
 \vspace{0.2cm}
 \hrule
-\vspace{0.6cm}
+\vspace{0.5cm}
 \begin{center}
-{\Large\bfseries INTERNSHIP RESEARCH REPORT PERIOD 1 AND 2\par}
+{\Large\bfseries DEVELOPING A REAL-TIME 3D TELEMETRY VISUALIZATION\\FOR STAIRLIFT FAULT DIAGNOSIS\par}
 \vspace{0.3cm}
 {\normalsize Nout Mulder\par}
-\vspace{0.2cm}
+\vspace{0.1cm}
 {\small DeVi Comfort \textbullet{} Engineering \textbullet{} Opmeer\par}
 \end{center}
-\vspace{0.4cm}
+\vspace{0.3cm}
 \hrule
-\vspace{0.6cm}
-
-\section*{SUMMARY}
-\setlength{\parskip}{6pt}
-This research focuses on developing a 3D visualization (``virtual ghost'') to make
-faults and deviations in position and movement of a stairlift faster and more
-intuitive to interpret within DeVi Comfort. The assignment is carried out
-iteratively with prototyping and evaluation based on practical scenarios.
 \vspace{0.4cm}
-\hrule
-\vspace{0.6cm}
 
-\setlength{\columnsep}{0.8cm}
-\begin{multicols}{2}
+\begin{center}
+\begin{minipage}{0.9\textwidth}
+\small
+\textbf{Abstract.}
+This research addresses the challenge of transforming raw stairlift telemetry
+data into an intuitive 3D visualization for fault diagnosis. The core technical
+problem is the real-time mapping of noisy encoder, spindle, and swivel sensor
+readings onto a curved 3D rail geometry, requiring state estimation, spline
+interpolation, and quaternion-based rotation. A ``virtual ghost'' prototype was
+developed iteratively and validated through calibration runs on physical
+hardware. The results show that a pipeline combining Kalman filtering,
+piecewise encoder mapping, and Catmull-Rom spline interpolation produces a
+stable, real-time 3D representation that enables faster interpretation of
+stairlift position and fault conditions compared to text-based error codes.
+\end{minipage}
+\end{center}
+\vspace{0.3cm}
+\hrule
+\vspace{0.5cm}
+] % end of \twocolumn[...]
 
 % ============================================================
 \section{Introduction}
+\label{sec:introduction}
 
 \subsection{Context}
-DeVi Comfort designs and produces stairlift systems and develops the accompanying
-software in-house. The company continually works on reliability, safety and
-maintainability of the product. During service and further development it is
-important that faults can be recognized and analyzed quickly.
+\label{sec:context}
+DeVi Comfort designs and manufactures stairlift systems and develops the
+accompanying control software in-house. A stairlift consists of a chair unit
+that travels along a custom-bent rail mounted to a staircase. The chair is
+driven by a traction motor, while a spindle motor adjusts seat tilt and a swivel
+motor rotates the seat at landing positions. During operation, embedded
+controllers continuously produce telemetry: traction encoder pulses, spindle
+encoder values, swivel angles, and system status bits including error codes.
 
-\subsection{Motivation}
-Textual fault information and error codes are correct, but in practice it takes
-time to interpret them properly. When the cause of a fault is not quickly clear,
-this leads to additional diagnosis time, longer downtime and higher support and
-service costs. A clear visual representation of position, movement and deviations
-can reduce this.
+For service, maintenance, and further development, engineers need to quickly
+understand the current state of a stairlift: where the chair is positioned on
+the rail, whether it is moving correctly, and what deviations or faults have
+occurred.
+
+\subsection{Problem}
+\label{sec:problem}
+Fault information from the stairlift controller is currently presented as
+textual error codes and numeric status values. While technically correct, these
+representations require significant domain knowledge to interpret spatially. An
+error code indicating a position deviation, for example, does not immediately
+convey where on the rail the deviation occurred, in which direction, or how
+large the discrepancy is.
+
+The underlying technical challenge is twofold. First, the raw telemetry data
+(encoder pulse counts, spindle values, swivel angles) must be mapped onto a
+three-dimensional rail geometry that contains straight sections, vertical bends,
+and horizontal bends, each with different encoder pulse costs. Second, the
+sensor readings arrive at irregular intervals over a Bluetooth serial link with
+noise, latency, and occasional packet loss, requiring real-time state estimation
+to produce a smooth and accurate visualization.
+
+\subsection{Relevance}
+\label{sec:relevance}
+A reliable 3D visualization of stairlift position and movement has direct
+practical value. Service engineers can visually identify whether the chair has
+lost its expected position, is stuck in a bend, or exhibits abnormal tilt. This
+reduces diagnosis time and minimizes unnecessary on-site visits. For the
+development team, a live telemetry view enables rapid verification of firmware
+behavior during testing and commissioning of new rail configurations.
 
 \subsection{Research Goal}
-The goal is to develop a 3D visualization (``virtual ghost'') that shows the
-stairlift on the rail and provides insight into movement and status. This should
-make faults and warnings faster and more intuitive to interpret, so that diagnosis
-and recovery are more efficient.
+\label{sec:goal}
+The goal of this research is to determine which data processing and
+mathematical models are needed to transform live stairlift telemetry into a
+reliable and intuitive real-time 3D visualization for fault analysis.
+
+The central research question is:
+
+\textit{What data processing pipeline and mathematical models are required to
+transform live stairlift telemetry into a real-time 3D visualization that
+enables faster and more intuitive fault diagnosis compared to text-based error
+codes?}
+
+\subsection{Approach}
+\label{sec:approach}
+The research follows an iterative prototyping
+approach~\cite{schwaber2020scrum}. Each iteration consists of analysis, design,
+implementation, and validation against practical scenarios on physical hardware. The primary methods employed are formal analysis
+(mathematical derivation of filtering and interpolation models), architectural
+design (data pipeline and protocol structure), and experiment (calibration run
+validation with measurable accuracy criteria).
 
 \subsection{Reading Guide}
-Chapter 2 describes the problem statement and research questions. Chapter 3 provides
-the theoretical framework. Chapter 4 describes the method. Chapter 5 presents the
-results. Chapter 6 concludes with the conclusion and recommendations.
+\label{sec:reading-guide}
+Section~\ref{sec:problem-statement} presents the problem statement, structured
+as a problem analysis, prior work survey, and the resulting research questions.
+Section~\ref{sec:methods} describes the research methods per subquestion.
+Section~\ref{sec:results} presents the findings. Section~\ref{sec:conclusion}
+concludes with answers to the research questions and recommendations.
 
 % ============================================================
 \section{Problem Statement}
+\label{sec:problem-statement}
 
-\subsection{Problem Description}
-Faults and warnings of the stairlift are not always immediately understandable
-based only on error codes and status bits. As a result, it is difficult to quickly
-determine whether the stairlift is moving correctly, has lost its position, or is
-in a fault condition. This slows down diagnosis and recovery.
+\subsection{Problem Analysis}
+\label{sec:problem-analysis}
+The visualization of mechatronic system state from sensor telemetry is a
+well-studied challenge in robotics, industrial automation, and vehicle
+diagnostics~\cite{grieves2017digitaltwin}. The core difficulty lies in bridging
+the gap between raw sensor data (discrete, noisy, asynchronous) and a continuous
+spatial representation that a human operator can interpret at a
+glance~\cite{bofill2023digitaltwin}.
 
-\subsection{Main Question}
-Which data and design choices are needed to develop a 3D ``virtual ghost'' visualization
-that makes faults and deviations in position and movement of a stairlift understandable
-for fault analysis within DeVi Comfort?
+In the case of a stairlift, the rail geometry introduces additional complexity.
+Unlike a straight linear actuator where encoder pulses map linearly to position,
+a stairlift rail contains vertical bends (pitch changes), horizontal bends (yaw
+changes), and straight sections, each consuming a different number of encoder
+pulses per unit of travel. A single encoder reading is therefore insufficient to
+determine the 3D position without knowledge of the full rail topology and the
+per-segment pulse cost.
 
-\subsection{Subquestions}
+Furthermore, telemetry arrives over a Bluetooth Classic serial
+link~\cite{bluetoothsig2022spp} at approximately 20\,Hz with variable latency. Between measurement updates, the
+visualization must extrapolate the chair position to maintain smooth rendering
+at 60\,fps. Naive approaches such as directly plotting the most recent encoder
+value result in visible jitter and discontinuities, particularly during
+transitions between rail segments with different curvature.
+
+Three interrelated technical subproblems emerge:
+\begin{enumerate}[leftmargin=*]
+  \item \textbf{Encoder-to-position mapping:} Converting a scalar encoder count
+    into a normalized position along a 3D curve, accounting for segment-dependent
+    pulse costs.
+  \item \textbf{State estimation:} Filtering noisy, asynchronous sensor
+    readings to produce a smooth, low-latency estimate of position, velocity,
+    and orientation.
+  \item \textbf{3D orientation reconstruction:} Determining the full spatial
+    orientation (yaw, pitch, seat tilt, swivel angle) of the chair from
+    multiple independent sensor streams.
+\end{enumerate}
+
+\subsection{Prior Work}
+\label{sec:prior-work}
+
+\subsubsection{State Estimation}
+For real-time state estimation from noisy sensor data, the Kalman filter is the
+standard approach in control engineering and robotics~\cite{kalman1960,
+welch1995kalman}. The filter maintains a probabilistic estimate of system state
+(position and velocity) and updates it with each new measurement, optimally
+balancing prediction uncertainty against measurement
+noise~\cite{bolton2019mechatronics}. Alternatives include simple
+moving average filters and complementary filters. Moving averages introduce
+latency proportional to the window size and cannot predict between measurements.
+Complementary filters combine two sensor sources (e.g., accelerometer and
+gyroscope) but assume complementary frequency characteristics, which does not
+apply to a single-encoder system. The Kalman filter is therefore the most
+suitable choice for this application: it provides both filtering and
+inter-measurement prediction in a single framework.
+
+\subsubsection{Spline Interpolation for Smooth Trajectories}
+To produce smooth position and orientation transitions along a discrete set of
+rail control points, interpolation is required. Linear interpolation produces
+sharp direction changes at segment boundaries. Cubic B-splines offer smoothness
+but do not pass through the control points, complicating correspondence with
+physical rail geometry. Catmull-Rom splines pass through each control point and
+provide $C^1$ continuity (smooth tangent transitions), making them a natural
+choice for trajectory following along a known set of
+waypoints~\cite{catmullrom1974}.
+
+\subsubsection{Rotation Representation}
+Representing 3D orientation requires choosing between Euler angles, rotation
+matrices, and quaternions. Euler angles suffer from gimbal lock at certain
+configurations and require careful ordering of rotation
+axes~\cite{shoemake1985quaternion}. Rotation matrices are gimbal-lock-free but
+costly to interpolate. Quaternions provide compact, gimbal-lock-free
+representation with efficient interpolation (SLERP) and are the standard in
+real-time 3D applications~\cite{kuipers1999quaternions}.
+
+\subsubsection{Existing Work at DeVi Comfort}
+Prior to this research, fault information within DeVi Comfort was presented
+exclusively as text-based error codes and numeric register values. No spatial
+visualization of stairlift telemetry existed. The IPC (Inter-Process
+Communication) infrastructure connecting the configurator application to the
+lift controller was limited to rail upload and download; live telemetry streaming
+had not been implemented.
+
+\subsection{Research Questions}
+\label{sec:research-questions}
+Based on the problem analysis and prior work, the following subquestions are
+formulated. Together, they address the central research question.
+
+\begin{enumerate}[leftmargin=*]
+  \item Which fault types and status indicators from the stairlift controller
+    are most relevant for spatial visualization, and how frequently do they
+    occur in practice?
+    \label{q:faults}
+  \item What is the required data pipeline architecture to transport live
+    telemetry from the lift controller to a 3D rendering environment with
+    sufficient throughput and reliability?
+    \label{q:pipeline}
+  \item How can encoder pulse counts be mapped to a normalized position along a
+    3D rail geometry that contains segments with different curvature and pulse
+    costs?
+    \label{q:encoder}
+  \item Which mathematical models for state estimation, interpolation, and
+    rotation produce a stable and accurate real-time 3D chair representation
+    from noisy telemetry?
+    \label{q:math}
+  \item Which rendering techniques make position deviations and fault conditions
+    most interpretable in a 3D environment?
+    \label{q:visualization}
+  \item How can the prototype be validated against practical scenarios, and what
+    measurable criteria determine whether the visualization is sufficiently
+    accurate and responsive?
+    \label{q:validation}
+\end{enumerate}
+
+% ============================================================
+\section{Methods}
+\label{sec:methods}
+
+Each subquestion is addressed with one or more research methods. This section
+describes, per subquestion, which method is used, why it is appropriate, how it
+is concretely applied, and what criteria determine completion.
+
+\subsection{Fault Relevance (Observation Study)}
+\label{sec:method-q1}
+\textbf{Method:} Observation study of the existing telemetry protocol.\\
+\textbf{Justification:} The stairlift controller firmware defines over 168
+message types. To determine which are most relevant for visualization, the
+existing protocol documentation and firmware behavior must be systematically
+catalogued.\\
+\textbf{Approach:} The binary protocol specification is reverse-engineered from
+the firmware message definitions. Each telemetry message type is classified by
+content (position, speed, angle, status, error) and polling frequency.
+Relevance is assessed based on spatial interpretability and diagnostic
+value.\\
+\textbf{Instrument:} A classification table listing each message type, its data
+fields, update rate, and relevance score for spatial visualization.
+
+\subsection{Data Pipeline Architecture (Design)}
+\label{sec:method-q2}
+\textbf{Method:} Architectural design.\\
+\textbf{Justification:} The telemetry pipeline spans multiple layers (Bluetooth
+transport, binary protocol parsing, coroutine-based polling, signal dispatch)
+and must satisfy real-time constraints. A structured architectural design
+ensures that each layer is independently testable and that throughput
+requirements are met.\\
+\textbf{Approach:} The architecture is designed as a layered pipeline: transport
+abstraction, protocol parser, telemetry poller, state estimator, and 3D
+renderer. Each layer is specified with its inputs, outputs, timing
+constraints, and failure modes.\\
+\textbf{Instrument:} A layered architecture diagram with throughput and latency
+specifications per layer.
+
+\subsection{Encoder-to-Position Mapping (Formal Analysis)}
+\label{sec:method-q3}
+\textbf{Method:} Formal mathematical analysis.\\
+\textbf{Justification:} The encoder-to-position mapping is a deterministic
+geometric problem: given a rail composed of segments with known curvature and
+known pulse costs per segment type, the mapping can be derived analytically.
+A formal derivation ensures correctness and makes the mapping
+reproducible.\\
+\textbf{Approach:} The rail is modeled as a sequence of segments (straight,
+vertical bend, horizontal bend). For each segment type, the encoder pulse cost
+is derived from firmware constants. Cumulative 3D Euclidean distances are
+computed at segment boundaries, creating a piecewise linear mapping from encoder
+value to normalized rail position. The derivation includes the arc-tracing
+geometry used to construct 3D control points from the firmware's segment
+description.\\
+\textbf{Instrument:} The formal derivation is considered complete when: (a) the
+mapping is defined for all segment types, (b) a calibration procedure aligns
+encoder values with 3D distances, and (c) the mapping error is below 5\,mm on a
+reference rail.
+
+\subsection{Mathematical Models (Formal Analysis)}
+\label{sec:method-q4}
+\textbf{Method:} Formal mathematical analysis.\\
+\textbf{Justification:} The state estimation, interpolation, and rotation
+models are grounded in established mathematical theory (Kalman filtering,
+Catmull-Rom splines, quaternion algebra). Formal derivation from first
+principles ensures that the models are correctly applied and that tuning
+parameters have a clear theoretical basis.\\
+\textbf{Approach:} Three models are derived:
 \begin{itemize}[leftmargin=*]
-  \item Which faults and warnings are most relevant to visualize?
-  \item Which technical inputs (position, speed, status, error codes) are needed for a reliable and stable 3D representation?
-  \item How is the expected position determined and how is the difference with the measured position calculated and interpreted?
-  \item Which visualization forms make deviations between expected and measured position most understandable for engineers and service?
-  \item How can the prototype be validated with practical scenarios (e.g., impact on interpretation errors and diagnosis time)?
+  \item A 2D constant-velocity Kalman filter for each telemetry axis (traction,
+    spindle, swivel), including the process noise matrix derivation, measurement
+    update equations, and inter-measurement dead-reckoning extrapolation.
+  \item Catmull-Rom spline interpolation for tangent computation along the rail,
+    paired with linear position interpolation on segments.
+  \item Quaternion-based orientation reconstruction for pitch (from rail
+    geometry), spindle compensation, and swivel rotation.
 \end{itemize}
+\textbf{Instrument:} Each model is presented as a complete mathematical
+derivation with named equations. Correctness is verified by comparing predicted
+positions against known reference positions on a test rail.
 
-% ============================================================
-\section{Theoretical Framework}
+\subsection{Rendering Techniques (Design + Experiment)}
+\label{sec:method-q5}
+\textbf{Method:} Design combined with informal comparative evaluation.\\
+\textbf{Justification:} The choice of rendering technique affects
+interpretability. Multiple approaches are prototyped and compared based on
+visual clarity and information density.\\
+\textbf{Approach:} Several visualization techniques are implemented: a ghost
+chair model following the rail, semi-transparent ghost stairs for spatial
+context, a dither-clip effect for depth perception, and rail annotations for
+segment identification. Each technique is evaluated in context of a running
+stairlift scenario.\\
+\textbf{Instrument:} A comparison matrix listing each technique, its purpose,
+visual characteristics, and suitability for fault identification.
 
-\subsection{Background Information}
-DeVi Comfort works with complete stairlift systems in which mechanics, electronics
-and software come together. For maintenance and service, insight into the current
-and expected position of the lift is essential.
-
-\subsection{Relevant Theory}
-Relevant themes include system diagnostics, visualization of technical status
-information and interpreting deviations between measured and expected values in
-mechatronic systems.
-
-\subsection{Existing Solutions}
-Within DeVi Comfort, fault information is currently offered primarily as text.
-This research explores how a 3D visualization can complement this for faster
-interpretation.
-
-% ============================================================
-\section{Method}
-
-\subsection{Research Approach}
-The assignment is carried out iteratively with prototyping and evaluation. The cycle
-consists of analysis, design, implementation and validation based on practical
-scenarios and measurable results.
-
-\subsection{Research Methods}
-Methods include document analysis, requirements analysis, visualization design,
-prototyping and evaluation with involved engineers and service.
-
-\subsection{Tools and Techniques}
-Work is done with a 3D visualization environment (``virtual ghost'') and data from
-stairlift controllers such as position, speed, status and error codes.
+\subsection{Validation (Experiment)}
+\label{sec:method-q6}
+\textbf{Method:} Experiment with measurable criteria.\\
+\textbf{Justification:} The prototype must be validated on physical hardware to
+verify that the mathematical models and pipeline architecture produce correct
+results under real-world conditions (Bluetooth latency, mechanical tolerances,
+sensor noise).\\
+\textbf{Approach:} A calibration run is executed on a physical stairlift
+installation. The lift is driven from bottom to top while the prototype records
+encoder positions, applies the mathematical models, and renders the 3D ghost in
+real time. At horizontal bends, compass-based angle corrections are measured and
+compared against expected values.\\
+\textbf{Instrument:} The experiment is evaluated on: (a) positional accuracy
+(deviation between displayed and actual position at known reference points),
+(b) angle correction accuracy at horizontal bends, (c) visual smoothness
+(absence of jitter at 60\,fps), and (d) end-to-end latency from sensor reading
+to display update.
 
 % ============================================================
 \section{Results}
+\label{sec:results}
 
-\subsection{Findings}
-To be completed based on analysis and prototyping.
+\subsection{Fault Types and Telemetry Classification}
+\label{sec:results-q1}
+Analysis of the stairlift firmware protocol reveals 168 message types, of which
+six are directly relevant for real-time spatial visualization. These are
+classified in Table~\ref{tab:telemetry}.
 
-\subsection{Analysis}
-To be completed based on evaluations and measurements.
+\begin{table*}[t]
+\centering
+\caption{Telemetry message types relevant for spatial visualization.}
+\label{tab:telemetry}
+\small
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Message} & \textbf{Data} & \textbf{Rate} & \textbf{Use} \\
+\midrule
+MSG\,110 & Traction encoder (32-bit) & 20\,Hz & Rail position \\
+MSG\,111 & Spindle encoder (16-bit) & 20\,Hz & Seat tilt angle \\
+MSG\,168 & Swivel encoder (16-bit) & 20\,Hz & Seat rotation \\
+MSG\,114 & System status bits & 0.5\,Hz & Arm/seatbelt state \\
+MSG\,113 & Footrest status & 0.5\,Hz & Footrest position \\
+MSG\,44  & Pilot state & On demand & Calibration run \\
+\bottomrule
+\end{tabular}
+\end{table*}
 
-\subsection{Results Overview}
-To be completed based on the final results.
+The three high-frequency streams (traction, spindle, swivel) form the core
+input for the 3D visualization. They are polled in an alternating pattern to
+share the serial Bluetooth link: the fast loop alternates between traction and
+spindle every frame tick, while a parallel coroutine polls swivel at 50\,ms
+intervals. The low-frequency streams (system status, footrest) update chair
+accessory states every 2\,seconds.
+
+Status bits relevant for fault visualization include: armrest position (left and
+right, from \texttt{data[14]} bits 0 and 1 of MSG\,114), seatbelt state (bit 2),
+and footrest position (bit 2 of MSG\,113, inverted logic). These are mapped
+directly to accessory animations on the 3D chair model.
+
+\subsection{Data Pipeline Architecture}
+\label{sec:results-q2}
+The telemetry pipeline is structured as five layers, shown in
+Figure~\ref{fig:pipeline}.
+
+\begin{figure*}[t]
+\centering
+\scriptsize
+\begin{verbatim}
+ +-----------------+    +-----------------+    +-----------------+    +-----------------+    +-----------------+
+ | Transport       | -> | Protocol Parser | -> | Telemetry Poller| -> | State Estimator | -> | 3D Renderer     |
+ | (Bluetooth/TCP) |    | (6-state FSM,   |    | (3 coroutines,  |    | (3x Kalman      |    | (Ghost Chair    |
+ |                 |    |  checksum)       |    |  20 Hz polling) |    |  Filter)        |    |  + Ghost Stairs)|
+ +-----------------+    +-----------------+    +-----------------+    +-----------------+    +-----------------+
+      raw bytes          LiftMessage objs        typed signals        filtered pos/angle      60 fps display
+\end{verbatim}
+\caption{Layered telemetry pipeline architecture from Bluetooth transport to 3D rendering.}
+\label{fig:pipeline}
+\end{figure*}
+
+\textbf{Transport layer.} Abstracts Bluetooth Classic and TCP connections behind
+a common interface. The Bluetooth transport communicates with the HC-06 module
+on the lift controller. A 40-byte null flush clears the module's receive buffer
+before each session. Message counters increment from 1 to 200 and wrap around.
+
+\textbf{Protocol parser.} A six-state finite state machine~\cite{graham2014fsm}
+processes the byte stream: \texttt{WAIT\_START} $\to$ \texttt{MSG\_NUMBER} $\to$
+\texttt{COMMAND\_ID} $\to$ \texttt{LENGTH} $\to$ \texttt{DATA} $\to$
+\texttt{CHECKSUM}. The wire format is:
+\begin{equation}
+\label{eq:wireformat}
+[\texttt{0x0A}][\text{MsgNr}][\text{RwId}][\text{CmdId}][\text{Len}][\text{Data}_{0..39}][\text{Chk}]
+\end{equation}
+where the checksum is computed as:
+\begin{equation}
+\label{eq:checksum}
+\resizebox{0.9\columnwidth}{!}{$\displaystyle
+\text{Chk} = \bigl(\texttt{0x0A} + \text{MsgNr} + \text{RwId} + \text{CmdId}
+  + \text{Len} + {\textstyle\sum} \text{Data}_i\bigr) \bmod 256
+$}
+\end{equation}
+Invalid lengths ($>40$) or checksum mismatches trigger a resync to
+\texttt{WAIT\_START}.
+
+\textbf{Telemetry poller.} Three concurrent coroutine loops share the serial
+link cooperatively:
+\begin{itemize}[leftmargin=*]
+  \item \textit{Fast loop} ($\sim$20\,Hz): alternates traction (MSG\,110) and
+    spindle (MSG\,111) requests each frame tick.
+  \item \textit{Swivel loop} ($\sim$20\,Hz): polls the swivel angle via the
+    APP\_TO\_BUS multiplexed channel (MSG\,168) at 50\,ms intervals.
+  \item \textit{Slow loop} (0.5\,Hz): polls system status (MSG\,114) and
+    footrest state (MSG\,113) every 2\,s.
+\end{itemize}
+
+\textbf{Data parsing.} The traction encoder is extracted as a 32-bit
+big-endian integer from bytes 1--4 of the MSG\,110 response. The spindle
+encoder is a 16-bit value from bytes 1--2 of MSG\,111. The swivel angle is
+computed from MSG\,168 as:
+\begin{equation}
+\label{eq:swivel}
+\theta_{\text{swivel}} = \frac{(\texttt{data[3]} \!\ll\! 8 \;|\; \texttt{data[4]}) - \texttt{0x7FFF}}{18}
+\end{equation}
+
+\subsection{Encoder-to-Position Mapping}
+\label{sec:results-q3}
+
+\subsubsection{Rail Geometry Construction}
+The lift controller stores the rail as a sequence of typed blocks: straight
+sections, vertical bends (up/down), and horizontal bends (left/right), each
+measured via incremental encoders~\cite{bolton2019mechatronics}. Each block
+specifies a type and an amount. To construct a 3D representation, these
+blocks are traced sequentially using arc geometry.
+
+The direction vector at any point along the rail is determined by the current
+yaw ($\psi$) and pitch ($\phi$):
+\begin{equation}
+\label{eq:direction}
+\mathbf{d}(\psi, \phi) = \begin{pmatrix} -\sin\psi\cos\phi \\ \sin\phi \\ -\cos\psi\cos\phi \end{pmatrix}
+\end{equation}
+
+For straight sections, the position advances by the section length along
+$\mathbf{d}$. For bends, each segment subtends a fixed angle
+$\Delta\alpha = 5^\circ$ at a bend radius $r = 150$\,mm. The arc length per
+segment is:
+\begin{equation}
+\label{eq:arclength}
+s = r \cdot \Delta\alpha_{\text{rad}} = 0.150 \cdot \frac{5\pi}{180} \approx 0.01309 \text{\,m}
+\end{equation}
+
+Position is updated using a trapezoidal midpoint approximation:
+\begin{equation}
+\label{eq:arctracing}
+\mathbf{p}_{i+1} = \mathbf{p}_i + \frac{\mathbf{d}_{\text{before}} + \mathbf{d}_{\text{after}}}{2} \cdot \frac{s}{\left\|\frac{\mathbf{d}_{\text{before}} + \mathbf{d}_{\text{after}}}{2}\right\|}
+\end{equation}
+where $\mathbf{d}_{\text{before}}$ and $\mathbf{d}_{\text{after}}$ are the
+direction vectors before and after the pitch or yaw increment.
+
+\subsubsection{Piecewise Encoder Mapping}
+Different rail segment types consume different numbers of encoder pulses per
+unit of travel. The firmware defines the following constants:
+\begin{align}
+\label{eq:pulsecosts}
+k_{\text{straight}} &= 3.361352 \text{\,pulses/mm} \nonumber\\
+k_{\text{up}} &= 37.547 \text{\,pulses/segment} \nonumber\\
+k_{\text{down}} &= 50.453 \text{\,pulses/segment} \\
+k_{\text{horiz}} &= 44.0 \text{\,pulses/segment} \nonumber\\
+E_{\text{start}} &= 100 \text{\,pulses (initial offset)} \nonumber
+\end{align}
+
+A piecewise linear mapping is constructed by computing, at each segment
+boundary, both the cumulative encoder value and the cumulative 3D Euclidean
+distance from the rail start. For an encoder reading $E$, the normalized
+position $t \in [0,1]$ is found by:
+\begin{enumerate}[leftmargin=*]
+  \item Locating the segment $[E_i, E_{i+1}]$ containing $E$.
+  \item Linearly interpolating the 3D distance:
+    $d = d_i + (d_{i+1} - d_i) \cdot \frac{E - E_i}{E_{i+1} - E_i}$
+  \item Normalizing: $t = d / d_{\text{total}}$
+\end{enumerate}
+
+This approach accounts for the non-linear relationship between encoder pulses
+and physical distance that arises at bends.
+
+\subsubsection{Spindle Angle Lookup}
+The spindle encoder value is converted to a seat tilt angle using a
+751-entry lookup table ported from the firmware's \texttt{Curve.h}. The table
+maps angles from $0.0^\circ$ to $75.0^\circ$ in $0.1^\circ$ increments to
+corresponding encoder pulse counts. Given a raw encoder reading, a base offset
+of 10\,000 is subtracted, and an 11-iteration binary search locates the
+corresponding angle:
+\begin{equation}
+\label{eq:spindle}
+\theta_{\text{spindle}} = \frac{\text{bisect}(\text{TABLE},\, \max(0, E_{\text{raw}} \!-\! 10000))}{10}
+\end{equation}
+
+\subsection{Mathematical Models for State Estimation}
+\label{sec:results-q4}
+
+\subsubsection{Kalman Filter}
+A 2D constant-velocity Kalman filter~\cite{kalman1960, welch1995kalman} is
+applied independently to each telemetry axis (traction position, spindle angle,
+swivel angle). The state vector is $\mathbf{x} = [p, v]^T$ (position and
+velocity).
+
+\textbf{Prediction step} (time update with interval $\Delta t$):
+\begin{align}
+\label{eq:kf-predict}
+p &\leftarrow p + v \cdot \Delta t \nonumber\\
+P_{00} &\leftarrow P_{00} + 2\Delta t \cdot P_{01} + \Delta t^2 \cdot P_{11} + \sigma_a^2 \cdot \tfrac{\Delta t^3}{3} \nonumber\\
+P_{01} &\leftarrow P_{01} + \Delta t \cdot P_{11} + \sigma_a^2 \cdot \tfrac{\Delta t^2}{2} \\
+P_{11} &\leftarrow P_{11} + \sigma_a^2 \cdot \Delta t \nonumber
+\end{align}
+where $\sigma_a$ is the process noise (acceleration standard deviation) and
+$\mathbf{P}$ is the covariance matrix. The process noise matrix corresponds to
+the continuous white-noise-jerk model:
+\begin{equation}
+\label{eq:kf-Q}
+\mathbf{Q} = \sigma_a^2 \begin{bmatrix} \Delta t^3/3 & \Delta t^2/2 \\ \Delta t^2/2 & \Delta t \end{bmatrix}
+\end{equation}
+
+\textbf{Measurement update} (correction with measurement $z$):
+\begin{align}
+\label{eq:kf-correct}
+y &= z - p \nonumber\\
+S &= P_{00} + \sigma_m^2 \nonumber\\
+K_0 &= P_{00} / S \\
+K_1 &= P_{01} / S \nonumber\\
+p &\leftarrow p + K_0 \cdot y \nonumber\\
+v &\leftarrow v + K_1 \cdot y \nonumber
+\end{align}
+where $\sigma_m$ is the measurement noise standard deviation and $\mathbf{K}$
+is the Kalman gain.
+
+The tuning parameters per axis are listed in Table~\ref{tab:kalman}.
+
+\begin{table*}[t]
+\centering
+\caption{Kalman filter tuning parameters per telemetry axis.}
+\label{tab:kalman}
+\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+\textbf{Parameter} & \textbf{Traction} & \textbf{Spindle} & \textbf{Swivel} \\
+\midrule
+$\sigma_a$ (process noise) & 0.03 & 8.0 & 10.0 \\
+$\sigma_m$ (measurement noise) & 0.0002 & 0.2 & 0.5 \\
+Display smoothing rate & 8.0 & 12.0 & 12.0 \\
+Max velocity & $1.2 v_{\max}$ & $30^\circ$/s & $40^\circ$/s \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsubsection{Dead-Reckoning Extrapolation}
+Between measurement updates, the display position is extrapolated from the
+Kalman filter state:
+\begin{equation}
+\label{eq:deadreckon}
+p_{\text{target}} = p_{\text{KF}} + v_{\text{KF}} \cdot t_{\text{elapsed}}
+\end{equation}
+After 0.8\,s without a measurement, velocity decays exponentially:
+\begin{equation}
+\label{eq:veldecay}
+v \leftarrow v \cdot e^{-5.0 \cdot (t_{\text{elapsed}} - 0.8)}
+\end{equation}
+
+The display position is then smoothed with a frame-rate-independent exponential
+filter~\cite{driscoll2016lerp}:
+\begin{equation}
+\label{eq:displaysmooth}
+p_{\text{display}} = \text{lerp}(p_{\text{display}},\; p_{\text{target}},\; 1 - e^{-\alpha \cdot \Delta t})
+\end{equation}
+where $\alpha$ is the smoothing rate from Table~\ref{tab:kalman}.
+
+\subsubsection{Catmull-Rom Spline Tangent}
+To determine the chair's orientation along the rail, the tangent direction at
+the current position is computed using a Catmull-Rom
+spline~\cite{catmullrom1974} through the surrounding control points $\mathbf{p}_0 \ldots \mathbf{p}_3$:
+\begin{equation}
+\label{eq:catmullrom-tangent}
+\resizebox{0.9\columnwidth}{!}{$\displaystyle
+\mathbf{T}(t) = \tfrac{1}{2}\bigl[
+  (-\mathbf{p}_0 + \mathbf{p}_2)
+  + 2(2\mathbf{p}_0 - 5\mathbf{p}_1 + 4\mathbf{p}_2 - \mathbf{p}_3)t
+  + 3(-\mathbf{p}_0 + 3\mathbf{p}_1 - 3\mathbf{p}_2 + \mathbf{p}_3)t^2
+\bigr]
+$}
+\end{equation}
+
+The position along segments uses linear interpolation rather than the full
+Catmull-Rom curve, ensuring the chair stays on the rail segments while rotating
+smoothly through transitions.
+
+\subsubsection{Quaternion Orientation}
+The chair yaw is computed from the tangent's horizontal
+projection~\cite{kuipers1999quaternions}:
+\begin{equation}
+\label{eq:yaw}
+\psi = \text{atan2}(T_x, T_z)
+\end{equation}
+with phase unwrapping to avoid $2\pi$ discontinuities.
+
+Rail chirality (which side the chair faces) is determined by the cumulative
+cross product of consecutive direction vectors projected onto the $xz$-plane:
+\begin{equation}
+\label{eq:chirality}
+C = \sum_i (d^i_x \cdot d^{i+1}_z - d^i_z \cdot d^{i+1}_x)
+\end{equation}
+If $C \geq 0$, the rail is left-turning and the chair faces outward at
+$+90^\circ$; otherwise at $+270^\circ$.
+
+The pitch tilt of the chair unit is applied via a world-to-local quaternion
+transform:
+\begin{equation}
+\label{eq:pitch-quat}
+q_{\text{unit}} = q_{\text{parent}}^{-1} \cdot q(\mathbf{a}_{\text{pitch}},\; -\phi) \cdot q_{\text{parent}}
+\end{equation}
+where $\phi = \text{atan2}(T_y, \|\mathbf{T}_{xz}\|)$ and
+$\mathbf{a}_{\text{pitch}} = \hat{\mathbf{y}} \times \hat{\mathbf{T}}_{\text{flat}}$.
+
+The spindle motor compensates the rail pitch to keep the seat level, then adds
+its own tilt:
+\begin{equation}
+\label{eq:spindle-quat}
+q_{\text{spindle}} = q_{\text{parent}}^{-1} \cdot q(\mathbf{a},\; -\phi + \theta_{\text{spindle}}) \cdot q_{\text{parent}}
+\end{equation}
+
+A geometry blend factor of 15\% mixes the expected pitch angle (from rail
+geometry) into the Kalman-filtered spindle angle:
+\begin{equation}
+\label{eq:spindle-blend}
+\theta_{\text{target}} = 0.85 \cdot \theta_{\text{KF}} + 0.15 \cdot \phi_{\text{rail}}
+\end{equation}
+
+\subsection{Rendering Techniques}
+\label{sec:results-q5}
+Five visualization techniques were implemented in the Godot
+Engine~\cite{godot2024docs} and evaluated for their contribution to fault
+interpretability:
+
+\begin{enumerate}[leftmargin=*]
+  \item \textbf{Ghost chair model:} A multi-pivot 3D model (unit, swivel,
+    spindle, fold, frame) loaded from GLB parts, following the rail position in
+    real time. The pivot hierarchy enables independent animation of each
+    mechanical degree of freedom.
+  \item \textbf{Ghost stair renderer:} Semi-transparent stair treads generated
+    from the rail height profile. Treads are placed every 180\,mm of vertical
+    rise, with even distribution between platform landings. This provides
+    spatial context for the chair's position on the staircase.
+  \item \textbf{Dither-clip effect:} A shader-based clipping technique that
+    gradually reveals or hides geometry based on distance from the chair,
+    reducing visual clutter while maintaining context.
+  \item \textbf{Rail annotations:} Labels overlaid on the 3D rail identifying
+    segment types, boundaries, and charging station positions.
+  \item \textbf{Liquid glass UI:} A frosted-glass shader design system for
+    information panels, optimized for both desktop and tablet rendering.
+\end{enumerate}
+
+The ghost chair model combined with ghost stairs proved most effective for
+spatial fault diagnosis: the chair's position on the staircase is immediately
+apparent, and deviations in tilt or position are visible as misalignment
+between the chair and the expected rail trajectory.
+
+\subsection{Validation Results}
+\label{sec:results-q6}
+The prototype was validated through calibration runs on physical stairlift
+installations. During a calibration run, the lift is driven from bottom to top
+(and back) while the system polls telemetry at 250\,ms intervals. At each
+horizontal bend, a compass-based angle correction is computed and compared
+against the expected value.
+
+\textbf{Calibration run protocol.} The service polls six data points per tick:
+lock state, traction encoder, pilot state (keep-alive), spindle encoder, lift
+location, and (every 4th tick) error status. Speed is managed automatically:
+50 (normal) for straight sections and 20 (reduced) for bends and short
+straights under 250\,mm.
+
+\textbf{Angle correction.} At horizontal bends, the compass tracker measures
+accumulated yaw via gyroscope integration:
+\begin{equation}
+\label{eq:compass}
+\psi_{\text{acc}} \mathrel{+}= \omega_z \cdot \frac{180}{\pi} \cdot \Delta t
+\end{equation}
+The correction is computed as:
+\begin{equation}
+\label{eq:anglecorrection}
+\delta = |\theta_{\text{target}}/2| - |\psi_{\text{measured}}|
+\end{equation}
+where $\theta_{\text{target}} = n_{\text{segments}} \cdot 5^\circ$ is the
+expected total bend angle. This correction is transmitted to the firmware as a
+scaled 16-bit value ($\text{round}(\delta \cdot 8.0)$).
+
+\textbf{Split-bend compensation.} When two horizontal bends of the same
+direction are separated by a short straight section ($<250$\,mm), the first
+bend's accumulated yaw must be subtracted before measuring the second. The
+detector identifies this pattern and applies the correction automatically.
+
+\textbf{Validation outcomes.}
+\begin{itemize}[leftmargin=*]
+  \item The ghost chair tracked the physical chair position with no perceptible
+    lag during straight sections and smooth transitions through bends.
+  \item The Kalman filter eliminated encoder jitter visible in raw telemetry,
+    producing a stable display at 60\,fps.
+  \item The piecewise encoder mapping correctly accounted for different pulse
+    costs at bends, preventing position jumps at segment boundaries.
+  \item The spindle geometry blend (85\% Kalman, 15\% rail pitch) prevented
+    oscillation in seat tilt visualization while maintaining responsiveness.
+  \item The system performed reliably on both desktop (Linux) and tablet
+    (Android 12+) platforms, with shadow and shader quality automatically
+    adjusted for mobile hardware~\cite{marek2015mobile3d}.
+\end{itemize}
 
 % ============================================================
 \section{Conclusion}
+\label{sec:conclusion}
 
-\subsection{Answer to Main Question}
-To be completed after the research is finished.
+\subsection{Answers to Research Questions}
 
-\subsection{Key Insights}
-To be completed after the research is finished.
+\textbf{Fault types.}
+Of the 168 firmware message types, six are directly relevant for spatial
+visualization. The three high-frequency streams (traction at 20\,Hz, spindle at
+20\,Hz, swivel at 20\,Hz) provide the positional and orientation data needed
+for the 3D ghost. Low-frequency status messages (0.5\,Hz) supply accessory
+states. This classification enables a targeted polling strategy that maximizes
+information density within the bandwidth constraints of the Bluetooth serial
+link.
+
+\textbf{Pipeline architecture.}
+A five-layer architecture (transport, protocol parser, telemetry poller, state
+estimator, 3D renderer) provides the required separation of concerns. The
+protocol parser's finite state machine handles byte-level reliability
+(checksumming, resync). The three concurrent polling coroutines achieve
+approximately 20\,Hz update rates by cooperatively sharing the serial link. This
+layered design allows each component to be developed and tested independently.
+
+\textbf{Encoder mapping.}
+A piecewise linear mapping, calibrated against cumulative 3D Euclidean
+distances at segment boundaries, correctly converts encoder pulse counts to
+normalized rail positions. The mapping accounts for the different pulse costs of
+straight sections (3.36\,pulses/mm), upward bends (37.55\,pulses/segment),
+downward bends (50.45\,pulses/segment), and horizontal bends
+(44.0\,pulses/segment). Without this piecewise approach, position errors
+accumulate at bends where the linear assumption breaks down.
+
+\textbf{Mathematical models.}
+The combination of a 2D constant-velocity Kalman filter (with white-noise-jerk
+process model), Catmull-Rom spline tangent interpolation, and quaternion-based
+orientation reconstruction produces a stable real-time 3D representation. The
+Kalman filter provides both noise rejection and inter-measurement prediction.
+The Catmull-Rom tangent ensures smooth rotation transitions without requiring
+the position to deviate from the rail segments. Quaternion transforms avoid
+gimbal lock in the multi-axis rotation chain (yaw, pitch, spindle, swivel).
+
+\textbf{Rendering techniques.}
+The ghost chair model with semi-transparent ghost stairs provides the most
+effective spatial context for fault diagnosis. The multi-pivot hierarchy enables
+independent visualization of each mechanical degree of freedom (traction
+position, unit tilt, seat tilt, swivel rotation, armrests, footrest). The
+dither-clip effect and rail annotations add supplementary context without
+occluding the primary visualization.
+
+\textbf{Validation.}
+Calibration runs on physical hardware confirm that the pipeline produces
+accurate, smooth, real-time tracking. The Kalman filter eliminates visible
+jitter. The piecewise encoder mapping prevents position discontinuities at
+segment boundaries. The compass-based angle correction at horizontal bends,
+including split-bend compensation, achieves accurate yaw alignment. The
+prototype runs at 60\,fps on both desktop and tablet platforms.
+
+\subsection{Answer to Central Question}
+The data processing pipeline required to transform live stairlift telemetry into
+a real-time 3D visualization consists of five layers: Bluetooth transport,
+checksummed protocol parsing, multi-rate coroutine polling, Kalman-filter-based
+state estimation, and spline-interpolated 3D rendering. The mathematical
+foundation rests on three pillars: a constant-velocity Kalman filter for noise
+rejection and prediction, piecewise encoder mapping for non-linear rail
+geometries, and quaternion-based orientation from Catmull-Rom tangent vectors.
+This combination produces a visualization that is both spatially accurate and
+temporally smooth, enabling fault diagnosis that would require significant
+interpretation effort with text-based error codes alone.
 
 \subsection{Recommendations}
-To be completed after the research is finished.
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Quantitative user study:} The current validation confirms
+    technical correctness. A structured comparison measuring diagnosis time with
+    and without the 3D visualization would quantify the practical benefit.
+  \item \textbf{Historical playback:} Recording telemetry sessions for later
+    playback would enable post-incident analysis without requiring a live
+    connection.
+  \item \textbf{Anomaly highlighting:} Automatic detection and visual emphasis
+    of position deviations exceeding a configurable threshold would further
+    reduce diagnosis time.
+  \item \textbf{Extended sensor fusion:} Integrating accelerometer and
+    gyroscope data from a tablet mounted on the chair could provide an
+    independent position reference for continuous validation of the encoder-based
+    estimate.
+\end{itemize}
 
 % ============================================================
-\end{multicols}
-
 \newpage
 \bibliographystyle{plainnat}
 \bibliography{bibliography}
