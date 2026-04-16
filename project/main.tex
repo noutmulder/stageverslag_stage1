@@ -545,12 +545,14 @@ Figure~\ref{fig:pipeline}.
 \end{figure*}
 
 \textbf{Transport layer.} Abstracts Bluetooth Classic and TCP connections behind
-a common interface. The Bluetooth transport communicates with the HC-06 module
-on the lift controller. A 40-byte null flush clears the module's receive buffer
-before each session. Message counters increment from 1 to 200 and wrap around.
+a common interface. The Bluetooth transport communicates with an HC-06 module (a
+low-cost serial-to-Bluetooth adapter) on the lift controller. Before each
+session, 40 null bytes are sent to flush the module's receive buffer. Message
+counters increment from 1 to 200 and wrap around.
 
-\textbf{Protocol parser.} A six-state finite state machine~\cite{graham2014fsm}
-processes the incoming byte stream: \texttt{WAIT\_START} $\to$
+\textbf{Protocol parser.} A finite state machine (FSM, a parser that moves
+through a fixed sequence of states for each incoming
+byte)~\cite{graham2014fsm} processes the incoming byte stream: \texttt{WAIT\_START} $\to$
 \texttt{MSG\_NUMBER} $\to$ \texttt{COMMAND\_ID} $\to$ \texttt{LENGTH} $\to$
 \texttt{DATA} $\to$ \texttt{CHECKSUM}. The wire format is asymmetric: outgoing
 messages (app to lift) include a ReadWriteId byte, while incoming responses
@@ -571,8 +573,9 @@ $}
 Invalid lengths ($>40$) or checksum mismatches trigger a resync to
 \texttt{WAIT\_START}.
 
-\textbf{Telemetry poller.} Three concurrent coroutine loops share the serial
-link cooperatively:
+\textbf{Telemetry poller.} Three concurrent loops (coroutines, i.e.,
+cooperative lightweight threads that yield control between iterations) share the
+serial link:
 \begin{itemize}[leftmargin=*]
   \item \textit{Fast loop} ($\sim$20\,Hz): alternates traction (MSG\,110) and
     spindle (MSG\,111) requests each frame tick.
@@ -585,8 +588,8 @@ link cooperatively:
     footrest state (MSG\,113) every 2\,s.
 \end{itemize}
 
-\textbf{Data parsing.} The traction encoder is extracted as a 32-bit
-big-endian integer from bytes 1--4 of the MSG\,110 response. The spindle
+\textbf{Data parsing.} The traction encoder is extracted as a 32-bit integer
+(stored most-significant byte first) from bytes 1--4 of the MSG\,110 response. The spindle
 encoder is a 16-bit value from bytes 1--2 of MSG\,111. The swivel angle is
 computed from MSG\,168 as:
 \begin{equation}
@@ -820,17 +823,19 @@ engine~\cite{linietsky2014godot} and evaluated for their contribution to fault
 interpretability:
 
 \begin{enumerate}[leftmargin=*]
-  \item \textbf{Ghost chair model:} A multi-pivot 3D model (unit, swivel,
-    spindle, fold, frame) loaded from GLB parts, following the rail position in
-    real time. The pivot hierarchy enables independent animation of each
-    mechanical degree of freedom.
+  \item \textbf{Ghost chair model:} A 3D model assembled from separate
+    mechanical parts (stored in the glTF binary format), each attached to its
+    own rotation pivot. This hierarchy mirrors the physical stairlift: the unit
+    tilts with the rail, the seat tilts independently via the spindle, and the
+    swivel rotates on top. Each degree of freedom can be animated independently
+    from live telemetry.
   \item \textbf{Ghost stair renderer:} Semi-transparent stair treads generated
     from the rail height profile. Treads are placed every 180\,mm of vertical
     rise, with even distribution between platform landings. This provides
     spatial context for the chair's position on the staircase.
-  \item \textbf{Dither-clip effect:} A shader-based clipping technique that
-    gradually reveals or hides geometry based on distance from the chair,
-    reducing visual clutter while maintaining context.
+  \item \textbf{Dither-clip effect:} A rendering technique that gradually fades
+    out geometry further from the chair by discarding pixels in a noise pattern,
+    reducing visual clutter while preserving spatial awareness.
   \item \textbf{Rail annotations:} Labels overlaid on the 3D rail identifying
     segment types, boundaries, and charging station positions.
   \item \textbf{Liquid glass UI:} A frosted-glass shader design system for
