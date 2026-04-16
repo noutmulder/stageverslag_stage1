@@ -526,8 +526,11 @@ directly to accessory animations on the 3D chair model.
 
 \subsection{Data Pipeline Architecture}
 \label{sec:results-q2}
-The telemetry pipeline is structured as five layers, shown in
-Figure~\ref{fig:pipeline}.
+The path from a raw Bluetooth byte to a moving 3D chair on screen passes
+through five processing stages. Each stage has a single responsibility: receive
+data from the previous stage, process it, and pass the result to the next. This
+separation makes it possible to develop and test each stage independently.
+Figure~\ref{fig:pipeline} shows the five layers.
 
 \begin{figure*}[t]
 \centering
@@ -599,6 +602,11 @@ computed from MSG\,168 as:
 
 \subsection{Encoder-to-Position Mapping}
 \label{sec:results-q3}
+The central challenge here is converting a single number (the encoder pulse
+count) into a position in 3D space along a curved rail. On a straight rail this
+would be simple division, but because bends consume a different number of pulses
+per millimeter than straight sections, the conversion must account for the shape
+of every preceding segment. This section derives that conversion step by step.
 
 \subsubsection{Rail Geometry Construction}
 The lift controller stores the rail as a sequence of typed blocks: straight
@@ -680,12 +688,25 @@ corresponding angle:
 
 \subsection{Mathematical Models for State Estimation}
 \label{sec:results-q4}
+The sensor readings arrive roughly every 50\,ms, but the display must update
+every 17\,ms (60 frames per second). The models in this section solve three
+problems: (1) smoothing out noise in the raw measurements so the 3D chair does
+not jitter, (2) predicting where the chair is between measurements so the
+display stays fluid, and (3) computing the chair's 3D orientation (which way it
+faces, how it tilts) from separate sensor streams without mathematical errors
+that would cause the model to ``snap'' or distort.
 
 \subsubsection{Kalman Filter}
-A 2D constant-velocity Kalman filter~\cite{kalman1960, welch1995kalman} is
-applied independently to each telemetry axis (traction position, spindle angle,
-swivel angle). The state vector is $\mathbf{x} = [p, v]^T$ (position and
-velocity).
+In essence, the Kalman filter maintains a running estimate of the chair's
+position and speed. Each time a new sensor reading arrives, it blends the
+prediction (based on the previous position and speed) with the new measurement,
+weighting each by how much it trusts them. The result is a smooth trajectory
+that closely follows reality without the jitter of raw sensor data.
+
+Formally, a 2D constant-velocity Kalman
+filter~\cite{kalman1960, welch1995kalman} is applied independently to each
+telemetry axis (traction position, spindle angle, swivel angle). The state
+vector is $\mathbf{x} = [p, v]^T$ (position and velocity).
 
 \textbf{Prediction step} (time update with interval $\Delta t$):
 \begin{align}
@@ -736,6 +757,11 @@ Max velocity & $1.2 v_{\max}$ & $30^\circ$/s & $40^\circ$/s \\
 \end{table*}
 
 \subsubsection{Dead-Reckoning Extrapolation}
+Between sensor updates (which arrive every $\sim$50\,ms), the display still
+needs to move the chair smoothly every frame (every $\sim$17\,ms). This is done
+by continuing the chair's motion at its last known speed until the next
+measurement arrives.
+
 Between measurement updates, the display position is extrapolated from the
 Kalman filter state:
 \begin{equation}
@@ -757,9 +783,14 @@ p_{\text{display}} = \text{lerp}(p_{\text{display}},\; p_{\text{target}},\; 1 - 
 where $\alpha$ is the smoothing rate from Table~\ref{tab:kalman}.
 
 \subsubsection{Catmull-Rom Spline Tangent}
-To determine the chair's orientation along the rail, the tangent direction at
-the current position is computed using a Catmull-Rom
-spline~\cite{catmullrom1974} through the surrounding control points $\mathbf{p}_0 \ldots \mathbf{p}_3$:
+The rail is defined by a series of 3D points. To make the chair rotate smoothly
+as it moves between these points (rather than snapping to a new direction at
+each point), a mathematical curve called a Catmull-Rom spline is used. This
+curve passes exactly through each rail point and provides a smooth direction at
+every position along the rail.
+
+The tangent (direction of travel) at the current position is computed using
+the surrounding control points~\cite{catmullrom1974} $\mathbf{p}_0 \ldots \mathbf{p}_3$:
 \begin{equation}
 \label{eq:catmullrom-tangent}
 \resizebox{0.9\columnwidth}{!}{$\displaystyle
@@ -776,8 +807,15 @@ Catmull-Rom curve, ensuring the chair stays on the rail segments while rotating
 smoothly through transitions.
 
 \subsubsection{Quaternion Orientation}
-The chair yaw is computed from the tangent's horizontal
-projection~\cite{kuipers1999quaternions}:
+The chair has four rotational axes (direction along the rail, rail slope, seat
+tilt, and seat rotation), each controlled by a different motor or determined by
+the rail shape. Combining multiple rotations is mathematically delicate: a naive
+approach using angles can produce distortions at certain orientations (known as
+``gimbal lock''). Quaternions are a mathematical representation of rotations
+that avoids this problem entirely~\cite{kuipers1999quaternions}.
+
+The chair yaw (horizontal direction) is computed from the tangent's horizontal
+projection:
 \begin{equation}
 \label{eq:yaw}
 \psi = \text{atan2}(T_x, T_z)
