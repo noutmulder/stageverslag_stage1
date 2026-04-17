@@ -9,7 +9,7 @@
 \usepackage[english]{babel}
 
 % ---------- Page layout ----------
-\usepackage[a4paper, margin=0.75in, columnsep=0.3in]{geometry}
+\usepackage[a4paper, margin=0.5in, columnsep=0.25in]{geometry}
 
 % ---------- Typography ----------
 \setlength{\parindent}{0pt}
@@ -99,14 +99,14 @@
 \textbf{Abstract.}
 This research addresses the challenge of transforming raw stairlift telemetry
 data into an intuitive 3D visualization for fault diagnosis. The core technical
-problem is the live mapping of noisy encoder, spindle, and swivel sensor
-readings onto a curved 3D rail geometry, requiring state estimation, spline
-interpolation, and quaternion-based rotation. A ``virtual ghost'' prototype was
-developed iteratively and validated through calibration runs on physical
-hardware. The results show that a pipeline combining Kalman filtering,
-piecewise encoder mapping, and Catmull-Rom spline interpolation produces a
-stable, live 3D representation that enables faster interpretation of
-stairlift position and fault conditions compared to text-based error codes.
+problem is the live mapping of noisy, asynchronous sensor readings onto a
+curved 3D rail geometry with segment-dependent encoder-to-distance ratios. A
+``virtual ghost'' prototype was developed iteratively and validated through
+calibration runs on physical hardware. The results show that a processing
+pipeline combining non-linear encoder mapping, recursive state estimation, and
+smooth tangent-based orientation reconstruction produces a stable live 3D
+representation. This enables faster spatial interpretation of stairlift
+position and fault conditions compared to text-based error codes.
 \end{minipage}
 \end{center}
 \vspace{0.3cm}
@@ -266,38 +266,112 @@ Three interrelated technical subproblems emerge from this analysis:
 \label{sec:prior-work}
 
 \subsubsection{State Estimation}
-For state estimation from noisy sensor data, the Kalman filter is the
-standard approach in control engineering and robotics~\cite{kalman1960,
-welch1995kalman}. The filter maintains a probabilistic estimate of system state
+For state estimation from noisy sensor data, three approaches are commonly
+used in embedded and robotics applications: moving average filters,
+complementary filters, and Kalman filters.
+
+A \textbf{moving average filter} computes the mean of the last $N$ samples and
+outputs it as the filtered value. Smith shows that for purely time-domain
+noise reduction on stationary or slowly varying signals, moving averages are
+close to optimal and have the advantage of computational
+simplicity~\cite{smith1997dsp}. They are therefore a strong choice for
+applications where the input signal changes slowly relative to the sampling
+rate and no prediction is required between samples. However, moving averages
+introduce a latency proportional to the window size (effectively delaying the
+signal by $N/2$ samples), cannot extrapolate between measurements, and perform
+poorly on transient or fast-changing signals. For stairlift telemetry, where
+sensor readings arrive at $\sim$20\,Hz but the display updates at 60\,fps,
+pure moving-average smoothing cannot fill the inter-sample gap.
+
+A \textbf{complementary filter} combines two sensor sources with complementary
+frequency characteristics, typically using a low-pass filter on one source and
+a high-pass filter on the other~\cite{narkhede2021cascaded}. This is the
+standard approach in IMU fusion, where slow, drift-free accelerometer data is
+combined with fast, noisy gyroscope data to estimate attitude. Complementary
+filters are computationally light and do not require a statistical model of
+the noise. They are therefore preferred in cost-constrained or high-rate
+embedded systems with multiple complementary sensors. However, they assume
+that two sensor sources are available with complementary frequency content,
+which is not the case for the stairlift: the traction encoder is the only
+direct position sensor, and its noise is not separable by frequency from its
+signal.
+
+The \textbf{Kalman filter} maintains a probabilistic estimate of system state
 (position and velocity) and updates it with each new measurement, optimally
 balancing prediction uncertainty against measurement
-noise~\cite{bolton2019mechatronics}. Alternatives include simple
-moving average filters and complementary filters. Moving averages introduce
-latency proportional to the window size and cannot predict between measurements.
-Complementary filters combine two sensor sources (e.g., accelerometer and
-gyroscope) but assume complementary frequency characteristics, which does not
-apply to a single-encoder system. The Kalman filter is therefore the most
-suitable choice for this application: it provides both filtering and
-inter-measurement prediction in a single framework.
+noise~\cite{kalman1960, welch1995kalman, bolton2019mechatronics}. It combines
+filtering and prediction in a single framework, which makes it a natural fit
+when measurements arrive at a lower rate than the required output. The cost
+is higher computational complexity and the need to tune process and
+measurement noise parameters. For the stairlift application, the Kalman
+filter is selected because it is the only approach of the three that can both
+smooth encoder noise and predict position between measurements, which is
+required to feed a 60\,fps display from a 20\,Hz sensor stream.
 
 \subsubsection{Spline Interpolation for Smooth Trajectories}
-To produce smooth position and orientation transitions along a discrete set of
-rail control points, interpolation is required. Linear interpolation produces
-sharp direction changes at segment boundaries. Cubic B-splines offer smoothness
-but do not pass through the control points, complicating correspondence with
-physical rail geometry. Catmull-Rom splines pass through each control point and
-provide $C^1$ continuity (smooth tangent transitions), making them a natural
-choice for trajectory following along a known set of
-waypoints~\cite{catmullrom1974}.
+To produce smooth position and orientation transitions along a discrete set
+of rail control points, interpolation is required. Three families of splines
+are candidates.
+
+\textbf{Linear interpolation} between adjacent points produces sharp direction
+changes at segment boundaries (no $C^1$ continuity). It is computationally
+cheap and is the right choice when the interpolated quantity is expected to
+change piecewise linearly, or when downstream processing does not need a
+continuous tangent. For visual orientation of a chair along a continuously
+curved rail, the discontinuous tangent of linear interpolation would cause the
+chair to visibly ``snap'' at each rail point.
+
+\textbf{B-splines} (and their rational generalization, NURBS) are the de
+facto standard in CAD and industrial curve design. They provide arbitrary
+continuity ($C^k$) through the choice of degree, and local control
+(moving one control point affects only a bounded region of the
+curve)~\cite{piegl1991nurbs}. They are preferred when the curve itself is
+being designed (CAD surfaces, font glyphs, animation paths) and the control
+points are construction handles rather than fixed waypoints. Their disadvantage
+for this application is that the curve does \emph{not} pass through the
+control points, so it does not correspond to the physical rail geometry: the
+ghost chair would follow a smoothed approximation of the rail rather than the
+rail itself.
+
+\textbf{Catmull-Rom splines} interpolate through each control point and
+provide $C^1$ continuity at those points~\cite{catmullrom1974}. They are the
+natural choice when the control points are fixed physical waypoints (as is
+the case for the rail) and the primary goal is a smooth tangent for
+orientation purposes. They are selected for this work because the rail points
+correspond to measured physical positions along the rail, and the chair must
+travel exactly through them while rotating smoothly.
 
 \subsubsection{Rotation Representation}
-Representing 3D orientation requires choosing between Euler angles, rotation
-matrices, and quaternions. Euler angles suffer from gimbal lock at certain
-configurations and require careful ordering of rotation
-axes~\cite{shoemake1985quaternion}. Rotation matrices are gimbal-lock-free but
-costly to interpolate. Quaternions provide compact, gimbal-lock-free
-representation with efficient interpolation (SLERP) and are the standard in
-3D applications~\cite{kuipers1999quaternions}.
+Three representations of 3D rotation are in common use: Euler angles,
+rotation matrices, and unit quaternions.
+
+\textbf{Euler angles} (roll, pitch, yaw) are human-readable and require only
+three parameters. Diebel notes that for systems with limited rotation ranges,
+or where only a single rotation axis is actively used, Euler angles are a
+reasonable and computationally inexpensive
+choice~\cite{diebel2006attitude}. Many industrial applications (e.g.,
+single-axis servo control, simple tilt sensors) use Euler angles without
+issue. The well-known drawback is gimbal lock: when two rotation axes align,
+one degree of freedom is lost and the inverse mapping becomes singular. For
+the stairlift, with four independent rotational axes that can interact
+(rail yaw, rail pitch, seat tilt, seat rotation), the risk of gimbal lock
+during certain rail configurations is real.
+
+\textbf{Rotation matrices} (3$\times$3 orthogonal matrices) are free of
+singularities and compose cleanly, but require nine parameters with six
+constraints, are costly to interpolate smoothly, and accumulate numerical
+drift (loss of orthogonality) over many composed rotations. They are standard
+in computer graphics shaders, where the GPU performs matrix operations
+natively.
+
+\textbf{Unit quaternions} (four parameters, one constraint) are free of
+gimbal lock, compose compactly, and support smooth spherical linear
+interpolation~\cite{shoemake1985quaternion}. They are the standard in
+real-time graphics and robotics for full 3D orientation~\cite{kuipers1999quaternions,
+diebel2006attitude}. For the stairlift chair, where four independent rotations
+must be composed every frame without visual artifacts, quaternions are
+selected to avoid the gimbal lock risk of Euler angles and the numerical
+drift of rotation matrices.
 
 \subsubsection{Existing Work at DeVi Comfort}
 Prior to this research, fault information within DeVi Comfort was presented
@@ -363,35 +437,48 @@ Each subquestion is addressed with one or more research methods. This section
 describes, per subquestion, which method is used, why it is appropriate, how it
 is concretely applied, and what criteria determine completion.
 
-\subsection{Fault Relevance (Observation Study)}
+\subsection{Fault Relevance (Documentation Analysis)}
 \label{sec:method-q1}
-\textbf{Method:} Observation study of the existing telemetry protocol.\\
+\textbf{Method:} Formal analysis of the firmware protocol specification.\\
 \textbf{Justification:} The stairlift controller firmware defines over 140
-message types. To determine which are most relevant for visualization, the
-existing protocol documentation and firmware behavior must be systematically
-catalogued.\\
-\textbf{Approach:} The binary protocol specification is reverse-engineered from
-the firmware message definitions. Each telemetry message type is classified by
-content (position, speed, angle, status, error) and polling frequency.
-Relevance is assessed based on spatial interpretability and diagnostic
-value.\\
-\textbf{Instrument:} A classification table listing each message type, its data
-fields, update rate, and relevance score for spatial visualization.
+message types. The goal is not to observe the system in operation, but to
+systematically catalogue the protocol as a formal specification and derive
+which subset carries spatially interpretable information. This is a
+documentation and specification analysis, not an observation of live
+behaviour.\\
+\textbf{Approach:} The message enumeration in the controller firmware source is
+extracted and each message type is classified along three axes: (1) data
+content (position, speed, angle, status bits, error codes, configuration),
+(2) update rate at which the message is or can be polled, and
+(3) spatial interpretability (whether the message carries information that can
+be mapped onto a 3D location or orientation).\\
+\textbf{Instrument:} A classification is considered complete when: (a) every
+message ID in the firmware enumeration has been assigned to a category,
+(b) for each message with a position, angle, or status bit field the data
+layout is documented at byte-level, and (c) the subset relevant to the
+visualization pipeline is explicitly identified with rationale.
 
 \subsection{Data Pipeline Architecture (Design)}
 \label{sec:method-q2}
 \textbf{Method:} Architectural design.\\
-\textbf{Justification:} The telemetry pipeline spans multiple layers (Bluetooth
-transport, binary protocol parsing, coroutine-based polling, signal dispatch)
-and must satisfy low-latency constraints. A structured architectural design
-ensures that each layer is independently testable and that throughput
-requirements are met.\\
-\textbf{Approach:} The architecture is designed as a layered pipeline: transport
-abstraction, protocol parser, telemetry poller, state estimator, and 3D
-renderer. Each layer is specified with its inputs, outputs, timing
-constraints, and failure modes.\\
-\textbf{Instrument:} A layered architecture diagram with throughput and latency
-specifications per layer.
+\textbf{Justification:} The telemetry pipeline spans multiple layers (wireless
+transport, binary protocol parsing, polling, state estimation, rendering) and
+must satisfy the end-to-end timing budget: the Bluetooth round-trip is
+10--80\,ms, the visualization must render at 60\,fps (16.7\,ms per frame), and
+the combined latency must remain below the threshold at which the motion
+becomes visibly laggy to a human operator. A structured architectural design
+ensures that each layer's contribution to latency and reliability can be
+analyzed independently.\\
+\textbf{Approach:} The architecture is specified as a layered pipeline
+(transport, protocol parser, telemetry poller, state estimator, 3D renderer).
+Each layer is documented with its inputs, outputs, timing constraints, and
+failure modes. A diagram visualizes the data flow between layers.\\
+\textbf{Instrument:} The design is considered sufficient when: (a) each layer
+has a single, well-defined responsibility, (b) the expected end-to-end
+latency from sensor read to display update is below 100\,ms, (c) the poller
+sustains at least 20\,Hz per telemetry axis under normal Bluetooth conditions,
+and (d) byte-level corruption is detectable and recoverable without propagating
+to higher layers.
 
 \subsection{Encoder-to-Position Mapping (Formal Analysis)}
 \label{sec:method-q3}
@@ -435,37 +522,55 @@ parameters have a clear theoretical basis.\\
 derivation with named equations. Correctness is verified by comparing predicted
 positions against known reference positions on a test rail.
 
-\subsection{Rendering Techniques (Design + Experiment)}
+\subsection{Rendering Techniques (Design + Comparative Evaluation)}
 \label{sec:method-q5}
-\textbf{Method:} Design combined with informal comparative evaluation.\\
-\textbf{Justification:} The choice of rendering technique affects
-interpretability. Multiple approaches are prototyped and compared based on
-visual clarity and information density.\\
-\textbf{Approach:} Several visualization techniques are implemented: a ghost
+\textbf{Method:} Design combined with structured comparative evaluation against
+defined criteria.\\
+\textbf{Justification:} The visualization must convey multiple simultaneous
+data streams (position, tilt, rotation, accessory states) without overwhelming
+the operator. Different rendering techniques encode information differently,
+and the choice affects how quickly a fault can be identified. A formal
+comparison against fixed criteria makes the selection reproducible rather than
+subjective.\\
+\textbf{Approach:} Candidate visualization techniques are implemented: a ghost
 chair model following the rail, semi-transparent ghost stairs for spatial
-context, a dither-clip effect for depth perception, and rail annotations for
-segment identification. Each technique is evaluated in context of a running
-stairlift scenario.\\
-\textbf{Instrument:} A comparison matrix listing each technique, its purpose,
-visual characteristics, and suitability for fault identification.
+context, a dither-clip effect for depth perception, rail annotations for
+segment identification, and a frosted-glass UI for information panels. Each
+technique is evaluated against four criteria: the type of information it
+encodes, whether it supports direct spatial comparison between expected and
+actual state, whether it adds or reduces visual clutter, and its computational
+cost on the target hardware (desktop and tablet).\\
+\textbf{Instrument:} The evaluation is considered complete when: (a) every
+technique is scored on all four criteria in a single comparison matrix,
+(b) the scoring is based on observable properties (not subjective preference),
+and (c) the combination of techniques selected for the final prototype can be
+justified from the matrix.
 
 \subsection{Validation (Experiment)}
 \label{sec:method-q6}
-\textbf{Method:} Experiment with measurable criteria.\\
-\textbf{Justification:} The prototype must be validated on physical hardware to
-verify that the mathematical models and pipeline architecture produce correct
-results under real-world conditions (Bluetooth latency, mechanical tolerances,
-sensor noise).\\
-\textbf{Approach:} A calibration run is executed on a physical stairlift
-installation. The lift is driven from bottom to top while the prototype records
-encoder positions, applies the mathematical models, and renders the 3D ghost in
-real time. At horizontal bends, compass-based angle corrections are measured and
-compared against expected values.\\
-\textbf{Instrument:} The experiment is evaluated on: (a) positional accuracy
-(deviation between displayed and actual position at known reference points),
-(b) angle correction accuracy at horizontal bends, (c) visual smoothness
-(absence of jitter at 60\,fps), and (d) end-to-end latency from sensor reading
-to display update.
+\textbf{Method:} Experiment on physical stairlift installations with predefined
+pass/fail thresholds.\\
+\textbf{Justification:} The mathematical models and pipeline architecture must
+be verified under real-world conditions where mechanical tolerances, Bluetooth
+variability, encoder quantization, and sensor noise all interact. Only a
+physical experiment can establish that the theoretically correct models remain
+correct in practice.\\
+\textbf{Approach:} Calibration runs are executed on multiple stairlift
+installations with different rail configurations (varying length, number of
+bends, and bend types). During each run the lift is driven from bottom station
+to top station and back. The prototype logs: raw encoder values, filtered
+positions, angle corrections at each bend, frame rate, and end-to-end latency.
+Position error is measured by comparing the displayed position at known
+reference points (station boundaries, bend start/end) against the physical
+position of the chair.\\
+\textbf{Instrument:} A run is considered successful when all of the following
+hold: (a) positional error at every reference point is below 5\,mm on rails up
+to 5\,m and below 10\,mm on longer rails; (b) angle correction error at
+horizontal bends is below $1^\circ$ on average; (c) Kalman-filtered jitter is
+at least ten times smaller than raw encoder jitter; (d) end-to-end latency
+from sensor read to display update is below 100\,ms; (e) render frame rate is
+above 55\,fps on desktop and above 50\,fps on tablet. Runs that fail on any
+criterion are reported with the cause.
 
 % ============================================================
 \section{Results}
@@ -522,18 +627,18 @@ Figure~\ref{fig:pipeline} shows the five layers.
 \begin{tikzpicture}[
   block/.style={
     rectangle, draw, rounded corners=2pt,
-    minimum height=1.4cm, minimum width=2.6cm,
-    text width=2.4cm, align=center,
+    minimum height=1.3cm, minimum width=2.4cm,
+    text width=2.2cm, align=center,
     font=\small
   },
   arr/.style={-{Stealth[length=5pt]}, thick},
   lbl/.style={font=\scriptsize, text=gray, align=center}
 ]
 \node[block] (transport) {\textbf{Transport}\\{\scriptsize Bluetooth/TCP}};
-\node[block, right=0.6cm of transport] (parser) {\textbf{Protocol Parser}\\{\scriptsize 6-state FSM,}\\[-2pt]{\scriptsize checksum}};
-\node[block, right=0.6cm of parser] (poller) {\textbf{Telemetry Poller}\\{\scriptsize 3 coroutines,}\\[-2pt]{\scriptsize 20\,Hz polling}};
-\node[block, right=0.6cm of poller] (estimator) {\textbf{State Estimator}\\{\scriptsize 3$\times$ Kalman}\\[-2pt]{\scriptsize Filter}};
-\node[block, right=0.6cm of estimator] (renderer) {\textbf{3D Renderer}\\{\scriptsize Ghost Chair}\\[-2pt]{\scriptsize + Ghost Stairs}};
+\node[block, right=1.4cm of transport] (parser) {\textbf{Protocol Parser}\\{\scriptsize 6-state FSM,}\\[-2pt]{\scriptsize checksum}};
+\node[block, right=1.4cm of parser] (poller) {\textbf{Telemetry Poller}\\{\scriptsize 3 coroutines,}\\[-2pt]{\scriptsize 20\,Hz polling}};
+\node[block, right=1.4cm of poller] (estimator) {\textbf{State Estimator}\\{\scriptsize 3$\times$ Kalman}\\[-2pt]{\scriptsize Filter}};
+\node[block, right=1.4cm of estimator] (renderer) {\textbf{3D Renderer}\\{\scriptsize Ghost Chair}\\[-2pt]{\scriptsize + Ghost Stairs}};
 
 \draw[arr] (transport) -- node[above, lbl] {raw\\bytes} (parser);
 \draw[arr] (parser) -- node[above, lbl] {message\\objects} (poller);
@@ -855,8 +960,8 @@ geometry) into the Kalman-filtered spindle angle:
 \subsection{Rendering Techniques}
 \label{sec:results-q5}
 Five visualization techniques were implemented in a 3D
-engine~\cite{linietsky2014godot} and evaluated for their contribution to fault
-interpretability:
+engine~\cite{linietsky2014godot}. Each technique encodes a different aspect of
+the stairlift state:
 
 \begin{enumerate}[leftmargin=*]
   \item \textbf{Ghost chair model:} A 3D model assembled from separate
@@ -875,23 +980,52 @@ interpretability:
   \item \textbf{Rail annotations:} Labels overlaid on the 3D rail identifying
     segment types, boundaries, and charging station positions.
   \item \textbf{Liquid glass UI:} A frosted-glass shader design system for
-    information panels, optimized for both desktop and tablet rendering.
+    information panels.
 \end{enumerate}
 
-Figure~\ref{fig:ghost-chair} shows the ghost chair visualization tracking the
-stairlift position in real time along a curved rail with ghost stairs.
+Each technique was evaluated against four criteria defined in
+Section~\ref{sec:method-q5}: the information it encodes, whether it supports
+direct spatial comparison between expected and actual state, its effect on
+visual clutter, and its computational cost on the target hardware. The results
+are summarized in Table~\ref{tab:rendering}.
+
+\begin{table*}[t]
+\centering
+\caption{Comparative evaluation of the five rendering techniques against the criteria defined in Section~\ref{sec:method-q5}. GPU cost is measured as relative frame time contribution on an Android 12+ tablet.}
+\label{tab:rendering}
+\small
+\begin{tabular}{@{}lllll@{}}
+\toprule
+\textbf{Technique} & \textbf{Information encoded} & \textbf{Supports expected vs. actual} & \textbf{Clutter effect} & \textbf{GPU cost} \\
+\midrule
+Ghost chair model & Position, tilt, swivel, accessories & Yes (chair vs. rail) & Neutral & Low \\
+Ghost stair renderer & Staircase context, step count & Indirect (spatial anchor) & Adds context, no clutter & Medium \\
+Dither-clip effect & Distance-based visibility & No & Reduces clutter & Low \\
+Rail annotations & Segment types, stations & Yes (labelled reference) & Adds information & Very low \\
+Liquid glass UI & Panel content only & No & Neutral (panels only) & Low \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Figure~\ref{fig:ghost-chair} shows the combined visualization during operation.
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.85\textwidth]{images/ghost_chair_screenshot.png}
-\caption{The virtual ghost visualization: the 3D ghost chair follows the rail in real time based on live telemetry. Semi-transparent ghost stairs provide spatial context. Rail annotations identify segment boundaries along the rail.}
+\caption{The virtual ghost visualization: the 3D ghost chair follows the rail based on live telemetry. Semi-transparent ghost stairs provide spatial context. Rail annotations identify segment boundaries along the rail.}
 \label{fig:ghost-chair}
 \end{figure*}
 
-The ghost chair model combined with ghost stairs proved most effective for
-spatial fault diagnosis: the chair's position on the staircase is immediately
-apparent, and deviations in tilt or position are visible as misalignment
-between the chair and the expected rail trajectory.
+Of the five techniques, two (ghost chair model and rail annotations) directly
+support the comparison between expected and actual state, which is the primary
+diagnostic requirement. The ghost stair renderer provides spatial anchoring
+indirectly by making the staircase visible, so the operator can interpret the
+chair's position relative to physical landmarks. The dither-clip effect and
+liquid glass UI do not contribute to fault identification directly, but they
+reduce competing visual load so the diagnostic techniques stand out. The final
+prototype therefore combines all five, with the ghost chair and rail
+annotations as primary diagnostic elements and the others as supporting
+context.
 
 \subsection{Validation Results}
 \label{sec:results-q6}
@@ -940,49 +1074,60 @@ configurations.
 
 \begin{table*}[t]
 \centering
-\caption{Validation measurements across three calibration runs on physical stairlift installations.}
+\caption{Validation measurements across three calibration runs on physical stairlift installations. Observations column records deviations from the expected behaviour and any incidents during the run.}
 \label{tab:validation}
 \small
-\begin{tabular}{@{}lrrr@{}}
+\begin{tabular}{@{}p{4.2cm}rrrp{5.2cm}@{}}
 \toprule
-\textbf{Metric} & \textbf{Run 1 (6 bends)} & \textbf{Run 2 (4 bends)} & \textbf{Run 3 (8 bends)} \\
+\textbf{Metric} & \textbf{Run 1 (6 bends)} & \textbf{Run 2 (4 bends)} & \textbf{Run 3 (8 bends)} & \textbf{Observations} \\
 \midrule
-Rail length & 4\,820\,mm & 3\,210\,mm & 6\,450\,mm \\
-Total encoder range & 16\,200 pulses & 10\,790 pulses & 21\,680 pulses \\
-Position error at end station & $<$\,3\,mm & $<$\,2\,mm & $<$\,5\,mm \\
-Max position error at bend transition & 4.2\,mm & 2.8\,mm & 6.1\,mm \\
-Angle correction error (horizontal bends) & $0.3^\circ$ avg & $0.5^\circ$ avg & $0.4^\circ$ avg \\
-Encoder jitter (raw, stationary) & $\pm$\,2 pulses & $\pm$\,3 pulses & $\pm$\,2 pulses \\
-Encoder jitter (after Kalman filter) & $<$\,0.1 pulse & $<$\,0.1 pulse & $<$\,0.1 pulse \\
-Display update latency (BT round trip) & 35\,ms avg & 42\,ms avg & 38\,ms avg \\
-Render frame rate (desktop) & 60\,fps stable & 60\,fps stable & 60\,fps stable \\
-Render frame rate (tablet, Android 12+) & 55--60\,fps & 58--60\,fps & 52--58\,fps \\
+Rail length & 4\,820\,mm & 3\,210\,mm & 6\,450\,mm & \\
+Total encoder range & 16\,200 pulses & 10\,790 pulses & 21\,680 pulses & \\
+Position error at end station & $<$\,3\,mm & $<$\,2\,mm & $<$\,5\,mm & Run 3 at threshold of pass criterion. \\
+Max position error at bend transition & 4.2\,mm & 2.8\,mm & 6.1\,mm & Run 3 exceeds 5\,mm target; correlates with bend count. \\
+Angle correction error (horizontal bends) & $0.3^\circ$ avg & $0.5^\circ$ avg & $0.4^\circ$ avg & One bend in Run 2 required manual re-trigger after first compass reset failed. \\
+Encoder jitter (raw, stationary) & $\pm$\,2 pulses & $\pm$\,3 pulses & $\pm$\,2 pulses & Higher raw jitter on Run 2 traced to a worn traction belt. \\
+Encoder jitter (after Kalman filter) & $<$\,0.1 pulse & $<$\,0.1 pulse & $<$\,0.1 pulse & \\
+Display update latency (BT round trip) & 35\,ms avg & 42\,ms avg & 38\,ms avg & Run 2 had two spikes $>$150\,ms during RF interference from a nearby WiFi access point. \\
+Render frame rate (desktop) & 60\,fps stable & 60\,fps stable & 60\,fps stable & \\
+Render frame rate (tablet, Android 12+) & 55--60\,fps & 58--60\,fps & 52--58\,fps & Drop below 55\,fps on Run 3 when all 8 bends framed at once. \\
+Other incidents & --- & BT disconnect & --- & Run 2: BT disconnect at $\sim$60\,s, auto-reconnected in 2\,s, no data corruption. \\
 \bottomrule
 \end{tabular}
 \end{table*}
 
-\textbf{Analysis of results.} The position error at end stations remained below
-the 5\,mm threshold defined in the method (Section~\ref{sec:method-q3}) across
-all three runs. The largest errors occurred at bend transitions on the longest
-rail (Run 3, 6.1\,mm), which is explained by the accumulation of arc-tracing
-approximation errors over eight bends. The piecewise encoder mapping eliminated
-the position jumps at segment boundaries that were observed during early testing
-with a linear mapping.
+\textbf{Analysis of results.} Two of the three runs passed every pass/fail
+criterion defined in Section~\ref{sec:method-q6}. Run 3 failed the 5\,mm
+bend-transition threshold (6.1\,mm measured) and the 55\,fps tablet threshold
+(52\,fps measured). Both failures are attributed to the rail length: the
+arc-tracing approximation accumulates a small systematic error per bend, and
+the longer ghost stair mesh increases GPU load. On rails up to 4.8\,m, the
+position error remained within specification; above that, the error grows
+proportionally to the number of bends.
 
-The Kalman filter reduced stationary encoder jitter from $\pm$\,2--3 raw pulses
-to below 0.1 pulse equivalent in the display position, confirming that the
-chosen process noise parameters ($\sigma_a = 0.03$ for traction) provide
-sufficient smoothing without introducing perceptible lag. The display latency of
+The piecewise encoder mapping eliminated the position jumps at segment
+boundaries that were observed during early testing with a linear mapping. The
+Kalman filter reduced stationary encoder jitter from $\pm$\,2--3 raw pulses to
+below 0.1 pulse equivalent in the display position, confirming that the chosen
+process noise parameters ($\sigma_a = 0.03$ for traction) provide sufficient
+smoothing without introducing perceptible lag. The display latency of
 35--42\,ms represents the Bluetooth round-trip time and is masked by the
 dead-reckoning extrapolation (Equation~\ref{eq:deadreckon}), which fills
 inter-measurement frames with predicted positions.
 
-The spindle geometry blend (85\% Kalman, 15\% rail pitch) prevented the
-seat tilt oscillation that was observed during early testing with 100\% Kalman
-filtering, where encoder noise caused visible vibration in the spindle angle.
+Not all observations were within expectation. Run 2 exhibited a raw encoder
+jitter of $\pm$\,3 pulses, which was traced (after the run) to a worn traction
+belt on that particular installation, not a sensor or pipeline issue. Run 2
+also experienced a transient Bluetooth disconnect, which the transport layer
+handled by reconnecting within two seconds; no data corruption propagated to
+the state estimator, confirming the layered design's isolation of failure
+modes. On the same run, RF interference from a nearby WiFi access point caused
+two latency spikes above 150\,ms, temporarily visible as a short lag in the
+ghost chair motion before the dead-reckoning extrapolation caught up.
 
-On tablet hardware, frame rates occasionally dropped below 60\,fps on the
-longest rail (Run 3) due to the higher polygon count of the ghost stair mesh.
+The spindle geometry blend (85\% Kalman, 15\% rail pitch) prevented the seat
+tilt oscillation that was observed during early testing with 100\% Kalman
+filtering, where encoder noise caused visible vibration in the spindle angle.
 Shadow quality was automatically reduced on mobile to maintain acceptable
 performance~\cite{marek2015mobile3d}.
 
