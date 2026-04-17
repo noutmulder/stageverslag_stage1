@@ -81,7 +81,7 @@
 \hrule
 \vspace{0.5cm}
 \begin{center}
-{\Large\bfseries DEVELOPING A REAL-TIME 3D TELEMETRY VISUALIZATION\\FOR STAIRLIFT FAULT DIAGNOSIS\par}
+{\Large\bfseries DEVELOPING A LIVE 3D TELEMETRY VISUALIZATION\\FOR STAIRLIFT FAULT DIAGNOSIS\par}
 \vspace{0.3cm}
 {\normalsize Nout Mulder\par}
 \vspace{0.1cm}
@@ -97,13 +97,13 @@
 \textbf{Abstract.}
 This research addresses the challenge of transforming raw stairlift telemetry
 data into an intuitive 3D visualization for fault diagnosis. The core technical
-problem is the real-time mapping of noisy encoder, spindle, and swivel sensor
+problem is the live mapping of noisy encoder, spindle, and swivel sensor
 readings onto a curved 3D rail geometry, requiring state estimation, spline
 interpolation, and quaternion-based rotation. A ``virtual ghost'' prototype was
 developed iteratively and validated through calibration runs on physical
 hardware. The results show that a pipeline combining Kalman filtering,
 piecewise encoder mapping, and Catmull-Rom spline interpolation produces a
-stable, real-time 3D representation that enables faster interpretation of
+stable, live 3D representation that enables faster interpretation of
 stairlift position and fault conditions compared to text-based error codes.
 \end{minipage}
 \end{center}
@@ -116,8 +116,6 @@ stairlift position and fault conditions compared to text-based error codes.
 \section{Introduction}
 \label{sec:introduction}
 
-\subsection{Context}
-\label{sec:context}
 DeVi Comfort designs and manufactures stairlift systems and develops the
 accompanying control software in-house. A stairlift consists of a chair unit
 that travels along a custom-bent rail mounted to a staircase. The chair is
@@ -125,63 +123,48 @@ driven by a traction motor, while a spindle motor adjusts seat tilt and a swivel
 motor rotates the seat at landing positions. During operation, embedded
 controllers continuously produce telemetry: traction encoder pulses, spindle
 encoder values, swivel angles, and system status bits including error codes.
-
 For service, maintenance, and further development, engineers need to quickly
 understand the current state of a stairlift: where the chair is positioned on
 the rail, whether it is moving correctly, and what deviations or faults have
 occurred.
 
-\subsection{Problem}
-\label{sec:problem}
-Fault information from the stairlift controller is currently presented as
-textual error codes and numeric status values. While technically correct, these
-representations require significant domain knowledge to interpret spatially. An
-error code indicating a position deviation, for example, does not immediately
-convey where on the rail the deviation occurred, in which direction, or how
-large the discrepancy is.
+Currently, fault information from the controller is presented as textual error
+codes and numeric status values. While technically correct, these require
+significant domain knowledge to interpret spatially. An error code indicating a
+position deviation does not convey where on the rail the deviation occurred, in
+which direction, or how large the discrepancy is.
 
-The underlying technical challenge is twofold. First, the raw telemetry data
-(encoder pulse counts, spindle values, swivel angles) must be mapped onto a
-three-dimensional rail geometry that contains straight sections, vertical bends,
-and horizontal bends, each with different encoder pulse costs per unit of
-travel. Second, the sensor readings arrive at irregular intervals over a
-wireless serial link with noise, latency, and occasional packet loss. The
-visualization must bridge the gap between these asynchronous, noisy
+The underlying technical challenge is twofold. The raw telemetry data (encoder
+pulse counts, spindle values, swivel angles) must be mapped onto a
+three-dimensional rail geometry. This rail contains straight sections, vertical
+bends, and horizontal bends, each consuming a different number of encoder pulses
+per millimeter of travel. Additionally, the sensor readings arrive at irregular
+intervals over a wireless serial link with noise, latency, and occasional packet
+loss. The visualization must bridge the gap between these asynchronous
 measurements and a continuous, smooth spatial representation that updates at
 display frame rate.
 
-\subsection{Relevance}
-\label{sec:relevance}
-A reliable 3D visualization of stairlift position and movement has direct
-practical value. Service engineers can visually identify whether the chair has
+A live 3D visualization of stairlift position and movement would have direct
+practical value. Service engineers could visually identify whether the chair has
 lost its expected position, is stuck in a bend, or exhibits abnormal tilt. This
-reduces diagnosis time and minimizes unnecessary on-site visits. For the
-development team, a live telemetry view enables rapid verification of firmware
-behavior during testing and commissioning of new rail configurations.
+would reduce diagnosis time and minimize unnecessary on-site visits. For the
+development team, a live telemetry view would enable rapid verification of
+firmware behavior during testing and commissioning of new rail configurations.
 
-\subsection{Research Goal}
-\label{sec:goal}
-The goal of this research is to determine which data processing and
-mathematical models are needed to transform live stairlift telemetry into a
-reliable and intuitive real-time 3D visualization for fault analysis.
-
-The central research question is:
+The goal of this research is to determine which data processing and mathematical
+models are needed to transform live stairlift telemetry into a reliable and
+intuitive 3D visualization for fault analysis. The central research question is:
 
 \textit{What data processing pipeline and mathematical models are required to
-transform live stairlift telemetry into a real-time 3D visualization that
-enables faster and more intuitive fault diagnosis compared to text-based error
-codes?}
+transform live stairlift telemetry into a 3D visualization that enables faster
+and more intuitive fault diagnosis compared to text-based error codes?}
 
-\subsection{Approach}
-\label{sec:approach}
 The research follows an iterative prototyping approach based on the spiral
 model~\cite{boehm1988spiral}. Each iteration consists of analysis, design,
 implementation, and validation against practical scenarios on physical hardware.
-The primary methods employed are formal mathematical analysis, architectural
-design, and experiment with measurable accuracy criteria.
+The primary methods are formal mathematical analysis, architectural design, and
+experiment with measurable accuracy criteria.
 
-\subsection{Reading Guide}
-\label{sec:reading-guide}
 Section~\ref{sec:problem-statement} presents the problem statement, structured
 as a problem analysis, prior work survey, and the resulting research questions.
 Section~\ref{sec:methods} describes the research methods per subquestion.
@@ -232,7 +215,7 @@ non-linear function rather than a simple linear scaling. Without such a model,
 position errors accumulate at every bend transition, growing proportionally to
 the number of bends in the rail.
 
-\subsubsection{Real-Time State Estimation from Noisy Telemetry}
+\subsubsection{State Estimation from Noisy Telemetry}
 The telemetry link between the stairlift controller and the visualization
 application introduces additional challenges. The Bluetooth Classic Serial Port
 Profile~\cite{bluetoothsig2022spp} provides a virtual serial connection at
@@ -269,7 +252,7 @@ Three interrelated technical subproblems emerge from this analysis:
   \item \textbf{Non-linear encoder-to-position mapping:} Converting a scalar
     encoder count into a normalized position along a 3D curve with
     segment-dependent pulse costs.
-  \item \textbf{Real-time state estimation:} Producing a smooth, low-latency
+  \item \textbf{State estimation:} Producing a smooth, low-latency
     estimate of position and velocity from noisy, asynchronous measurements
     arriving at a lower rate than the display refresh.
   \item \textbf{Multi-axis orientation reconstruction:} Combining four
@@ -281,7 +264,7 @@ Three interrelated technical subproblems emerge from this analysis:
 \label{sec:prior-work}
 
 \subsubsection{State Estimation}
-For real-time state estimation from noisy sensor data, the Kalman filter is the
+For state estimation from noisy sensor data, the Kalman filter is the
 standard approach in control engineering and robotics~\cite{kalman1960,
 welch1995kalman}. The filter maintains a probabilistic estimate of system state
 (position and velocity) and updates it with each new measurement, optimally
@@ -312,7 +295,7 @@ configurations and require careful ordering of rotation
 axes~\cite{shoemake1985quaternion}. Rotation matrices are gimbal-lock-free but
 costly to interpolate. Quaternions provide compact, gimbal-lock-free
 representation with efficient interpolation (SLERP) and are the standard in
-real-time 3D applications~\cite{kuipers1999quaternions}.
+3D applications~\cite{kuipers1999quaternions}.
 
 \subsubsection{Existing Work at DeVi Comfort}
 Prior to this research, fault information within DeVi Comfort was presented
@@ -325,7 +308,7 @@ had not been implemented.
 \subsection{Research Questions}
 \label{sec:research-questions}
 The problem analysis identified three technical subproblems (non-linear encoder
-mapping, real-time state estimation, and multi-axis orientation reconstruction),
+mapping, state estimation, and multi-axis orientation reconstruction),
 while the prior work survey identified candidate approaches for each. The
 following subquestions decompose the central research question into
 independently answerable parts, each motivated by a specific gap between the
@@ -351,7 +334,7 @@ identified problem and the available solutions.
     geometric challenge. No existing mapping exists for this rail type.
     \label{q:encoder}
   \item \textit{Which mathematical models for state estimation, interpolation,
-    and rotation produce a stable real-time 3D representation from noisy
+    and rotation produce a stable live 3D representation from noisy
     telemetry?}
     The prior work survey identified several candidate models per subproblem.
     This question addresses the formal derivation and parameterization of the
@@ -398,7 +381,7 @@ fields, update rate, and relevance score for spatial visualization.
 \textbf{Method:} Architectural design.\\
 \textbf{Justification:} The telemetry pipeline spans multiple layers (Bluetooth
 transport, binary protocol parsing, coroutine-based polling, signal dispatch)
-and must satisfy real-time constraints. A structured architectural design
+and must satisfy low-latency constraints. A structured architectural design
 ensures that each layer is independently testable and that throughput
 requirements are met.\\
 \textbf{Approach:} The architecture is designed as a layered pipeline: transport
@@ -490,7 +473,7 @@ to display update.
 \label{sec:results-q1}
 Analysis of the stairlift firmware protocol reveals 145 defined message types
 (with IDs ranging from 0 to 221), of which six are directly relevant for
-real-time spatial visualization. These are
+live spatial visualization. These are
 classified in Table~\ref{tab:telemetry}.
 
 \begin{table*}[t]
@@ -856,7 +839,7 @@ geometry) into the Kalman-filtered spindle angle:
 
 \subsection{Rendering Techniques}
 \label{sec:results-q5}
-Five visualization techniques were implemented in a real-time 3D
+Five visualization techniques were implemented in a 3D
 engine~\cite{linietsky2014godot} and evaluated for their contribution to fault
 interpretability:
 
@@ -1056,7 +1039,7 @@ but cannot establish statistical generalizability.
 
 \subsection{Answer to Central Question}
 The data processing pipeline required to transform live stairlift telemetry
-into a real-time 3D visualization consists of five layers: wireless transport,
+into a live 3D visualization consists of five layers: wireless transport,
 checksummed protocol parsing, multi-rate coroutine polling, recursive state
 estimation, and spline-interpolated 3D rendering. The mathematical foundation
 rests on three pillars: piecewise encoder mapping for non-linear rail
