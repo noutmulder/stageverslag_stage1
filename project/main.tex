@@ -20,6 +20,8 @@
 \usepackage{graphicx}
 \usepackage{xcolor}
 \usepackage{float}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta}
 
 % ---------- Math and tables ----------
 \usepackage{amsmath, amssymb}
@@ -517,16 +519,28 @@ Figure~\ref{fig:pipeline} shows the five layers.
 
 \begin{figure*}[t]
 \centering
-\scriptsize
-\begin{verbatim}
- +-----------------+    +-----------------+    +-----------------+    +-----------------+    +-----------------+
- | Transport       | -> | Protocol Parser | -> | Telemetry Poller| -> | State Estimator | -> | 3D Renderer     |
- | (Bluetooth/TCP) |    | (6-state FSM,   |    | (3 coroutines,  |    | (3x Kalman      |    | (Ghost Chair    |
- |                 |    |  checksum)       |    |  20 Hz polling) |    |  Filter)        |    |  + Ghost Stairs)|
- +-----------------+    +-----------------+    +-----------------+    +-----------------+    +-----------------+
-      raw bytes          LiftMessage objs        typed signals        filtered pos/angle      60 fps display
-\end{verbatim}
-\caption{Layered telemetry pipeline architecture from Bluetooth transport to 3D rendering.}
+\begin{tikzpicture}[
+  block/.style={
+    rectangle, draw, rounded corners=2pt,
+    minimum height=1.4cm, minimum width=2.6cm,
+    text width=2.4cm, align=center,
+    font=\small
+  },
+  arr/.style={-{Stealth[length=5pt]}, thick},
+  lbl/.style={font=\scriptsize, text=gray, align=center}
+]
+\node[block] (transport) {\textbf{Transport}\\{\scriptsize Bluetooth/TCP}};
+\node[block, right=0.6cm of transport] (parser) {\textbf{Protocol Parser}\\{\scriptsize 6-state FSM,}\\[-2pt]{\scriptsize checksum}};
+\node[block, right=0.6cm of parser] (poller) {\textbf{Telemetry Poller}\\{\scriptsize 3 coroutines,}\\[-2pt]{\scriptsize 20\,Hz polling}};
+\node[block, right=0.6cm of poller] (estimator) {\textbf{State Estimator}\\{\scriptsize 3$\times$ Kalman}\\[-2pt]{\scriptsize Filter}};
+\node[block, right=0.6cm of estimator] (renderer) {\textbf{3D Renderer}\\{\scriptsize Ghost Chair}\\[-2pt]{\scriptsize + Ghost Stairs}};
+
+\draw[arr] (transport) -- node[above, lbl] {raw\\bytes} (parser);
+\draw[arr] (parser) -- node[above, lbl] {message\\objects} (poller);
+\draw[arr] (poller) -- node[above, lbl] {typed\\signals} (estimator);
+\draw[arr] (estimator) -- node[above, lbl] {filtered\\pos/angle} (renderer);
+\end{tikzpicture}
+\caption{Layered telemetry pipeline from Bluetooth transport to 3D rendering. Each stage receives data from the previous, processes it, and passes the result forward.}
 \label{fig:pipeline}
 \end{figure*}
 
@@ -623,7 +637,8 @@ segment is:
 s = r \cdot \Delta\alpha_{\text{rad}} = 0.150 \cdot \frac{5\pi}{180} \approx 0.01309 \text{\,m}
 \end{equation}
 
-Position is updated using a trapezoidal midpoint approximation:
+Position is updated using a trapezoidal midpoint
+approximation~\cite{strang2016calculus}:
 \begin{equation}
 \label{eq:arctracing}
 \mathbf{p}_{i+1} = \mathbf{p}_i + \frac{\mathbf{d}_{\text{before}} + \mathbf{d}_{\text{after}}}{2} \cdot \frac{s}{\left\|\frac{\mathbf{d}_{\text{before}} + \mathbf{d}_{\text{after}}}{2}\right\|}
@@ -701,7 +716,7 @@ P_{11} &\leftarrow P_{11} + \sigma_a^2 \cdot \Delta t \nonumber
 \end{align}
 where $\sigma_a$ is the process noise (acceleration standard deviation) and
 $\mathbf{P}$ is the covariance matrix. The process noise matrix corresponds to
-the continuous white-noise-jerk model:
+the continuous white-noise-jerk model~\cite{labbe2015kalman}:
 \begin{equation}
 \label{eq:kf-Q}
 \mathbf{Q} = \sigma_a^2 \begin{bmatrix} \Delta t^3/3 & \Delta t^2/2 \\ \Delta t^2/2 & \Delta t \end{bmatrix}
@@ -746,7 +761,7 @@ by continuing the chair's motion at its last known speed until the next
 measurement arrives.
 
 Between measurement updates, the display position is extrapolated from the
-Kalman filter state:
+Kalman filter state using dead reckoning~\cite{bowditch2002}:
 \begin{equation}
 \label{eq:deadreckon}
 p_{\text{target}} = p_{\text{KF}} + v_{\text{KF}} \cdot t_{\text{elapsed}}
@@ -758,7 +773,7 @@ v \leftarrow v \cdot e^{-5.0 \cdot (t_{\text{elapsed}} - 0.8)}
 \end{equation}
 
 The display position is then smoothed with a frame-rate-independent exponential
-filter~\cite{laviola2003doubexp}:
+filter~\cite{driscoll2016damping}:
 \begin{equation}
 \label{eq:displaysmooth}
 p_{\text{display}} = \text{lerp}(p_{\text{display}},\; p_{\text{target}},\; 1 - e^{-\alpha \cdot \Delta t})

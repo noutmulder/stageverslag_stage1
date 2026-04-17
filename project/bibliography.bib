@@ -124,15 +124,48 @@
 
 % ===== Frame-Rate Independent Smoothing =====
 
-@article{laviola2003doubexp,
-  author    = {LaViola, Joseph J.},
-  title     = {Double Exponential Smoothing: An Alternative to {Kalman} Filter-Based Predictive Tracking},
-  journal   = {Proceedings of the Workshop on Virtual Environments (EGVE)},
-  year      = {2003},
-  pages     = {199--206},
-  publisher = {ACM},
-  doi       = {10.1145/769953.769976},
-  url       = {https://doi.org/10.1145/769953.769976}
+@misc{driscoll2016damping,
+  author    = {Driscoll, Rory},
+  title     = {Frame Rate Independent Damping Using Lerp},
+  year      = {2016},
+  url       = {https://www.rorydriscoll.com/2016/03/07/frame-rate-independent-damping-using-lerp/},
+  note      = {Derives $\text{lerp}(a, b, 1 - e^{-\lambda \Delta t})$ from exponential decay}
+}
+
+% ===== Kalman Q matrix derivation =====
+
+@book{labbe2015kalman,
+  author    = {Labbe, Roger R.},
+  title     = {Kalman and {Bayesian} Filters in {Python}},
+  year      = {2015},
+  publisher = {Self-published (GitHub)},
+  url       = {https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python},
+  note      = {Chapter 7: Continuous White Noise Model. CC BY 4.0 license}
+}
+
+% ===== Numerical integration (arc tracing) =====
+
+@book{strang2016calculus,
+  author    = {Strang, Gilbert and Herman, Edwin},
+  title     = {Calculus Volume 2},
+  publisher = {OpenStax},
+  year      = {2016},
+  isbn      = {978-1-938168-06-2},
+  url       = {https://openstax.org/books/calculus-volume-2/pages/3-6-numerical-integration},
+  note      = {Section 3.6: Numerical Integration. Open access, CC BY-NC-SA 4.0}
+}
+
+% ===== Dead reckoning =====
+
+@book{bowditch2002,
+  author    = {{National Imagery and Mapping Agency}},
+  title     = {The American Practical Navigator},
+  edition   = {Bicentennial},
+  year      = {2002},
+  publisher = {National Imagery and Mapping Agency},
+  address   = {Bethesda, MD},
+  url       = {https://en.wikisource.org/wiki/The_American_Practical_Navigator/Chapter_7},
+  note      = {Chapter 7: Dead Reckoning. U.S. Government, public domain}
 }
 
 % ===== Real-time 3D Engine =====
