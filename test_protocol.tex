@@ -259,16 +259,17 @@ sla je over --- die kun je niet accuraat met meetlint meten.
 
 Plan voor markers:
 \begin{enumerate}[leftmargin=2em]
-  \item MP1 --- vlak bij bottom station (op de eerste rechte, $\sim$100--300\,mm vanaf bottom)
+  \item MP1 --- vlak bij bottom station (op de eerste rechte, $\sim$100--300\,mm vanaf bottom-stootblok)
   \item MP2 --- midden van een lang recht stuk
   \item MP3 --- net na een bocht, op een recht stuk (zo test je of de software de bocht correct integreert)
   \item MP4 --- volgend recht stuk
   \item MP5 --- vlak bij top station (op de laatste rechte)
 \end{enumerate}
 
-Per marker: plak een stukje tape, meet de positie ten opzichte van
-bottom station langs het rechte stuk waar de marker zit, en noteer
-hieronder.
+Per marker: plak een stukje tape op een recht railstuk. \textbf{Meet
+de afstand vanaf het begin van dat rechte stuk} (dus vanaf waar de
+vorige bocht eindigt, of vanaf het bottom-stootblok voor MP1). Dat is
+een rechte meting met de meetlint, dus accuraat.
 
 \textit{Tip: zet markers op de buitenkant van de rail waar een
 herkenbaar punt op de chair (bv.\ wieltje, plaatje) duidelijk
@@ -276,16 +277,23 @@ zichtbaar overheen rolt. Zo zie je tijdens de rijbeweging precies
 wanneer de marker gepasseerd wordt.}
 
 \renewcommand{\arraystretch}{2.0}
-\begin{tabular}{@{}|c|p{6cm}|p{3.5cm}|@{}}
+\begin{tabular}{@{}|c|p{5.5cm}|p{2cm}|p{2.5cm}|@{}}
 \hline
-\textbf{ID} & \textbf{Beschrijving (welk recht stuk?)} & \textbf{Fysieke positie (mm)} \\ \hline
-MP1 & & \\ \hline
-MP2 & & \\ \hline
-MP3 & & \\ \hline
-MP4 & & \\ \hline
-MP5 & & \\ \hline
+\textbf{ID} & \textbf{Welk recht stuk?} & \textbf{Offset (mm)} & \textbf{Vanaf...} \\ \hline
+MP1 & & & bottom-stootblok \\ \hline
+MP2 & & & einde vorige bocht \\ \hline
+MP3 & & & einde vorige bocht \\ \hline
+MP4 & & & einde vorige bocht \\ \hline
+MP5 & & & einde vorige bocht \\ \hline
 \end{tabular}
 \renewcommand{\arraystretch}{1.0}
+
+\textbf{Hoe je de absolute positie achteraf berekent:} de
+verwachte positie van een marker = cumulatieve lengte van alle
+voorgaande rail-onderdelen (straights + bochten) + de gemeten offset.
+De firmware kent alle onderdeel-lengtes: een straight is direct in
+mm; een bocht is $r \cdot \Delta\alpha \cdot n_{\text{segs}} = 150
+\cdot \frac{5\pi}{180} \cdot n \approx 13.09 \cdot n$ mm.
 
 \section{De rijbeweging zelf}
 
@@ -487,20 +495,33 @@ Bereken binnen dat venster:
 
 \subsection{T4 — Positie-error per marker}
 
-Voor elke marker: vergelijk fysieke positie (sectie 4) met getoonde
-positie. Marker-passage log-regels:
+\textbf{Stap 1 --- bereken voor elke marker de \emph{verwachte}
+absolute positie.} Per marker:
+
+\begin{enumerate}[leftmargin=2em]
+  \item Tel de lengtes van alle voorgaande rail-onderdelen op
+        (straights: lees uit firmware / rail JSON; bochten:
+        $13.09 \cdot n_{\text{segs}}$\,mm).
+  \item Tel de gemeten offset (sectie 4) erbij.
+  \item Dat is de verwachte positie in mm vanaf bottom.
+\end{enumerate}
+
+\textbf{Stap 2 --- haal de \emph{getoonde} positie uit de log.}
+Marker-passage regels:
 
 \begin{lstlisting}
 grep "\[MARKER\]" ~/logs/tablet/session_*.log
 \end{lstlisting}
 
-De \texttt{display\_pos} in de log is normalized (0--1). Omrekenen naar
+\texttt{display\_pos} in de log is normalized (0--1). Omrekenen naar
 mm: \texttt{display\_pos $\times$ rail\_length\_mm}.
 
-\renewcommand{\arraystretch}{2.0}
-\begin{tabular}{@{}|c|c|c|c|c|c|@{}}
+\textbf{Stap 3 --- vergelijken en error berekenen.}
+
+\renewcommand{\arraystretch}{1.9}
+\begin{tabular}{@{}|c|p{2.2cm}|p{2.5cm}|p{2.5cm}|p{1.8cm}|p{1.6cm}|@{}}
 \hline
-\textbf{Marker} & \textbf{Fysiek (mm)} & \textbf{Display B$\to$T (mm)} & \textbf{Display T$\to$B (mm)} & \textbf{Avg (mm)} & \textbf{Error $|$ mm$|$} \\ \hline
+\textbf{Marker} & \textbf{Verwacht (mm)} & \textbf{Display B$\to$T (mm)} & \textbf{Display T$\to$B (mm)} & \textbf{Avg (mm)} & \textbf{Error (mm)} \\ \hline
 MP1 & & & & & \\ \hline
 MP2 & & & & & \\ \hline
 MP3 & & & & & \\ \hline
