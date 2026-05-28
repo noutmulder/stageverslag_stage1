@@ -377,10 +377,10 @@ drift of rotation matrices.
 \label{sec:prior-engine}
 The 3D engine choice determines the renderer capabilities, shader system,
 mobile export pipeline, and the boundary between research code and third-party
-code. Because this choice fixes input parameters for the design of
-Section~\ref{sec:results-q5} (available materials, shader language, frame
-loop), it is part of the vooronderzoek~\cite{gielingartikel2223}. Four
-candidate engines were compared against four criteria: (C1) configurability
+code. Because this choice fixes the input parameters for the rendering layer
+of the pipeline architecture (Section~\ref{sec:results-q2}), it is part of the
+vooronderzoek~\cite{gielingartikel2223}. Four candidate engines were compared
+against four criteria: (C1) configurability
 and extensibility (custom shaders, autoloads, plugin API access to the
 renderer), (C2) cross-platform export to desktop (Windows, Linux) and mobile
 (Android 12+) from a single source tree, (C3) licensing compatible with
@@ -413,9 +413,9 @@ seat-fee risk for a company-owned service application; its export pipeline
 produces a single tree that compiles to Windows, Linux, and Android with the
 same shader code (using the \texttt{gl\_compatibility} renderer on mobile and
 Forward+ on desktop); autoloads and shader globals give the configurability
-needed for the dither-clip, frosted-glass, and rail-annotation shaders in
-Section~\ref{sec:results-q5}; and its glTF binary import handles the
-multi-mesh chair model without a format conversion step. Unreal was excluded
+needed for the custom shaders required by the renderer layer; and its glTF
+binary import handles the multi-mesh chair model without a format conversion
+step. Unreal was excluded
 primarily on licence (royalty over revenue thresholds) and mobile export
 friction; Unity on licence change risk after its 2023 runtime-fee
 announcement~\cite{schreier2023unity}; Three.js on lack of a native Android
@@ -466,12 +466,6 @@ identified problem and the available solutions.
     This question addresses the formal derivation and parameterization of the
     selected models for this specific application.
     \label{q:math}
-  \item \textit{Which rendering techniques make position deviations and fault
-    conditions most interpretable in a 3D environment?}
-    The visualization must convey multiple simultaneous data streams (position,
-    tilt, rotation, accessory states) without overwhelming the operator. The
-    choice of visual encoding affects diagnostic effectiveness.
-    \label{q:visualization}
   \item \textit{How can the prototype be validated against practical scenarios,
     and what measurable criteria determine sufficient accuracy?}
     The mathematical models must be verified under real-world conditions where
@@ -605,38 +599,6 @@ on a test rail (bottom station, each bend entry, each bend exit, top station)
 deviates less than 5\,mm from the physically measured position, and (c) the
 quaternion composition remains singularity-free across the full rail (no yaw
 or pitch discontinuity greater than $1^\circ$ between consecutive frames).
-
-\subsection{Rendering Techniques (Design + Comparative Evaluation)}
-\label{sec:method-q5}
-\textbf{Method:} Design combined with structured comparative evaluation
-against defined criteria.\\
-\textbf{Why this method:} The visualization must convey multiple simultaneous
-data streams (position, tilt, rotation, accessory states) without overwhelming
-the operator. Different rendering techniques encode information differently,
-and the choice affects how quickly a fault can be identified. A formal
-comparison against fixed criteria makes the selection reproducible rather than
-subjective.\\
-\textbf{Approach:} Candidate visualization techniques are implemented: a ghost
-chair model following the rail, semi-transparent ghost stairs for spatial
-context, a dither-clip effect for depth perception, rail annotations for
-segment identification, and a frosted-glass UI for information panels. Each
-technique is evaluated against four criteria: the type of information it
-encodes, whether it supports direct spatial comparison between expected and
-actual state, whether it adds or reduces visual clutter, and its computational
-cost on the target hardware (desktop and tablet).\\
-\textbf{Why this approach:} The evaluation is structured as an additive
-scoring matrix rather than a weighted multi-criteria decision analysis (MCA).
-The techniques do not compete for a single slot in the prototype; they layer
-on top of each other in the renderer. The question therefore is not ``which
-wins'' but ``which earn their frame-time cost''. An ordinal score per
-criterion plus a measured GPU cost captures that trade-off directly; a
-weighted MCA would suggest the techniques are mutually exclusive, which would
-misrepresent the design.\\
-\textbf{Instrument (when done):} The evaluation is considered complete when:
-(a) every technique is scored on all four criteria in a single comparison
-matrix, (b) the scoring is based on observable properties (not subjective
-preference), and (c) the combination of techniques selected for the final
-prototype can be justified from the matrix.
 
 \subsection{Validation (Experiment)}
 \label{sec:method-q6}
@@ -805,6 +767,19 @@ computed from MSG\,168 as:
 \label{eq:swivel}
 \theta_{\text{swivel}} = \frac{(\texttt{data[3]} \!\ll\! 8 \;|\; \texttt{data[4]}) - \texttt{0x7FFF}}{18}
 \end{equation}
+
+The final stage of the pipeline is the 3D renderer, whose output is shown in
+Figure~\ref{fig:ghost-chair}. The renderer composes the chair model, a
+generated stair geometry, and rail annotations from the filtered telemetry; the
+detailed visual design of these elements is part of the beroepsproduct rather
+than a research outcome of this article.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.85\textwidth]{images/ghost_chair_screenshot.png}
+\caption{The pipeline output: the 3D ghost chair follows the rail based on live telemetry, with semi-transparent ghost stairs providing spatial context and rail annotations identifying segment boundaries.}
+\label{fig:ghost-chair}
+\end{figure*}
 
 \subsection{Encoder-to-Position Mapping}
 \label{sec:results-q3}
@@ -1089,86 +1064,6 @@ while keeping the filtered spindle measurement dominant. It is not derived
 from a first-principles noise model; this limitation is reported in
 Section~\ref{sec:conclusion}.
 
-\subsection{Rendering Techniques}
-\label{sec:results-q5}
-Five visualization techniques were implemented in a 3D
-engine~\cite{linietsky2014godot}. Each technique encodes a different aspect of
-the stairlift state:
-
-\begin{enumerate}[leftmargin=*]
-  \item \textbf{Ghost chair model:} A 3D model assembled from separate
-    mechanical parts (stored in the glTF binary format), each attached to its
-    own rotation pivot. This hierarchy mirrors the physical stairlift: the unit
-    tilts with the rail, the seat tilts independently via the spindle, and the
-    swivel rotates on top. Each degree of freedom can be animated independently
-    from live telemetry.
-  \item \textbf{Ghost stair renderer:} Semi-transparent stair treads generated
-    from the rail height profile. Treads are placed every 180\,mm of vertical
-    rise, with even distribution between platform landings. This provides
-    spatial context for the chair's position on the staircase.
-  \item \textbf{Dither-clip effect:} A rendering technique that gradually fades
-    out geometry further from the chair by discarding pixels in a noise pattern,
-    reducing visual clutter while preserving spatial awareness.
-  \item \textbf{Rail annotations:} Labels overlaid on the 3D rail identifying
-    segment types, boundaries, and charging station positions.
-  \item \textbf{Liquid glass UI:} A frosted-glass shader design system for
-    information panels.
-\end{enumerate}
-
-The five techniques are additive rather than alternative: the final
-visualization combines all of them simultaneously, layered in the renderer.
-For that reason a weighted multi-criteria decision analysis (MCA), which would
-rank competing options, is not the appropriate instrument here; instead, each
-technique is scored independently on a fixed four-criterion matrix and is then
-kept or dropped based on whether its diagnostic contribution justifies its
-frame-time cost on the weakest target (an Android~12+ tablet). The four
-criteria match those defined in Section~\ref{sec:method-q5}. Scores use a
-three-level ordinal scale ($+$ meets, $=$ partially meets, $-$ does not meet)
-for the first three criteria and a measured relative GPU cost for the fourth.
-GPU cost is expressed as the percentage contribution to total frame time,
-averaged over a 60-second tablet capture with and without the technique
-enabled. The results are summarized in Table~\ref{tab:rendering}.
-
-\begin{table*}[t]
-\centering
-\caption{Evaluation of the five rendering techniques against the criteria from Section~\ref{sec:method-q5}. C1: information encoded (meets if the technique carries a distinct data stream). C2: supports direct expected-vs-actual comparison. C3: effect on visual clutter. Scores: $+$ meets, $=$ partially meets, $-$ does not meet. C4 GPU cost is the measured contribution to total frame time on the tablet target, averaged over a 60\,s capture (lower is better).}
-\label{tab:rendering}
-\small
-\begin{tabular}{@{}lccccl@{}}
-\toprule
-\textbf{Technique} & \textbf{C1} & \textbf{C2} & \textbf{C3} & \textbf{C4 GPU} & \textbf{Decision} \\
- & \textbf{Info} & \textbf{Exp.\,vs.\,actual} & \textbf{Clutter} & \textbf{cost} & \\
-\midrule
-Ghost chair model    & $+$ & $+$ & $=$ & 4\,\% & Keep (primary) \\
-Ghost stair renderer & $+$ & $=$ & $+$ & 7\,\% & Keep (context) \\
-Dither-clip effect   & $=$ & $-$ & $+$ & 2\,\% & Keep (context) \\
-Rail annotations     & $+$ & $+$ & $=$ & 1\,\% & Keep (primary) \\
-Liquid glass UI      & $=$ & $-$ & $=$ & 3\,\% & Keep (UX frame) \\
-\bottomrule
-\end{tabular}
-\end{table*}
-
-Figure~\ref{fig:ghost-chair} shows the combined visualization during operation.
-
-\begin{figure*}[t]
-\centering
-\includegraphics[width=0.85\textwidth]{images/ghost_chair_screenshot.png}
-\caption{The virtual ghost visualization: the 3D ghost chair follows the rail based on live telemetry. Semi-transparent ghost stairs provide spatial context. Rail annotations identify segment boundaries along the rail.}
-\label{fig:ghost-chair}
-\end{figure*}
-
-Two techniques (ghost chair model and rail annotations) score $+$ on C2 and
-are therefore labelled primary diagnostic elements: they carry the direct
-comparison between expected and actual state. The ghost stair renderer scores
-$=$ on C2: it does not show expected-vs-actual by itself, but it makes the
-physical staircase visible so the chair position can be interpreted against a
-physical landmark. The dither-clip effect and liquid glass UI both score $-$
-on C2 and are kept only because their C3 contribution (clutter reduction and
-UX framing) protects the primary elements' legibility. The combined GPU cost
-of 17\,\% leaves sufficient headroom against the 55\,fps tablet threshold
-defined in Section~\ref{sec:method-q6} (validated in
-Section~\ref{sec:results-q6}).
-
 \subsection{Validation Results}
 \label{sec:results-q6}
 The prototype was validated through calibration runs on physical stairlift
@@ -1320,14 +1215,6 @@ rail pitch was necessary to prevent oscillation, but this ratio was found
 through trial and error rather than derived from first principles, which is a
 limitation of the current approach.
 
-\textbf{Rendering techniques.}
-The ghost chair with ghost stairs provides immediate spatial context that
-text-based error codes fundamentally cannot offer. However, the current
-evaluation of rendering effectiveness is qualitative rather than quantitative.
-Without a controlled user study comparing diagnosis time and error rate, the
-claim of ``faster and more intuitive'' diagnosis remains an inductively
-supported hypothesis rather than a deductively proven conclusion.
-
 \textbf{Validation.}
 The calibration runs confirm technical correctness of the mathematical models
 under real-world conditions. The position accuracy ($<$5\,mm on standard
@@ -1361,8 +1248,6 @@ yet quantified through a controlled user study.
     generalizability to the full range of rail designs has not been established.
   \item The filter tuning parameters and spindle blend ratio were determined
     empirically. A formal sensitivity analysis is absent.
-  \item The rendering effectiveness evaluation is qualitative. No controlled
-    user study with measurable diagnosis time reduction has been conducted.
   \item The dominant source of the Run~3 bend-transition error (6.1\,mm) is
     not identified. The arc-tracing approximation is ruled out by
     Equation~\ref{eq:arctracing-error}, but pulse-cost-constant precision
@@ -1421,7 +1306,7 @@ explicitly:
 \end{itemize}
 
 \subsection{What Could Have Been Done Differently}
-Three decisions, in hindsight, would have been made differently.
+Two decisions, in hindsight, would have been made differently.
 
 First, the \textit{filter tuning was empirical rather than analytical}. The
 process noise $\sigma_a$ and the 85/15 spindle blend ratio were found by
@@ -1430,15 +1315,7 @@ the sensors. A one-day pre-study with stationary encoder logging would have
 yielded a measured noise spectrum and a principled starting point for tuning.
 This is reflected in the recommendation for a sensitivity analysis.
 
-Second, the \textit{rendering evaluation is structurally weaker than the
-numerical parts}. Where the mathematical models are validated against metric
-thresholds, the rendering techniques are evaluated against a criteria matrix
-whose scoring, while based on observable properties, is ultimately assessed by
-the author. A small user study with even three to five colleagues would have
-converted the inductive claim of ``more intuitive'' into a measurable diagnosis
-time. The time cost was underestimated during planning.
-
-Third, the \textit{sample size of three calibration runs} is the right order of
+Second, the \textit{sample size of three calibration runs} is the right order of
 magnitude for correctness-of-concept but not for statistical generalizability.
 Scheduling conflicts with installation availability drove this choice; a more
 defensive plan would have included reserved time on a test bench rail rather

@@ -423,6 +423,11 @@ INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/adobe/palatino/pplr8t.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/adobe/palatino/pplr8t.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/adobe/courier/pcrr8t.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/adobe/courier/pcrr8t.tfm
+INPUT ./images/ghost_chair_screenshot.png
+INPUT ./images/ghost_chair_screenshot.png
+INPUT ./images/ghost_chair_screenshot.png
+INPUT ./images/ghost_chair_screenshot.png
+INPUT ./images/ghost_chair_screenshot.png
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/vf/public/mathpazo/zplmr7y.vf
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/cm/cmsy10.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/fplmr.tfm
@@ -432,6 +437,7 @@ INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/vf/public/mathpazo/zplmr7v.vf
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/cm/cmex10.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/cm/cmex10.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/fplmr.tfm
+INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/vf/adobe/palatino/pplr8t.vf
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/zplmb7t.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/zplmb7t.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/zplmb7t.tfm
@@ -440,7 +446,6 @@ INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/adobe/palatino/pplr8r.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/vf/public/mathpazo/zplmr7y.vf
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/cm/cmsy10.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/fplmr.tfm
-INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/vf/adobe/palatino/pplr8t.vf
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/vf/public/mathpazo/zplmb7t.vf
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/fplmb.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm
@@ -453,9 +458,6 @@ INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/vf/adobe/palatino/pplr8t.vf
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/adobe/palatino/pplr8r.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/vf/adobe/palatino/pplr7t.vf
-INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/zplmb7t.tfm
-INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/zplmb7t.tfm
-INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/zplmb7t.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/vf/public/mathpazo/zplmr7m.vf
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/fplmri.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/cm/cmmi10.tfm
@@ -463,6 +465,9 @@ INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/adobe/palatino/pplri8r.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/vf/public/mathpazo/zplmr7t.vf
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/fplmr.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/cm/cmr10.tfm
+INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/zplmb7t.tfm
+INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/zplmb7t.tfm
+INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/zplmb7t.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/vf/public/mathpazo/zplmr7m.vf
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/fplmri.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/cm/cmmi10.tfm
@@ -472,11 +477,6 @@ INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/cm/cmmi10.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/adobe/palatino/pplri8r.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/vf/adobe/palatino/pplr7t.vf
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/vf/adobe/palatino/pplr7t.vf
-INPUT ./images/ghost_chair_screenshot.png
-INPUT ./images/ghost_chair_screenshot.png
-INPUT ./images/ghost_chair_screenshot.png
-INPUT ./images/ghost_chair_screenshot.png
-INPUT ./images/ghost_chair_screenshot.png
 INPUT ./main.bbl
 INPUT ./main.bbl
 INPUT main.bbl

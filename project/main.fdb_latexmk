@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex main"] 1776413379.55161 "main.aux" "main.bbl" "main" 1776413381.11158 0
+["bibtex main"] 1779961221.87375 "main.aux" "main.bbl" "main" 1779961440.18929 0
   "./bibliography.bib" 1776412634.94827 12045 a703c797ec9f9358fd2b677107b47a2d ""
   "/home/nmu/.TinyTeX/texmf-dist/bibtex/bst/base/ieeetr.bst" 1292289607 18361 1a00e58565e7f19bf2b3e1bfb82254ae ""
-  "main.aux" 1776413380.92547 17984 0e26884e5fd6625e051a7937d26018a6 "pdflatex"
+  "main.aux" 1779961440.00199 16306 49c9b2f97bf8a385d6a7d925eae48c07 "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1776413379.58047 "/home/nmu/stageverslag_periode_1_2_26/project/main.tex" "main.pdf" "main" 1776413381.11193 0
+["pdflatex"] 1779961438.67725 "/home/nmu/stageverslag_periode_1_2_26/project/main.tex" "main.pdf" "main" 1779961440.1896 0
   "/home/nmu/.TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/home/nmu/.TinyTeX/texmf-dist/fonts/tfm/adobe/courier/pcrr8r.tfm" 1136768653 1292 bd42be2f344128bff6d35d98474adfe3 ""
   "/home/nmu/.TinyTeX/texmf-dist/fonts/tfm/adobe/courier/pcrr8t.tfm" 1136768653 1384 4632f5e54900a7dadbb83f555bc61e56 ""
@@ -208,12 +208,12 @@
   "/home/nmu/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1776327467 232372 3abc0287f248b00cba75f3e70e4f0f6f ""
   "/home/nmu/.TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt" 1776324735 2334043 958171da073b44017375beccb8cbdb57 ""
   "/home/nmu/.TinyTeX/texmf.cnf" 1771905535 637 edd806fb06a89761a6034e1968af9017 ""
-  "/home/nmu/stageverslag_periode_1_2_26/project/main.tex" 1776413379.24347 77575 15e35f3820a8aa670e2eeaca69862807 ""
+  "/home/nmu/stageverslag_periode_1_2_26/project/main.tex" 1779961438.349 69877 3c126e9ece748f29e22eab996f05185d ""
   "images/ghost_chair_screenshot.png" 1776328752.4131 2056093 01f435976631723bd3a6f993f731eef2 ""
-  "main.aux" 1776413380.92547 17984 0e26884e5fd6625e051a7937d26018a6 "pdflatex"
-  "main.bbl" 1776413379.56647 6060 43c77e704b81dada6dad630fb7c94a96 "bibtex main"
-  "main.out" 1776413380.92847 8993 c8abc590961d4ef1028476fb14e9a62f "pdflatex"
-  "main.tex" 1776413379.24347 77575 15e35f3820a8aa670e2eeaca69862807 ""
+  "main.aux" 1779961440.00199 16306 49c9b2f97bf8a385d6a7d925eae48c07 "pdflatex"
+  "main.bbl" 1779961221.90742 6060 43c77e704b81dada6dad630fb7c94a96 "bibtex main"
+  "main.out" 1779961440.00399 8483 6d11dd6e2e4f695766d21712a2f7edf4 "pdflatex"
+  "main.tex" 1779961438.349 69877 3c126e9ece748f29e22eab996f05185d ""
   (generated)
   "main.aux"
   "main.log"
