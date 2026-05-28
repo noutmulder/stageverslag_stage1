@@ -375,20 +375,13 @@ drift of rotation matrices.
 
 \subsubsection{Real-Time 3D Engine Selection}
 \label{sec:prior-engine}
-The 3D engine choice determines the renderer capabilities, shader system,
-mobile export pipeline, and the boundary between research code and third-party
-code. Because this choice fixes the input parameters for the rendering layer
-of the pipeline architecture (Section~\ref{sec:results-q2}), it is part of the
-vooronderzoek~\cite{gielingartikel2223}. Four candidate engines were compared
-against four criteria: (C1) configurability
-and extensibility (custom shaders, autoloads, plugin API access to the
-renderer), (C2) cross-platform export to desktop (Windows, Linux) and mobile
-(Android 12+) from a single source tree, (C3) licensing compatible with
-closed-source commercial deployment without per-seat or revenue-share fees,
-and (C4) native support for glTF binary asset import, which is the format in
-which DeVi Comfort's mechanical CAD pipeline already
-exports~\cite{khronos2021gltf}. The candidates and their scoring against
-these criteria are shown in Table~\ref{tab:engine-mca}.
+The renderer layer of the pipeline (Section~\ref{sec:results-q2}) requires a
+3D engine that meets four criteria: (C1) configurability for custom shaders,
+(C2) cross-platform export to desktop and Android~12+ from a single source
+tree, (C3) licence compatible with closed-source commercial deployment, and
+(C4) native glTF binary import to match DeVi Comfort's CAD
+pipeline~\cite{khronos2021gltf}. Table~\ref{tab:engine-mca} scores four
+candidates against these criteria.
 
 \begin{table}[H]
 \centering
@@ -407,21 +400,15 @@ Three.js + WebGL~\cite{cabello2010threejs}    & $=$ & $-$ & $+$ & $+$ \\
 \end{tabular}
 \end{table}
 
-Godot 4.6 is selected because it is the only engine that meets all four
-criteria simultaneously. Its MIT licence removes downstream royalty and
-seat-fee risk for a company-owned service application; its export pipeline
-produces a single tree that compiles to Windows, Linux, and Android with the
-same shader code (using the \texttt{gl\_compatibility} renderer on mobile and
-Forward+ on desktop); autoloads and shader globals give the configurability
-needed for the custom shaders required by the renderer layer; and its glTF
-binary import handles the multi-mesh chair model without a format conversion
-step. Unreal was excluded
-primarily on licence (royalty over revenue thresholds) and mobile export
-friction; Unity on licence change risk after its 2023 runtime-fee
+Godot 4.6 is selected: it is the only candidate meeting all four criteria.
+Its MIT licence avoids royalty and seat-fee risk; its export pipeline
+compiles a single source tree to Windows, Linux, and Android. Unreal was
+excluded on licence (royalty above revenue thresholds) and mobile export
+friction; Unity on licence change risk after the 2023 runtime-fee
 announcement~\cite{schreier2023unity}; Three.js on lack of a native Android
-build target (the fallback of a WebView wrapper adds a transport layer and
-breaks the gyroscope/accelerometer access required for the compass tracker of
-Section~\ref{sec:results-q6}).
+build target, which would force a WebView wrapper and break the
+gyroscope/accelerometer access required for the compass tracker
+(Section~\ref{sec:results-q6}).
 
 \subsubsection{Existing Work at DeVi Comfort}
 Prior to this research, fault information within DeVi Comfort was presented

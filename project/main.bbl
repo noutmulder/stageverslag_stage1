@@ -54,10 +54,6 @@ J.~Diebel, ``Representing attitude: {E}uler angles, unit quaternions, and rotati
 J.~B. Kuipers, {\em Quaternions and Rotation Sequences: A Primer with Applications to Orbits, Aerospace, and Virtual Reality}.
 \newblock Princeton University Press, 1999.
 
-\bibitem{gielingartikel2223}
-A.~M. Gieling, ``Onderzoeksartikelformat (t.b.v.\ ti-ingenieurs) v.2223.'' Inholland University of Applied Sciences, Technical Informatics, 2023.
-\newblock Course-provided format specification for the HBO-TI research article.
-
 \bibitem{khronos2021gltf}
 {Khronos Group}, ``{glTF}~2.0 specification,'' tech. rep., Khronos Group, 2021.
 \newblock \texttt{.glb} binary container used for the DeVi Comfort chair model.
@@ -106,5 +102,9 @@ R.~Driscoll, ``Frame rate independent damping using lerp,'' 2016.
 
 \bibitem{marek2015mobile3d}
 T.~Marek and O.~Krejcar, ``Optimization of {3D} rendering in mobile devices,'' in {\em Mobile Web and Intelligent Information Systems (MobiWIS 2015)}, vol.~9228 of {\em Lecture Notes in Computer Science}, (Cham), pp.~37--48, Springer, 2015.
+
+\bibitem{gielingartikel2223}
+A.~M. Gieling, ``Onderzoeksartikelformat (t.b.v.\ ti-ingenieurs) v.2223.'' Inholland University of Applied Sciences, Technical Informatics, 2023.
+\newblock Course-provided format specification for the HBO-TI research article.
 
 \end{thebibliography}

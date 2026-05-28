@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2026.4.16)  28 MAY 2026 11:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2026.4.16)  28 MAY 2026 11:52
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -754,101 +754,98 @@ Underfull \hbox (badness 1701) in paragraph at lines 260--263
 
 [2]
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 9.37807pt on input line 398.
+(Font)              scaled to size 9.37807pt on input line 391.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 7.29405pt on input line 398.
+(Font)              scaled to size 7.29405pt on input line 391.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 5.21004pt on input line 398.
+(Font)              scaled to size 5.21004pt on input line 391.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 9.37807pt on input line 398.
+(Font)              scaled to size 9.37807pt on input line 391.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 7.29405pt on input line 398.
+(Font)              scaled to size 7.29405pt on input line 391.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 5.21004pt on input line 398.
-LaTeX Font Info:    Trying to load font information for T1+pcr on input line 414.
- (/home/nmu/.TinyTeX/texmf-dist/tex/latex/psnfss/t1pcr.fd
-File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
-)
-Underfull \hbox (badness 1616) in paragraph at lines 410--425
-\T1/ppl/m/n/10 re-moves down-stream roy-alty and seat-fee risk for a
- []
+(Font)              scaled to size 5.21004pt on input line 391.
 
+Underfull \vbox (badness 3635) has occurred while \output is active []
 
-Underfull \hbox (badness 1430) in paragraph at lines 410--425
-\T1/ppl/m/n/10 and An-droid with the same shader code (us-ing the
- []
-
-[3]
-Underfull \hbox (badness 1102) in paragraph at lines 436--442
+ [3]
+Underfull \hbox (badness 1102) in paragraph at lines 423--429
 \T1/ppl/m/n/10 multi-axis ori-en-ta-tion re-con-struc-tion), while the prior
  []
 
 
-Underfull \hbox (badness 1253) in paragraph at lines 436--442
+Underfull \hbox (badness 1253) in paragraph at lines 423--429
 \T1/ppl/m/n/10 search ques-tion into in-de-pen-dently an-swer-able parts,
  []
 
 
-Underfull \hbox (badness 3713) in paragraph at lines 481--481
+Underfull \hbox (badness 3713) in paragraph at lines 468--468
 |[]\T1/ppl/b/n/12 Data Pipeline Ar-chi-tec-ture (De-sign +
  []
 
-[4]
-Underfull \hbox (badness 10000) in paragraph at lines 527--527
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 514--514
 |[]\T1/ppl/b/n/12 Encoder-to-Position Map-ping (For-mal
  []
 
 
-Underfull \hbox (badness 1509) in paragraph at lines 591--622
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [4]
+Underfull \hbox (badness 1509) in paragraph at lines 578--609
 \T1/ppl/m/n/10 stair-lift in-stal-la-tions with dif-fer-ent rail con-fig-u-ra-tions
  []
 
-[5]
-Underfull \hbox (badness 1270) in paragraph at lines 629--634
+
+Underfull \hbox (badness 1270) in paragraph at lines 616--621
 \T1/ppl/m/n/10 The in-put layer of the pipeline is the sub-set of the
  []
 
-
-Underfull \hbox (badness 3189) in paragraph at lines 654--664
+[5]
+LaTeX Font Info:    Trying to load font information for T1+pcr on input line 647.
+ (/home/nmu/.TinyTeX/texmf-dist/tex/latex/psnfss/t1pcr.fd
+File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
+)
+Underfull \hbox (badness 3189) in paragraph at lines 641--651
 []\T1/ppl/m/n/10 The three high-frequency streams (trac-tion, spin-dle,
  []
 
 
-Underfull \hbox (badness 3078) in paragraph at lines 704--711
+Underfull \hbox (badness 3078) in paragraph at lines 691--698
 \T1/ppl/m/n/10 that moves through a fixed se-quence of states for
  []
 
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 8.33606pt on input line 714.
+(Font)              scaled to size 8.33606pt on input line 701.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 8.33606pt on input line 714.
-<images/ghost_chair_screenshot.png, id=282, 1715.40875pt x 961.5925pt>
+(Font)              scaled to size 8.33606pt on input line 701.
+<images/ghost_chair_screenshot.png, id=279, 1715.40875pt x 961.5925pt>
 File: images/ghost_chair_screenshot.png Graphic file (type png)
 <use images/ghost_chair_screenshot.png>
-Package pdftex.def Info: images/ghost_chair_screenshot.png  used on input line 763.
+Package pdftex.def Info: images/ghost_chair_screenshot.png  used on input line 750.
 (pdftex.def)             Requested size: 446.4554pt x 250.25758pt.
-[6] [7]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [8 <./images/ghost_chair_screenshot.png>] [9]
-Underfull \hbox (badness 1454) in paragraph at lines 1108--1108
+[6] [7] [8 <./images/ghost_chair_screenshot.png>]
+Underfull \hbox (badness 1454) in paragraph at lines 1095--1095
 []\T1/ppl/m/n/9 Max po-si-tion er-ror at bend
  []
 
 
-Underfull \hbox (badness 1728) in paragraph at lines 1110--1110
+Underfull \hbox (badness 1728) in paragraph at lines 1097--1097
 []\T1/ppl/m/n/9 Encoder jit-ter (raw, sta-tion-
  []
 
 
-Underfull \hbox (badness 2065) in paragraph at lines 1112--1112
+Underfull \hbox (badness 2065) in paragraph at lines 1099--1099
 []\T1/ppl/m/n/9 Display up-date la-tency (BT
  []
 
-[10]
-Underfull \vbox (badness 6477) has occurred while \output is active []
+[9]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [11] (./main.bbl
+ [10] [11] (./main.bbl
 Underfull \hbox (badness 2790) in paragraph at lines 13--14
 \T1/ppl/m/it/10 Vi-enna Uni-ver-sity of Tech-nol-ogy, Aus-tria\T1/ppl/m/n/10 , no. TR
  []
@@ -859,13 +856,13 @@ Underfull \hbox (badness 1320) in paragraph at lines 16--17
  []
 
 [12]
-Underfull \hbox (badness 1558) in paragraph at lines 58--60
-\T1/ppl/m/n/10 ingenieurs) v.2223.'' In-hol-land Uni-ver-sity of Ap-
+Underfull \hbox (badness 1661) in paragraph at lines 66--68
+\T1/ppl/m/n/10 plat-form sup-port.'' Ven-dor doc-u-men-ta-tion, 2024.
  []
 
 
-Underfull \hbox (badness 1661) in paragraph at lines 70--72
-\T1/ppl/m/n/10 plat-form sup-port.'' Ven-dor doc-u-men-ta-tion, 2024.
+Underfull \hbox (badness 1558) in paragraph at lines 107--109
+\T1/ppl/m/n/10 ingenieurs) v.2223.'' In-hol-land Uni-ver-sity of Ap-
  []
 
 ) [13
@@ -881,16 +878,16 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 Here is how much of TeX's memory you used:
  27087 strings out of 469418
  491379 string characters out of 5467751
- 909481 words of memory out of 5000000
+ 908481 words of memory out of 5000000
  55149 multiletter control sequences out of 15000+600000
  683360 words of font info for 170 fonts, out of 8000000 for 9000
  76 hyphenation exceptions out of 8191
  84i,13n,94p,474b,810s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </home/nmu/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmr.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on main.pdf (13 pages, 2128553 bytes).
+Output written on main.pdf (13 pages, 2127374 bytes).
 PDF statistics:
- 472 PDF objects out of 1000 (max. 8388607)
- 426 compressed objects within 5 object streams
+ 471 PDF objects out of 1000 (max. 8388607)
+ 425 compressed objects within 5 object streams
  124 named destinations out of 1000 (max. 500000)
  354 words of extra memory for PDF output out of 10000 (max. 10000000)
 
