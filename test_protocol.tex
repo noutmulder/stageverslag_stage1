@@ -1,0 +1,552 @@
+\documentclass[11pt, a4paper]{article}
+
+% ---------- Fonts ----------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[dutch]{babel}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+% ---------- Page layout ----------
+\usepackage[a4paper, margin=2cm]{geometry}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+
+% ---------- Packages ----------
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+
+% ---------- Headers ----------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize\itshape Validatie-run protocol}
+\fancyhead[C]{\footnotesize Datum: \rule[-0.5em]{2.5cm}{0.4pt}}
+\fancyhead[R]{\footnotesize \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ---------- Section spacing ----------
+\titlespacing*{\section}{0pt}{1.8ex}{0.8ex}
+\titlespacing*{\subsection}{0pt}{1.2ex}{0.5ex}
+\titlespacing*{\subsubsection}{0pt}{0.8ex}{0.3ex}
+\titleformat{\section}{\large\bfseries}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}{\small\bfseries\itshape}{}{0em}{}
+
+% ---------- Custom ----------
+\newcommand{\cbox}{$\square$\;}
+\newcommand{\fillline}{\rule[-0.5ex]{4cm}{0.4pt}}
+\newcommand{\fillshort}{\rule[-0.5ex]{2cm}{0.4pt}}
+\newcommand{\filllong}{\rule[-0.5ex]{6cm}{0.4pt}}
+\newcommand{\fillblock}[1]{\rule[-0.5ex]{#1}{0.4pt}}
+
+% ---------- Code style ----------
+\lstdefinestyle{gd}{
+  basicstyle=\ttfamily\footnotesize,
+  backgroundcolor=\color{gray!8},
+  frame=single,
+  framesep=4pt,
+  showstringspaces=false,
+  breaklines=true,
+  language=Python,
+  morekeywords={var,func,const,if,else,return},
+  literate={°}{{$^\circ$}}1
+}
+\lstset{style=gd}
+
+% ---------- Boxes ----------
+\newtcolorbox{notebox}{colback=yellow!10, colframe=yellow!50!black, boxsep=4pt, left=6pt, right=6pt, top=4pt, bottom=4pt}
+\newtcolorbox{fillbox}[1][]{colback=white, colframe=black!50, boxsep=4pt, left=6pt, right=6pt, top=4pt, bottom=4pt, #1}
+
+% ---------- Title ----------
+\title{\vspace{-1.2cm}\textbf{Validatie-run protocol}\\\large stairlift live 3D telemetry}
+\author{Nout Mulder \textbullet{} DeVi Comfort}
+\date{}
+
+\begin{document}
+\maketitle
+\thispagestyle{fancy}
+\vspace{-0.7cm}
+
+\begin{fillbox}
+\textbf{Run-info} (invullen vóór je begint):
+
+Datum: \fillline\hfill Tijd start: \fillshort\hfill Tijd eind: \fillshort
+
+Locatie / klant: \filllong
+
+Lift serial / ID: \fillline\hfill Software-versie: \fillshort
+
+Tester: \fillline\hfill Begeleider aanwezig? \cbox ja \cbox nee
+\end{fillbox}
+
+\section*{Overzicht}
+
+Eén calibratie-run, één rail, vier metingen + twee observaties. Doel:
+elk DV1--DV3 criterium in de validatie-tabel van het verslag van een
+echt cijfer voorzien in plaats van \texttt{[meet]}.
+
+\begin{table}[h]
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{ID} & \textbf{Meting / observatie} & \textbf{Voor} \\
+\midrule
+T1 & Bluetooth round-trip tijd (run-gemiddelde, ms)        & DV1(b) \\
+T2 & Raw encoder jitter, stationair, 10\,s (pulses)        & DV3(b) baseline \\
+T3 & Kalman-filtered jitter, stationair, 10\,s             & DV3(b) \\
+T4 & Positie-error bij referentiepunten (mm)               & DV2(b) \\
+O1 & Visuele smoothness (geen jumps, oscillation, snapping)& observation \\
+O2 & Anomalieën (BT drops, checksum errors, glitches)      & observation \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Pass/fail logica:
+
+\begin{tabular}{@{}lll@{}}
+\textbf{DV1(b)} pass: & T1 $\leq$ 100\,ms \\
+\textbf{DV2(b)} pass: & max(T4) $\leq$ 5\,mm op rail $\leq$ 5\,m; $\leq$ 10\,mm op langere rail \\
+\textbf{DV3(b)} pass: & T2 / T3 $\geq$ 10 (factor tien jitter-reductie) \\
+\end{tabular}
+
+\section{Materiaal-checklist}
+
+\begin{itemize}[leftmargin=2em, label=$\square$]
+  \item Toegang tot één werkende fysieke stairlift
+  \item Meetlint (rolmaat) met mm-graduatie, minimaal 5\,m lang
+  \item Schilderstape of stickertjes voor 4--5 markers
+  \item Laptop met de app, Bluetooth-adapter werkend
+  \item Telefoon voor foto's van het scherm bij elke marker
+  \item Pen + dit document uitgeprint
+  \item Reservebatterijen / oplader voor laptop
+  \item Tijd: $\sim$1\,uur op de lift
+\end{itemize}
+
+\section{Code-instrumentatie (vóór de run, op kantoor)}
+
+Drie kleine toevoegingen in de Godot-codebase. Test ze eerst in demo-mode
+voordat je naar de lift gaat.
+
+\subsection{Logfile redirect}
+
+Start de app vanuit terminal zodat alle \texttt{print()} output naar een
+bestand gaat:
+
+\begin{lstlisting}
+cd ~/MergeIPC/GD-UP-Studio
+godot --path . > ~/logs/run_$(date +%Y%m%d_%H%M).txt 2>&1
+\end{lstlisting}
+
+\textbf{Bestandsnaam van jouw logfile:} \filllong
+
+\subsection{Per-frame CSV-log (voor T2, T3)}
+
+In \texttt{assets/code/ipc/ipc\_lift\_controller.gd}, in de functie
+\texttt{on\_encoder\_received(encoder: int)}, vlak vóór de
+\texttt{\_kf\_predict(dt)} aanroep:
+
+\begin{lstlisting}
+# [VALIDATIE] tijdelijk: per-meting log voor jitter-analyse
+print("[CSV] %d,%d,%.6f,%.6f,%.6f" % [
+    Time.get_ticks_msec(), encoder,
+    _kf_pos, _kf_vel, _display_pos if not is_nan(_display_pos) else 0.0
+])
+\end{lstlisting}
+
+Geeft regels: \texttt{[CSV] timestamp\_ms, raw\_encoder, kf\_pos, kf\_vel, display\_pos}.
+
+\subsection{Bluetooth round-trip log (voor T1)}
+
+In \texttt{assets/code/ipc/net/lift/lift\_client.gd}, in de functie
+\texttt{send\_and\_receive(...)}, nét na de while-loop die op de response
+wacht (rond regel 137, vóór \texttt{var result := \_pending\_result}):
+
+\begin{lstlisting}
+if _pending_result != null:
+    print("[BT_RTT] msg_id=%d rtt_ms=%.1f" % [msg_id, elapsed_ms])
+\end{lstlisting}
+
+\subsection{Marker-knop (voor T4)}
+
+Bovenaan \texttt{ipc\_lift\_controller.gd} (class-velden):
+\begin{lstlisting}
+var _marker_was_pressed: bool = false
+\end{lstlisting}
+
+In \texttt{\_process(delta)} aan de top:
+\begin{lstlisting}
+# [VALIDATIE] markeer huidige positie als referentiepunt-passage
+if Input.is_key_pressed(KEY_SPACE) and not _marker_was_pressed:
+    _marker_was_pressed = true
+    print("[MARKER] t=%d encoder=%d kf_pos=%.5f display_pos=%.5f" % [
+        Time.get_ticks_msec(), last_encoder_value,
+        _kf_pos, _display_pos if not is_nan(_display_pos) else 0.0
+    ])
+elif not Input.is_key_pressed(KEY_SPACE):
+    _marker_was_pressed = false
+\end{lstlisting}
+
+\subsection{Sanity-check vóór vertrek}
+
+\begin{itemize}[leftmargin=2em, label=$\square$]
+  \item Build de app, geen compile errors
+  \item Run in demo mode: \texttt{[CSV]} regels verschijnen continu
+  \item Druk spatie: \texttt{[MARKER]} regel verschijnt
+  \item Demo mode genereert geen BT, dus \texttt{[BT\_RTT]} pas op locatie zichtbaar
+  \item Logfile groeit, output is leesbaar
+\end{itemize}
+
+\textbf{Sanity-check voltooid op (datum/tijd):} \filllong
+
+\newpage
+\section{Op locatie — marker setup}
+
+\subsection{Stap 0a — Lift uit en rail meten}
+
+\begin{itemize}[leftmargin=2em, label=$\square$]
+  \item Lift uitgeschakeld, sleutel uit, hoofdschakelaar uit
+  \item Meet de \emph{totale} rail-lengte met meetlint (van bottom-stootblok tot top-stootblok)
+  \item Tel het aantal horizontale bends visueel
+  \item Schat globaal welke segment-types (straight, up-bend, down-bend, h-left, h-right)
+\end{itemize}
+
+\textbf{Totale rail-lengte:} \fillline\ \,mm
+
+\textbf{Aantal horizontale bends:} \fillshort\hfill \textbf{Aantal verticale bends:} \fillshort
+
+\textbf{Omschrijving rail (bv.\ ``rechte traploop met één bocht onderaan''):}
+
+\fillblock{\textwidth}
+
+\fillblock{\textwidth}
+
+\subsection{Stap 0b — Marker-posities kiezen en meten}
+
+Kies 4--5 markers, verspreid over de rail. Plak een stukje tape op de rail
+bij elke gekozen positie, en meet daarna met de meetlint vanaf het
+bottom-stootblok hoeveel mm de tape zit. Noteer hieronder.
+
+\textit{Tip: zet markers exact daar waar de chair een herkenbaar
+oppervlak van de rail passeert (bv.\ een bout, een rail-overgang), zodat
+je tijdens de run goed kunt zien wanneer de chair de marker bereikt.}
+
+\renewcommand{\arraystretch}{2.0}
+\begin{tabular}{@{}|c|p{6.5cm}|p{3cm}|@{}}
+\hline
+\textbf{ID} & \textbf{Beschrijving (waar zit de marker?)} & \textbf{Fysieke positie (mm)} \\ \hline
+MP1 & & \\ \hline
+MP2 & & \\ \hline
+MP3 & & \\ \hline
+MP4 & & \\ \hline
+MP5 & & \\ \hline
+\end{tabular}
+\renewcommand{\arraystretch}{1.0}
+
+\section{De run zelf}
+
+\subsection{Stap 0c — Opstart en verbinding ($\sim$10 min)}
+
+\textit{Wat je doet:} laptop aan, terminal openen, app starten met log
+redirect, en controleren of telemetrie binnenkomt.
+
+\begin{itemize}[leftmargin=2em, label=$\square$]
+  \item Laptop aan, op een vlakke ondergrond binnen handbereik
+  \item Terminal openen, commando uit sectie 3.1 typen (niet uitvoeren)
+  \item Lift inschakelen, sleutel aan
+  \item Druk \emph{enter} op terminal — de app start, logfile begint te schrijven
+  \item In de app: ga naar het IPC-scherm met de ghost chair view
+  \item Verbind via Bluetooth met de lift
+  \item Wacht tot in de console regels verschijnen met \texttt{[CSV]} en \texttt{[BT\_RTT]}
+\end{itemize}
+
+\textbf{Klok-tijd app gestart:} \fillshort
+
+\textbf{Klok-tijd BT verbonden:} \fillshort
+
+\begin{notebox}
+\small \textbf{Probleem-oplossing:} Geen \texttt{[CSV]} regels? Controleer
+of de code-aanpassing uit §3.2 is doorgevoerd. Geen
+\texttt{[BT\_RTT]}? Controleer §3.3. App crash? Stop, herstart, noteer
+de tijd en het type fout hieronder.
+\end{notebox}
+
+\textbf{Eventuele opstart-issues:}
+
+\fillblock{\textwidth}\hfill\fillblock{\textwidth}
+
+\subsection{Stap 1 — Stationaire baseline (10 s — voor T2 en T3)}
+
+\textit{Wat je doet:} chair staat helemaal stil, je laat 10 seconden
+data lopen. Tussendoor druk je twee keer spatie om begin/eind in de
+logfile te markeren.
+
+\begin{itemize}[leftmargin=2em, label=$\square$]
+  \item Chair op MP1 (bottom-marker), motoren uit, chair geheel stil
+  \item Wacht $\sim$5\,s zodat eventuele opstartfluctuaties verdwijnen
+  \item \textbf{Klik spatie} in de terminal-window (lijn \texttt{[MARKER]} verschijnt). Dit is begin baseline.
+  \item Noteer hieronder onmiddellijk de klok-tijd
+  \item Wacht 10 seconden (gebruik telefoon-timer)
+  \item \textbf{Klik spatie} opnieuw. Dit is eind baseline.
+  \item Noteer eind-klok-tijd
+\end{itemize}
+
+\textbf{Baseline start (klok-tijd, hh:mm:ss):} \fillline
+
+\textbf{Baseline eind (klok-tijd, hh:mm:ss):} \fillline
+
+\textbf{Encoder-waarde tijdens baseline (van scherm aflezen):} \fillshort\ \,pulses
+
+\textbf{Visuele observatie tijdens baseline (was er zichtbare beweging op het scherm?):}
+
+\fillblock{\textwidth}\hfill\fillblock{\textwidth}
+
+\subsection{Stap 2 — Bottom $\to$ Top run}
+
+\textit{Wat je doet:} de lift rijdt langzaam van bottom naar top. Bij
+elke marker druk je spatie + maak je foto + noteer je in de tabel
+hieronder de getoonde positie.
+
+\begin{itemize}[leftmargin=2em, label=$\square$]
+  \item Joystick / startknop op de lift indrukken
+  \item Lift begint te bewegen, vermoedelijk langzaam (firmware speed 20--50)
+\end{itemize}
+
+\textbf{Klok-tijd run B$\to$T gestart:} \fillshort
+
+\textbf{Bij elke marker (MP1 t/m MP5) doe je:}
+
+\begin{enumerate}[leftmargin=2.5em]
+  \item \textbf{Kijken} naar de fysieke chair en de markers
+  \item \textbf{Op het moment dat de chair fysiek over de marker rijdt:} druk \emph{spatie} op de laptop (genereert \texttt{[MARKER]} log-regel)
+  \item Maak \emph{foto} van het scherm: zorg dat de getoonde positie zichtbaar is
+  \item Lees de getoonde positie af (mm of \% of normalized 0--1, wat de UI ook toont) en noteer in de tabel hieronder
+\end{enumerate}
+
+\textbf{Tip:} druk \emph{nét voor} de marker; menselijke reactietijd is
+$\sim$200\,ms en de chair is traag genoeg dat een tikje vroeg/laat niet
+veel uitmaakt.
+
+\renewcommand{\arraystretch}{1.9}
+\begin{tabular}{@{}|c|p{2cm}|p{2cm}|p{2.5cm}|p{4.5cm}|@{}}
+\hline
+\textbf{Marker} & \textbf{Klok-tijd} & \textbf{Foto?} & \textbf{Display toont} & \textbf{Observatie (smooth? glitch?)} \\ \hline
+MP1 (B$\to$T) & & \cbox ja \cbox nee & & \\ \hline
+MP2 (B$\to$T) & & \cbox ja \cbox nee & & \\ \hline
+MP3 (B$\to$T) & & \cbox ja \cbox nee & & \\ \hline
+MP4 (B$\to$T) & & \cbox ja \cbox nee & & \\ \hline
+MP5 (B$\to$T) & & \cbox ja \cbox nee & & \\ \hline
+\end{tabular}
+\renewcommand{\arraystretch}{1.0}
+
+\begin{itemize}[leftmargin=2em, label=$\square$]
+  \item Lift bereikt top station
+\end{itemize}
+
+\textbf{Klok-tijd lift bij top:} \fillshort
+
+\textbf{Globale indruk B$\to$T (smooth motion, geen jumps?):}
+
+\fillblock{\textwidth}\hfill\fillblock{\textwidth}
+
+\subsection{Stap 3 — Top $\to$ Bottom return}
+
+\textit{Idem als stap 2, maar omgekeerd. Levert tweede meting per
+marker.}
+
+\begin{itemize}[leftmargin=2em, label=$\square$]
+  \item Joystick activeren in tegengestelde richting
+\end{itemize}
+
+\textbf{Klok-tijd run T$\to$B gestart:} \fillshort
+
+\renewcommand{\arraystretch}{1.9}
+\begin{tabular}{@{}|c|p{2cm}|p{2cm}|p{2.5cm}|p{4.5cm}|@{}}
+\hline
+\textbf{Marker} & \textbf{Klok-tijd} & \textbf{Foto?} & \textbf{Display toont} & \textbf{Observatie} \\ \hline
+MP5 (T$\to$B) & & \cbox ja \cbox nee & & \\ \hline
+MP4 (T$\to$B) & & \cbox ja \cbox nee & & \\ \hline
+MP3 (T$\to$B) & & \cbox ja \cbox nee & & \\ \hline
+MP2 (T$\to$B) & & \cbox ja \cbox nee & & \\ \hline
+MP1 (T$\to$B) & & \cbox ja \cbox nee & & \\ \hline
+\end{tabular}
+\renewcommand{\arraystretch}{1.0}
+
+\textbf{Klok-tijd lift weer bij bottom:} \fillshort
+
+\subsection{Stap 4 — Afsluiten}
+
+\begin{itemize}[leftmargin=2em, label=$\square$]
+  \item Lift uit, sleutel uit
+  \item App netjes stoppen (Ctrl+C in terminal, geen kill -9)
+  \item Controleer logfile: open in editor, scroll door, verifieer aanwezigheid van \texttt{[CSV]}, \texttt{[MARKER]}, \texttt{[BT\_RTT]} regels
+  \item Tape van rail halen
+  \item Foto's naar laptop overzetten (bij voorkeur direct, anders binnen 24\,u)
+\end{itemize}
+
+\textbf{Aantal \texttt{[CSV]} regels in logfile (ongeveer):} \fillshort
+
+\textbf{Aantal \texttt{[BT\_RTT]} regels:} \fillshort
+
+\textbf{Aantal \texttt{[MARKER]} regels (verwacht: 10$\times$ + 2 baseline):} \fillshort
+
+\subsection{Observaties opschrijven (binnen 10 min na de run!)}
+
+Geheugen vervaagt snel. Schrijf nu op wat je zag, ook als het allemaal goed ging.
+
+\textbf{O1 — Visuele smoothness:}
+
+\fillblock{\textwidth}\hfill\fillblock{\textwidth}\hfill\fillblock{\textwidth}
+
+\textbf{O2 — Anomalieën (BT drops, glitches, vreemd gedrag):}
+
+\fillblock{\textwidth}\hfill\fillblock{\textwidth}\hfill\fillblock{\textwidth}
+
+\newpage
+\section{Post-run analyse (thuis / op kantoor)}
+
+\subsection{T1 — Gemiddelde BT round-trip}
+
+Commando:
+\begin{lstlisting}
+grep "\[BT_RTT\]" ~/logs/run_*.txt | \
+  awk -F"rtt_ms=" '{print $2}' | \
+  awk '{sum+=$1; n++} END {printf "T1 = %.1f ms (n=%d samples)\n", sum/n, n}'
+\end{lstlisting}
+
+\textbf{T1 resultaat:} \fillshort\ \,ms\hfill\textbf{n samples:} \fillshort
+
+\textbf{DV1(b) pass?} \cbox ja ($\leq$ 100\,ms)\hspace{1em} \cbox nee
+
+\subsection{T2 + T3 — Encoder jitter, stationaire baseline}
+
+Extract de stationaire window uit het CSV-log. Eerst de hele CSV grep'en:
+
+\begin{lstlisting}
+grep "\[CSV\]" ~/logs/run_*.txt | sed 's/\[CSV\] //' > ~/logs/csv_data.csv
+\end{lstlisting}
+
+Open \texttt{csv\_data.csv} in een spreadsheet of in Python. Filter de
+regels waarvan de timestamp tussen je baseline-start en baseline-eind
+klok-tijd valt (zie stap 1; convert hh:mm:ss naar ticks\_msec). Bereken
+binnen dat venster:
+
+\begin{itemize}[leftmargin=2em]
+  \item T2 = $\max(\text{raw\_encoder}) - \min(\text{raw\_encoder})$
+  \item T3 = $\max(\text{display\_pos}) - \min(\text{display\_pos})$, omgerekend naar pulses
+\end{itemize}
+
+\textbf{T2 raw jitter (peak-to-peak):} \fillshort\ \,pulses (dus $\pm$\fillshort\ \,pulses)
+
+\textbf{T3 Kalman jitter (peak-to-peak):} \fillshort\ \,pulse-equivalent
+
+\textbf{Ratio T2/T3:} \fillshort\ \,$\times$
+
+\textbf{DV3(b) pass?} \cbox ja (ratio $\geq$ 10)\hspace{1em} \cbox nee
+
+\subsection{T4 — Positie-error per marker}
+
+Voor elke marker: vergelijk fysieke positie (sectie 4) met getoonde
+positie. Marker-passage log-regels:
+
+\begin{lstlisting}
+grep "\[MARKER\]" ~/logs/run_*.txt
+\end{lstlisting}
+
+De \texttt{display\_pos} in de log is normalized (0--1). Omrekenen naar
+mm: \texttt{display\_pos $\times$ rail\_length\_mm}.
+
+\renewcommand{\arraystretch}{2.0}
+\begin{tabular}{@{}|c|c|c|c|c|c|@{}}
+\hline
+\textbf{Marker} & \textbf{Fysiek (mm)} & \textbf{Display B$\to$T (mm)} & \textbf{Display T$\to$B (mm)} & \textbf{Avg (mm)} & \textbf{Error $|$ mm$|$} \\ \hline
+MP1 & & & & & \\ \hline
+MP2 & & & & & \\ \hline
+MP3 & & & & & \\ \hline
+MP4 & & & & & \\ \hline
+MP5 & & & & & \\ \hline
+\end{tabular}
+\renewcommand{\arraystretch}{1.0}
+
+\textbf{T4 max error:} \fillshort\ \,mm\hfill\textbf{T4 gemiddelde error:} \fillshort\ \,mm
+
+\textbf{Rail-lengte was:} \fillshort\ \,mm\hfill threshold: \cbox 5\,mm ($\leq$ 5\,m) \cbox 10\,mm (langer)
+
+\textbf{DV2(b) pass?} \cbox ja (max $\leq$ threshold)\hspace{1em} \cbox nee
+
+\section{Verslag invullen}
+
+Open \texttt{project/main.tex}, ga naar \texttt{Table tab:validation}
+(rond regel 1100). Vervang \texttt{[meet]} per rij:
+
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{@{}|p{5.8cm}|p{2.5cm}|p{2.5cm}|p{3.5cm}|@{}}
+\hline
+\textbf{Verslag-rij} & \textbf{Bron} & \textbf{In te vullen} & \textbf{Pass/fail tekst} \\ \hline
+Rail length & sectie 4 & \fillshort\ mm & --- \\ \hline
+Number of horizontal bends & sectie 4 & \fillshort & --- \\ \hline
+Position error at end station & MP1 of MP5 & \fillshort\ mm & DV2(b): \cbox pass \cbox fail \\ \hline
+Max position error at ref. points & T4 max & \fillshort\ mm & DV2(b): \cbox pass \cbox fail \\ \hline
+Encoder jitter (raw, stationary) & T2 & $\pm$\fillshort\ pulses & --- \\ \hline
+Encoder jitter (after Kalman) & T3 & \fillshort\ pulses & DV3(b): \cbox pass \cbox fail \\ \hline
+Bluetooth round-trip time & T1 & \fillshort\ ms & DV1(b): \cbox pass \cbox fail \\ \hline
+Visual smoothness through bends & O1 & korte zin & --- \\ \hline
+\end{tabular}
+\renewcommand{\arraystretch}{1.0}
+
+\textbf{Logged events paragraaf} (regel $\sim$1126): vul werkelijke
+observaties O2 in.
+
+Build PDF:
+\begin{lstlisting}
+cd project && latexmk -pdf main.tex
+\end{lstlisting}
+
+Commit:
+\begin{lstlisting}
+git add project/main.tex project/main.aux project/main.fdb_latexmk \
+        project/main.fls project/main.log project/main.pdf
+git commit -m "validate: fill measurement results from physical run"
+\end{lstlisting}
+
+\section{Eerlijkheids-regels}
+
+\begin{itemize}[leftmargin=2em, label=$\square$]
+  \item Bij failure (criterium niet gehaald): noteer de werkelijke waarde,
+        markeer \emph{fail}, en bespreek de oorzaak in de Conclusion van
+        het verslag. Niet ``een tweede run doen tot het past''.
+  \item Eén run is genoeg voor proof-of-concept; N=1 is duidelijk in de
+        Limitations vermeld.
+  \item Bewaar de raw logfile in \texttt{logs/} (niet committen, te groot).
+        Bewaar wel een geanonimiseerde samenvatting als \texttt{logs/run\_summary.txt}.
+  \item Niets verzinnen. Als T1 niet gemeten is wegens ontbrekende
+        instrumentatie, rapporteer dat: ``BT round-trip not measured
+        in this run; instrumentation required for future validation.''
+\end{itemize}
+
+\vspace{1.5em}
+
+\begin{fillbox}
+\textbf{Afsluitende notities / lessons learned:}
+
+\fillblock{\textwidth}
+
+\fillblock{\textwidth}
+
+\fillblock{\textwidth}
+
+\fillblock{\textwidth}
+\end{fillbox}
+
+\vspace{0.5em}
+\footnotesize Versie van dit protocol: \today. Plak een ingevulde kopie
+bij het verslag op de map / sla op in \texttt{logs/}.
+
+\end{document}
