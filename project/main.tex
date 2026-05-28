@@ -441,17 +441,14 @@ independently answerable parts, each motivated by a specific gap between the
 identified problem and the available solutions.
 
 \begin{enumerate}[leftmargin=*]
-  \item \textit{Which fault types and status indicators from the stairlift
-    controller are most relevant for spatial visualization?}
-    The firmware defines over 140 message types. Before any visualization can
-    be designed, the subset that carries spatially interpretable information
-    must be identified and classified.
-    \label{q:faults}
   \item \textit{What data pipeline architecture can transport live telemetry
     from the controller to a 3D rendering environment at sufficient throughput?}
-    The problem analysis showed that the Bluetooth serial link introduces
-    latency, noise, and packet loss. The pipeline must handle these at each
-    layer while maintaining the $\sim$20\,Hz update rate.
+    This question subsumes the identification of which firmware messages
+    (out of over 140 defined types) carry spatially interpretable information,
+    because the input layer of the pipeline is precisely that subset. The
+    problem analysis showed that the Bluetooth serial link introduces latency,
+    noise, and packet loss, which the pipeline must handle at each layer while
+    maintaining the $\sim$20\,Hz update rate.
     \label{q:pipeline}
   \item \textit{How can encoder pulse counts be mapped to a normalized position
     along a 3D rail with segment-dependent pulse costs?}
@@ -481,37 +478,10 @@ Each subquestion is addressed with one or more research methods. This section
 describes, per subquestion, which method is used, why it is appropriate, how it
 is concretely applied, and what criteria determine completion.
 
-\subsection{Fault Relevance (Documentation Analysis)}
-\label{sec:method-q1}
-\textbf{Method:} Formal analysis of the firmware protocol specification.\\
-\textbf{Why this method:} The stairlift controller firmware defines over 140
-message types. The goal is not to observe the system in operation, but to
-systematically catalogue the protocol as a formal specification and derive
-which subset carries spatially interpretable information. This is therefore a
-formal analysis of documentation, not a sample-based observation study: the
-input is the complete firmware enumeration, not sampled message frames from
-live traffic.\\
-\textbf{Approach:} The message enumeration in the controller firmware source is
-extracted and each message type is classified along three axes: (1) data
-content (position, speed, angle, status bits, error codes, configuration),
-(2) update rate at which the message is or can be polled, and
-(3) spatial interpretability (whether the message carries information that can
-be mapped onto a 3D location or orientation).\\
-\textbf{Why this approach:} Classifying on three independent axes (content,
-rate, spatial interpretability) separates orthogonal properties that matter
-for pipeline design: content selects parsing logic, rate selects polling
-strategy, spatial interpretability selects relevance to the visualization. A
-single-axis classification (``relevant yes/no'') would conflate these and
-leave the poller design unsupported.\\
-\textbf{Instrument (when done):} A classification is considered complete when:
-(a) every message ID in the firmware enumeration has been assigned to a
-category, (b) for each message with a position, angle, or status bit field the
-data layout is documented at byte-level, and (c) the subset relevant to the
-visualization pipeline is explicitly identified with rationale.
-
-\subsection{Data Pipeline Architecture (Design)}
+\subsection{Data Pipeline Architecture (Design + Documentation Analysis)}
 \label{sec:method-q2}
-\textbf{Method:} Architectural design.\\
+\textbf{Method:} Architectural design, combined with formal analysis of the
+firmware protocol specification to define the input layer.\\
 \textbf{Why this method:} The telemetry pipeline spans multiple layers
 (wireless transport, binary protocol parsing, polling, state estimation,
 rendering) and must satisfy the end-to-end timing budget: the Bluetooth
@@ -519,24 +489,40 @@ round-trip is 10--80\,ms, the visualization must render at 60\,fps (16.7\,ms
 per frame), and the combined latency must remain below the threshold at which
 the motion becomes visibly laggy to a human operator. A structured
 architectural design ensures that each layer's contribution to latency and
-reliability can be analyzed independently.\\
+reliability can be analyzed independently. The input to that pipeline is a
+subset of the firmware's $>$\,140 message types, which is determined by
+documentation analysis rather than by observation of live traffic: the input
+is the complete firmware enumeration, not sampled message frames.\\
 \textbf{Approach:} The architecture is specified as a layered pipeline
 (transport, protocol parser, telemetry poller, state estimator, 3D renderer).
 Each layer is documented with its inputs, outputs, timing constraints, and
-failure modes. A diagram visualizes the data flow between layers.\\
+failure modes. A diagram visualizes the data flow between layers. As input to
+the design, the message enumeration in the controller firmware source is
+extracted and each message type is classified along three axes: (1) data
+content (position, speed, angle, status bits, error codes, configuration),
+(2) update rate at which the message is or can be polled, and
+(3) spatial interpretability (whether the message carries information that can
+be mapped onto a 3D location or orientation).\\
 \textbf{Why this approach:} A five-layer decomposition is chosen (rather than
 a flat producer/consumer or a two-tier client/renderer) because each identified
 failure mode (bit-level corruption, message-level corruption, connection
 drops, sensor noise, frame drops) maps cleanly onto exactly one layer, which
 makes containment and testing per layer possible. A flatter split would force
 the renderer to handle protocol errors or the transport to know about state
-estimation, collapsing concerns that the timing budget already separates.\\
+estimation, collapsing concerns that the timing budget already separates. The
+three-axis message classification is chosen over a single-axis ``relevant
+yes/no'' because content selects parsing logic, rate selects polling strategy,
+and spatial interpretability selects relevance to the visualization; conflating
+these would leave the poller design unsupported.\\
 \textbf{Instrument (when done):} The design is considered sufficient when:
 (a) each layer has a single, well-defined responsibility, (b) the expected
 end-to-end latency from sensor read to display update is below 100\,ms,
 (c) the poller sustains at least 20\,Hz per telemetry axis under normal
-Bluetooth conditions, and (d) byte-level corruption is detectable and
-recoverable without propagating to higher layers.
+Bluetooth conditions, (d) byte-level corruption is detectable and recoverable
+without propagating to higher layers, and (e) every message ID in the firmware
+enumeration has been classified, with the subset relevant to the visualization
+pipeline explicitly identified with rationale and documented at byte-level for
+any message with a position, angle, or status bit field.
 
 \subsection{Encoder-to-Position Mapping (Formal Analysis)}
 \label{sec:method-q3}
@@ -638,16 +624,17 @@ Runs that fail on any criterion are reported with the cause.
 \section{Results}
 \label{sec:results}
 
-\subsection{Fault Types and Telemetry Classification}
-\label{sec:results-q1}
-Analysis of the stairlift firmware protocol reveals 145 defined message types
-(with IDs ranging from 0 to 221), of which six are directly relevant for
-live spatial visualization. These are
-classified in Table~\ref{tab:telemetry}.
+\subsection{Data Pipeline Architecture}
+\label{sec:results-q2}
+The input layer of the pipeline is the subset of the firmware's message
+enumeration that carries spatially interpretable information. Analysis of the
+stairlift firmware protocol reveals 145 defined message types (with IDs ranging
+from 0 to 221), of which six are directly relevant for live spatial
+visualization. These are classified in Table~\ref{tab:telemetry}.
 
 \begin{table*}[t]
 \centering
-\caption{Telemetry message types relevant for spatial visualization.}
+\caption{Telemetry message types relevant for spatial visualization, classified along the three axes defined in Section~\ref{sec:method-q2}.}
 \label{tab:telemetry}
 \small
 \begin{tabular}{@{}llll@{}}
@@ -669,17 +656,14 @@ input for the 3D visualization. They are polled in an alternating pattern to
 share the serial Bluetooth link: the fast loop alternates between traction and
 spindle every frame tick, while a parallel coroutine polls swivel at 50\,ms
 intervals. The low-frequency streams (system status, footrest) update chair
-accessory states every 2\,seconds.
+accessory states every 2\,seconds. Status bits relevant for fault visualization
+include: armrest position (left and right, from \texttt{data[14]} bits 0 and 1
+of MSG\,114), seatbelt state (bit 2), and footrest position (bit 2 of
+MSG\,113, inverted logic). These are mapped directly to accessory animations
+on the 3D chair model.
 
-Status bits relevant for fault visualization include: armrest position (left and
-right, from \texttt{data[14]} bits 0 and 1 of MSG\,114), seatbelt state (bit 2),
-and footrest position (bit 2 of MSG\,113, inverted logic). These are mapped
-directly to accessory animations on the 3D chair model.
-
-\subsection{Data Pipeline Architecture}
-\label{sec:results-q2}
-The path from a raw Bluetooth byte to a moving 3D chair on screen passes
-through five processing stages. Each stage has a single responsibility: receive
+These six messages are transported from the lift controller to the renderer
+through a five-stage pipeline. Each stage has a single responsibility: receive
 data from the previous stage, process it, and pass the result to the next. This
 separation makes it possible to develop and test each stage independently.
 Figure~\ref{fig:pipeline} shows the five layers.
@@ -1168,26 +1152,22 @@ in the tablet frame-rate numbers.
 
 \subsection{Answers to Research Questions}
 
-\textbf{Fault types.}
-The classification of 145 firmware message types revealed that only six carry
-spatially interpretable information. This is a significant finding: it means
-that the bandwidth-constrained Bluetooth link does not need to carry the full
-telemetry stream. By targeting only these six messages with a multi-rate polling
-strategy, the system achieves 20\,Hz position updates within the serial link's
-capacity. The implication is that future extensions (e.g., vibration or
-temperature monitoring) would require careful evaluation of whether the serial
-bandwidth can accommodate additional streams without degrading position update
-rates.
-
 \textbf{Pipeline architecture.}
-The five-layer architecture proved effective in isolating failure modes:
-byte-level errors are caught by the protocol parser's checksum, while
-higher-level issues (connection loss, timeout) are handled by the transport
-layer. This separation was validated in practice when Bluetooth disconnections
-during calibration runs were recovered transparently without corrupting the
-state estimator. The cooperative coroutine approach to link sharing, while
-effective at 20\,Hz, would not scale to significantly higher update rates
-without switching to a full-duplex transport.
+The classification of 145 firmware message types revealed that only six carry
+spatially interpretable information, so the bandwidth-constrained Bluetooth
+link does not need to carry the full telemetry stream. By targeting only these
+six messages with a multi-rate polling strategy, the pipeline achieves
+20\,Hz position updates within the serial link's capacity; future extensions
+(e.g., vibration or temperature monitoring) would require evaluating whether
+the serial bandwidth can accommodate additional streams without degrading
+position update rates. The five-layer architecture itself proved effective in
+isolating failure modes: byte-level errors are caught by the protocol parser's
+checksum, while higher-level issues (connection loss, timeout) are handled by
+the transport layer. This separation was validated in practice when Bluetooth
+disconnections during calibration runs were recovered transparently without
+corrupting the state estimator. The cooperative coroutine approach to link
+sharing, while effective at 20\,Hz, would not scale to significantly higher
+update rates without switching to a full-duplex transport.
 
 \textbf{Encoder mapping.}
 The piecewise mapping resolved the core geometric problem identified in
