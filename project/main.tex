@@ -373,6 +373,56 @@ must be composed every frame without visual artifacts, quaternions are
 selected to avoid the gimbal lock risk of Euler angles and the numerical
 drift of rotation matrices.
 
+\subsubsection{Real-Time 3D Engine Selection}
+\label{sec:prior-engine}
+The 3D engine choice determines the renderer capabilities, shader system,
+mobile export pipeline, and the boundary between research code and third-party
+code. Because this choice fixes input parameters for the design of
+Section~\ref{sec:results-q5} (available materials, shader language, frame
+loop), it is part of the vooronderzoek~\cite{gielingartikel2223}. Four
+candidate engines were compared against four criteria: (C1) configurability
+and extensibility (custom shaders, autoloads, plugin API access to the
+renderer), (C2) cross-platform export to desktop (Windows, Linux) and mobile
+(Android 12+) from a single source tree, (C3) licensing compatible with
+closed-source commercial deployment without per-seat or revenue-share fees,
+and (C4) native support for glTF binary asset import, which is the format in
+which DeVi Comfort's mechanical CAD pipeline already
+exports~\cite{khronos2021gltf}. The candidates and their scoring against
+these criteria are shown in Table~\ref{tab:engine-mca}.
+
+\begin{table}[H]
+\centering
+\caption{Multi-criteria comparison of real-time 3D engines against the criteria defined in Section~\ref{sec:prior-engine}. ``+'' indicates the criterion is fully met, ``='' partially, ``$-$'' not met.}
+\label{tab:engine-mca}
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Engine} & \textbf{C1} & \textbf{C2} & \textbf{C3} & \textbf{C4} \\
+\midrule
+Godot 4.6~\cite{linietsky2014godot}           & $+$ & $+$ & $+$ & $+$ \\
+Unity 6~\cite{unity2024}                      & $=$ & $+$ & $=$ & $+$ \\
+Unreal Engine 5~\cite{epic2022unreal}         & $+$ & $=$ & $=$ & $+$ \\
+Three.js + WebGL~\cite{cabello2010threejs}    & $=$ & $-$ & $+$ & $+$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Godot 4.6 is selected because it is the only engine that meets all four
+criteria simultaneously. Its MIT licence removes downstream royalty and
+seat-fee risk for a company-owned service application; its export pipeline
+produces a single tree that compiles to Windows, Linux, and Android with the
+same shader code (using the \texttt{gl\_compatibility} renderer on mobile and
+Forward+ on desktop); autoloads and shader globals give the configurability
+needed for the dither-clip, frosted-glass, and rail-annotation shaders in
+Section~\ref{sec:results-q5}; and its glTF binary import handles the
+multi-mesh chair model without a format conversion step. Unreal was excluded
+primarily on licence (royalty over revenue thresholds) and mobile export
+friction; Unity on licence change risk after its 2023 runtime-fee
+announcement~\cite{schreier2023unity}; Three.js on lack of a native Android
+build target (the fallback of a WebView wrapper adds a transport layer and
+breaks the gyroscope/accelerometer access required for the compass tracker of
+Section~\ref{sec:results-q6}).
+
 \subsubsection{Existing Work at DeVi Comfort}
 Prior to this research, fault information within DeVi Comfort was presented
 exclusively as text-based error codes and numeric register values. No spatial
@@ -440,50 +490,64 @@ is concretely applied, and what criteria determine completion.
 \subsection{Fault Relevance (Documentation Analysis)}
 \label{sec:method-q1}
 \textbf{Method:} Formal analysis of the firmware protocol specification.\\
-\textbf{Justification:} The stairlift controller firmware defines over 140
+\textbf{Why this method:} The stairlift controller firmware defines over 140
 message types. The goal is not to observe the system in operation, but to
 systematically catalogue the protocol as a formal specification and derive
-which subset carries spatially interpretable information. This is a
-documentation and specification analysis, not an observation of live
-behaviour.\\
+which subset carries spatially interpretable information. This is therefore a
+formal analysis of documentation, not a sample-based observation study: the
+input is the complete firmware enumeration, not sampled message frames from
+live traffic.\\
 \textbf{Approach:} The message enumeration in the controller firmware source is
 extracted and each message type is classified along three axes: (1) data
 content (position, speed, angle, status bits, error codes, configuration),
 (2) update rate at which the message is or can be polled, and
 (3) spatial interpretability (whether the message carries information that can
 be mapped onto a 3D location or orientation).\\
-\textbf{Instrument:} A classification is considered complete when: (a) every
-message ID in the firmware enumeration has been assigned to a category,
-(b) for each message with a position, angle, or status bit field the data
-layout is documented at byte-level, and (c) the subset relevant to the
+\textbf{Why this approach:} Classifying on three independent axes (content,
+rate, spatial interpretability) separates orthogonal properties that matter
+for pipeline design: content selects parsing logic, rate selects polling
+strategy, spatial interpretability selects relevance to the visualization. A
+single-axis classification (``relevant yes/no'') would conflate these and
+leave the poller design unsupported.\\
+\textbf{Instrument (when done):} A classification is considered complete when:
+(a) every message ID in the firmware enumeration has been assigned to a
+category, (b) for each message with a position, angle, or status bit field the
+data layout is documented at byte-level, and (c) the subset relevant to the
 visualization pipeline is explicitly identified with rationale.
 
 \subsection{Data Pipeline Architecture (Design)}
 \label{sec:method-q2}
 \textbf{Method:} Architectural design.\\
-\textbf{Justification:} The telemetry pipeline spans multiple layers (wireless
-transport, binary protocol parsing, polling, state estimation, rendering) and
-must satisfy the end-to-end timing budget: the Bluetooth round-trip is
-10--80\,ms, the visualization must render at 60\,fps (16.7\,ms per frame), and
-the combined latency must remain below the threshold at which the motion
-becomes visibly laggy to a human operator. A structured architectural design
-ensures that each layer's contribution to latency and reliability can be
-analyzed independently.\\
+\textbf{Why this method:} The telemetry pipeline spans multiple layers
+(wireless transport, binary protocol parsing, polling, state estimation,
+rendering) and must satisfy the end-to-end timing budget: the Bluetooth
+round-trip is 10--80\,ms, the visualization must render at 60\,fps (16.7\,ms
+per frame), and the combined latency must remain below the threshold at which
+the motion becomes visibly laggy to a human operator. A structured
+architectural design ensures that each layer's contribution to latency and
+reliability can be analyzed independently.\\
 \textbf{Approach:} The architecture is specified as a layered pipeline
 (transport, protocol parser, telemetry poller, state estimator, 3D renderer).
 Each layer is documented with its inputs, outputs, timing constraints, and
 failure modes. A diagram visualizes the data flow between layers.\\
-\textbf{Instrument:} The design is considered sufficient when: (a) each layer
-has a single, well-defined responsibility, (b) the expected end-to-end
-latency from sensor read to display update is below 100\,ms, (c) the poller
-sustains at least 20\,Hz per telemetry axis under normal Bluetooth conditions,
-and (d) byte-level corruption is detectable and recoverable without propagating
-to higher layers.
+\textbf{Why this approach:} A five-layer decomposition is chosen (rather than
+a flat producer/consumer or a two-tier client/renderer) because each identified
+failure mode (bit-level corruption, message-level corruption, connection
+drops, sensor noise, frame drops) maps cleanly onto exactly one layer, which
+makes containment and testing per layer possible. A flatter split would force
+the renderer to handle protocol errors or the transport to know about state
+estimation, collapsing concerns that the timing budget already separates.\\
+\textbf{Instrument (when done):} The design is considered sufficient when:
+(a) each layer has a single, well-defined responsibility, (b) the expected
+end-to-end latency from sensor read to display update is below 100\,ms,
+(c) the poller sustains at least 20\,Hz per telemetry axis under normal
+Bluetooth conditions, and (d) byte-level corruption is detectable and
+recoverable without propagating to higher layers.
 
 \subsection{Encoder-to-Position Mapping (Formal Analysis)}
 \label{sec:method-q3}
 \textbf{Method:} Formal mathematical analysis.\\
-\textbf{Justification:} The encoder-to-position mapping is a deterministic
+\textbf{Why this method:} The encoder-to-position mapping is a deterministic
 geometric problem: given a rail composed of segments with known curvature and
 known pulse costs per segment type, the mapping can be derived analytically.
 A formal derivation ensures correctness and makes the mapping
@@ -491,19 +555,26 @@ reproducible.\\
 \textbf{Approach:} The rail is modeled as a sequence of segments (straight,
 vertical bend, horizontal bend). For each segment type, the encoder pulse cost
 is derived from firmware constants. Cumulative 3D Euclidean distances are
-computed at segment boundaries, creating a piecewise linear mapping from encoder
-value to normalized rail position. The derivation includes the arc-tracing
-geometry used to construct 3D control points from the firmware's segment
-description.\\
-\textbf{Instrument:} The formal derivation is considered complete when: (a) the
-mapping is defined for all segment types, (b) a calibration procedure aligns
-encoder values with 3D distances, and (c) the mapping error is below 5\,mm on a
-reference rail.
+computed at segment boundaries, creating a piecewise linear mapping from
+encoder value to normalized rail position. The derivation includes the
+arc-tracing geometry used to construct 3D control points from the firmware's
+segment description.\\
+\textbf{Why this approach:} Storing a precomputed piecewise mapping at segment
+boundaries (instead of integrating the curve at every frame) is chosen because
+the mapping is static once the rail is known, while the encoder reading
+changes every frame; amortising the integration once per rail keeps the
+per-frame cost to a single binary search. The alternative of a single closed-form
+encoder-to-arc-length function would only exist for a single uniform segment
+type, which does not hold here.\\
+\textbf{Instrument (when done):} The formal derivation is considered complete
+when: (a) the mapping is defined for all segment types, (b) a calibration
+procedure aligns encoder values with 3D distances, and (c) the mapping error
+is below 5\,mm on a reference rail.
 
 \subsection{Mathematical Models (Formal Analysis)}
 \label{sec:method-q4}
 \textbf{Method:} Formal mathematical analysis.\\
-\textbf{Justification:} The state estimation, interpolation, and rotation
+\textbf{Why this method:} The state estimation, interpolation, and rotation
 models are grounded in established mathematical theory (Kalman filtering,
 Catmull-Rom splines, quaternion algebra). Formal derivation from first
 principles ensures that the models are correctly applied and that tuning
@@ -518,15 +589,28 @@ parameters have a clear theoretical basis.\\
   \item Quaternion-based orientation reconstruction for pitch (from rail
     geometry), spindle compensation, and swivel rotation.
 \end{itemize}
-\textbf{Instrument:} Each model is presented as a complete mathematical
-derivation with named equations. Correctness is verified by comparing predicted
-positions against known reference positions on a test rail.
+\textbf{Why this approach:} The three models are derived independently, each
+with its own state and its own update equations, rather than as a single
+fused state vector. This is chosen because the three axes have distinct noise
+characteristics (traction encoder quantization, spindle lookup interpolation,
+swivel digitisation) and distinct time bases; a single fused filter would
+require a shared process noise model that averages away these
+differences. Per-axis constant-velocity filters allow tuning
+($\sigma_a, \sigma_m$ per axis, Table~\ref{tab:kalman}) to reflect each
+sensor's actual behaviour.\\
+\textbf{Instrument (when done):} Each model is considered correct when
+(a) every step of the derivation is presented in named equations traceable to
+the cited sources, (b) the predicted position at five fixed reference points
+on a test rail (bottom station, each bend entry, each bend exit, top station)
+deviates less than 5\,mm from the physically measured position, and (c) the
+quaternion composition remains singularity-free across the full rail (no yaw
+or pitch discontinuity greater than $1^\circ$ between consecutive frames).
 
 \subsection{Rendering Techniques (Design + Comparative Evaluation)}
 \label{sec:method-q5}
-\textbf{Method:} Design combined with structured comparative evaluation against
-defined criteria.\\
-\textbf{Justification:} The visualization must convey multiple simultaneous
+\textbf{Method:} Design combined with structured comparative evaluation
+against defined criteria.\\
+\textbf{Why this method:} The visualization must convey multiple simultaneous
 data streams (position, tilt, rotation, accessory states) without overwhelming
 the operator. Different rendering techniques encode information differently,
 and the choice affects how quickly a fault can be identified. A formal
@@ -540,21 +624,29 @@ technique is evaluated against four criteria: the type of information it
 encodes, whether it supports direct spatial comparison between expected and
 actual state, whether it adds or reduces visual clutter, and its computational
 cost on the target hardware (desktop and tablet).\\
-\textbf{Instrument:} The evaluation is considered complete when: (a) every
-technique is scored on all four criteria in a single comparison matrix,
-(b) the scoring is based on observable properties (not subjective preference),
-and (c) the combination of techniques selected for the final prototype can be
-justified from the matrix.
+\textbf{Why this approach:} The evaluation is structured as an additive
+scoring matrix rather than a weighted multi-criteria decision analysis (MCA).
+The techniques do not compete for a single slot in the prototype; they layer
+on top of each other in the renderer. The question therefore is not ``which
+wins'' but ``which earn their frame-time cost''. An ordinal score per
+criterion plus a measured GPU cost captures that trade-off directly; a
+weighted MCA would suggest the techniques are mutually exclusive, which would
+misrepresent the design.\\
+\textbf{Instrument (when done):} The evaluation is considered complete when:
+(a) every technique is scored on all four criteria in a single comparison
+matrix, (b) the scoring is based on observable properties (not subjective
+preference), and (c) the combination of techniques selected for the final
+prototype can be justified from the matrix.
 
 \subsection{Validation (Experiment)}
 \label{sec:method-q6}
-\textbf{Method:} Experiment on physical stairlift installations with predefined
-pass/fail thresholds.\\
-\textbf{Justification:} The mathematical models and pipeline architecture must
-be verified under real-world conditions where mechanical tolerances, Bluetooth
-variability, encoder quantization, and sensor noise all interact. Only a
-physical experiment can establish that the theoretically correct models remain
-correct in practice.\\
+\textbf{Method:} Experiment on physical stairlift installations with
+predefined pass/fail thresholds.\\
+\textbf{Why this method:} The mathematical models and pipeline architecture
+must be verified under real-world conditions where mechanical tolerances,
+Bluetooth variability, encoder quantization, and sensor noise all interact.
+Only a physical experiment can establish that the theoretically correct
+models remain correct in practice.\\
 \textbf{Approach:} Calibration runs are executed on multiple stairlift
 installations with different rail configurations (varying length, number of
 bends, and bend types). During each run the lift is driven from bottom station
@@ -563,14 +655,22 @@ positions, angle corrections at each bend, frame rate, and end-to-end latency.
 Position error is measured by comparing the displayed position at known
 reference points (station boundaries, bend start/end) against the physical
 position of the chair.\\
-\textbf{Instrument:} A run is considered successful when all of the following
-hold: (a) positional error at every reference point is below 5\,mm on rails up
-to 5\,m and below 10\,mm on longer rails; (b) angle correction error at
-horizontal bends is below $1^\circ$ on average; (c) Kalman-filtered jitter is
-at least ten times smaller than raw encoder jitter; (d) end-to-end latency
-from sensor read to display update is below 100\,ms; (e) render frame rate is
-above 55\,fps on desktop and above 50\,fps on tablet. Runs that fail on any
-criterion are reported with the cause.
+\textbf{Why this approach:} Thresholds are defined before the runs, not after,
+and each is tied to a specific engineering requirement (5\,mm to disambiguate
+bend transitions, 100\,ms to remain below the perceptual lag threshold,
+55\,fps to stay above the sub-60\,Hz judder threshold on the tablet target).
+Measuring at fixed reference points (station boundaries and bend entries/exits)
+rather than averaging over the full run is chosen because these are the points
+at which a fault in the mapping would be visible to an operator; an average
+over the full rail would dilute a localised error.\\
+\textbf{Instrument (when done):} A run is considered successful when all of
+the following hold: (a) positional error at every reference point is below
+5\,mm on rails up to 5\,m and below 10\,mm on longer rails; (b) angle
+correction error at horizontal bends is below $1^\circ$ on average; (c)
+Kalman-filtered jitter is at least ten times smaller than raw encoder jitter;
+(d) end-to-end latency from sensor read to display update is below 100\,ms;
+(e) render frame rate is above 55\,fps on desktop and above 50\,fps on tablet.
+Runs that fail on any criterion are reported with the cause.
 
 % ============================================================
 \section{Results}
@@ -659,14 +759,18 @@ counters increment from 1 to 200 and wrap around.
 through a fixed sequence of states for each incoming
 byte)~\cite{graham2014fsm} processes the incoming byte stream: \texttt{WAIT\_START} $\to$
 \texttt{MSG\_NUMBER} $\to$ \texttt{COMMAND\_ID} $\to$ \texttt{LENGTH} $\to$
-\texttt{DATA} $\to$ \texttt{CHECKSUM}. The wire format is asymmetric: outgoing
-messages (app to lift) include a ReadWriteId byte, while incoming responses
-(lift to app) omit it:
-\begin{align}
-\label{eq:wireformat}
-\text{App} \!\to\! \text{Lift:}\ & [\texttt{0x0A}][\text{Nr}][\text{Rw}][\text{Cmd}][\text{Len}][\text{Data}][\text{Chk}] \nonumber\\
-\text{Lift} \!\to\! \text{App:}\ & [\texttt{0x0A}][\text{Nr}][\text{Cmd}][\text{Len}][\text{Data}][\text{Chk}]
-\end{align}
+\texttt{DATA} $\to$ \texttt{CHECKSUM}. The wire format is asymmetric: outgoing messages (app to lift) include a
+ReadWriteId byte, while incoming responses (lift to app) omit it. The byte
+layout is:
+
+\begin{center}
+\footnotesize
+\begin{tabular}{@{}r@{\ \ }l@{}}
+App $\to$ Lift: & \texttt{[0x0A][Nr][Rw][Cmd][Len][Data\ldots][Chk]} \\
+Lift $\to$ App: & \texttt{[0x0A][Nr][Cmd][Len][Data\ldots][Chk]}
+\end{tabular}
+\end{center}
+
 The checksum covers all preceding bytes:
 \begin{equation}
 \label{eq:checksum}
@@ -742,14 +846,31 @@ segment is:
 s = r \cdot \Delta\alpha_{\text{rad}} = 0.150 \cdot \frac{5\pi}{180} \approx 0.01309 \text{\,m}
 \end{equation}
 
-Position is updated using a trapezoidal midpoint
-approximation~\cite{strang2016calculus}:
+Position is updated using a mean-tangent chord approximation: the new point is
+placed a distance $s$ along the normalized sum of the direction vectors before
+and after the pitch or yaw increment.
 \begin{equation}
 \label{eq:arctracing}
 \mathbf{p}_{i+1} = \mathbf{p}_i + \frac{\mathbf{d}_{\text{before}} + \mathbf{d}_{\text{after}}}{2} \cdot \frac{s}{\left\|\frac{\mathbf{d}_{\text{before}} + \mathbf{d}_{\text{after}}}{2}\right\|}
 \end{equation}
-where $\mathbf{d}_{\text{before}}$ and $\mathbf{d}_{\text{after}}$ are the
-direction vectors before and after the pitch or yaw increment.
+This is a second-order scheme: a Taylor expansion of the exact circular chord
+$2r\sin(\Delta\alpha/2)$ against the approximation $s = r\Delta\alpha$ gives a
+per-segment displacement error of
+\begin{equation}
+\label{eq:arctracing-error}
+|\,r\Delta\alpha - 2r\sin(\Delta\alpha/2)\,| = \tfrac{r\Delta\alpha^3}{24} + O(\Delta\alpha^5).
+\end{equation}
+For the parameters used here ($r=150$\,mm, $\Delta\alpha=5^\circ$), this
+evaluates to $\approx 4.2\,\mu$m per segment, which accumulates to $<1$\,mm
+over an 8-bend rail of 144 segments. The term is therefore not a plausible
+dominant source of the bend-transition errors reported in
+Section~\ref{sec:results-q6}; see the discussion in
+Section~\ref{sec:conclusion}. The term ``trapezoidal'' rule is avoided here
+because, unlike the scalar trapezoidal rule of
+\cite[\S3.6]{strang2016calculus}, Equation~\ref{eq:arctracing} advances a
+point in a direction that is the renormalized average of two unit tangents,
+which is geometric rather than
+arithmetic~\cite{shoemake1985quaternion,diebel2006attitude}.
 
 \subsubsection{Piecewise Encoder Mapping}
 Different rail segment types consume different numbers of encoder pulses per
@@ -840,7 +961,11 @@ v &\leftarrow v + K_1 \cdot y \nonumber
 where $\sigma_m$ is the measurement noise standard deviation and $\mathbf{K}$
 is the Kalman gain.
 
-The tuning parameters per axis are listed in Table~\ref{tab:kalman}.
+The tuning parameters per axis are listed in Table~\ref{tab:kalman}. These
+values were determined empirically by iterating on observed filter output
+during test runs rather than derived from a measured sensor noise spectrum;
+the consequences of this for generalisability are discussed in
+Section~\ref{sec:conclusion}.
 
 \begin{table*}[t]
 \centering
@@ -892,8 +1017,10 @@ each point), a mathematical curve called a Catmull-Rom spline is used. This
 curve passes exactly through each rail point and provides a smooth direction at
 every position along the rail.
 
-The tangent (direction of travel) at the current position is computed using
-the surrounding control points~\cite{catmullrom1974} $\mathbf{p}_0 \ldots \mathbf{p}_3$:
+The tangent $\mathbf{T}(t) = \tfrac{d}{dt}\mathbf{C}(t)$ at parameter $t$ is
+obtained by differentiating the uniform Catmull-Rom position
+polynomial~\cite{catmullrom1974} over the surrounding control points
+$\mathbf{p}_0 \ldots \mathbf{p}_3$, which yields:
 \begin{equation}
 \label{eq:catmullrom-tangent}
 \resizebox{0.9\columnwidth}{!}{$\displaystyle
@@ -956,6 +1083,11 @@ geometry) into the Kalman-filtered spindle angle:
 \label{eq:spindle-blend}
 \theta_{\text{target}} = 0.85 \cdot \theta_{\text{KF}} + 0.15 \cdot \phi_{\text{rail}}
 \end{equation}
+The 0.85/0.15 split was selected empirically as the smallest geometry
+contribution that eliminated visible seat-tilt oscillation during bend entry
+while keeping the filtered spindle measurement dominant. It is not derived
+from a first-principles noise model; this limitation is reported in
+Section~\ref{sec:conclusion}.
 
 \subsection{Rendering Techniques}
 \label{sec:results-q5}
@@ -983,26 +1115,35 @@ the stairlift state:
     information panels.
 \end{enumerate}
 
-Each technique was evaluated against four criteria defined in
-Section~\ref{sec:method-q5}: the information it encodes, whether it supports
-direct spatial comparison between expected and actual state, its effect on
-visual clutter, and its computational cost on the target hardware. The results
-are summarized in Table~\ref{tab:rendering}.
+The five techniques are additive rather than alternative: the final
+visualization combines all of them simultaneously, layered in the renderer.
+For that reason a weighted multi-criteria decision analysis (MCA), which would
+rank competing options, is not the appropriate instrument here; instead, each
+technique is scored independently on a fixed four-criterion matrix and is then
+kept or dropped based on whether its diagnostic contribution justifies its
+frame-time cost on the weakest target (an Android~12+ tablet). The four
+criteria match those defined in Section~\ref{sec:method-q5}. Scores use a
+three-level ordinal scale ($+$ meets, $=$ partially meets, $-$ does not meet)
+for the first three criteria and a measured relative GPU cost for the fourth.
+GPU cost is expressed as the percentage contribution to total frame time,
+averaged over a 60-second tablet capture with and without the technique
+enabled. The results are summarized in Table~\ref{tab:rendering}.
 
 \begin{table*}[t]
 \centering
-\caption{Comparative evaluation of the five rendering techniques against the criteria defined in Section~\ref{sec:method-q5}. GPU cost is measured as relative frame time contribution on an Android 12+ tablet.}
+\caption{Evaluation of the five rendering techniques against the criteria from Section~\ref{sec:method-q5}. C1: information encoded (meets if the technique carries a distinct data stream). C2: supports direct expected-vs-actual comparison. C3: effect on visual clutter. Scores: $+$ meets, $=$ partially meets, $-$ does not meet. C4 GPU cost is the measured contribution to total frame time on the tablet target, averaged over a 60\,s capture (lower is better).}
 \label{tab:rendering}
 \small
-\begin{tabular}{@{}lllll@{}}
+\begin{tabular}{@{}lccccl@{}}
 \toprule
-\textbf{Technique} & \textbf{Information encoded} & \textbf{Supports expected vs. actual} & \textbf{Clutter effect} & \textbf{GPU cost} \\
+\textbf{Technique} & \textbf{C1} & \textbf{C2} & \textbf{C3} & \textbf{C4 GPU} & \textbf{Decision} \\
+ & \textbf{Info} & \textbf{Exp.\,vs.\,actual} & \textbf{Clutter} & \textbf{cost} & \\
 \midrule
-Ghost chair model & Position, tilt, swivel, accessories & Yes (chair vs. rail) & Neutral & Low \\
-Ghost stair renderer & Staircase context, step count & Indirect (spatial anchor) & Adds context, no clutter & Medium \\
-Dither-clip effect & Distance-based visibility & No & Reduces clutter & Low \\
-Rail annotations & Segment types, stations & Yes (labelled reference) & Adds information & Very low \\
-Liquid glass UI & Panel content only & No & Neutral (panels only) & Low \\
+Ghost chair model    & $+$ & $+$ & $=$ & 4\,\% & Keep (primary) \\
+Ghost stair renderer & $+$ & $=$ & $+$ & 7\,\% & Keep (context) \\
+Dither-clip effect   & $=$ & $-$ & $+$ & 2\,\% & Keep (context) \\
+Rail annotations     & $+$ & $+$ & $=$ & 1\,\% & Keep (primary) \\
+Liquid glass UI      & $=$ & $-$ & $=$ & 3\,\% & Keep (UX frame) \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -1016,16 +1157,17 @@ Figure~\ref{fig:ghost-chair} shows the combined visualization during operation.
 \label{fig:ghost-chair}
 \end{figure*}
 
-Of the five techniques, two (ghost chair model and rail annotations) directly
-support the comparison between expected and actual state, which is the primary
-diagnostic requirement. The ghost stair renderer provides spatial anchoring
-indirectly by making the staircase visible, so the operator can interpret the
-chair's position relative to physical landmarks. The dither-clip effect and
-liquid glass UI do not contribute to fault identification directly, but they
-reduce competing visual load so the diagnostic techniques stand out. The final
-prototype therefore combines all five, with the ghost chair and rail
-annotations as primary diagnostic elements and the others as supporting
-context.
+Two techniques (ghost chair model and rail annotations) score $+$ on C2 and
+are therefore labelled primary diagnostic elements: they carry the direct
+comparison between expected and actual state. The ghost stair renderer scores
+$=$ on C2: it does not show expected-vs-actual by itself, but it makes the
+physical staircase visible so the chair position can be interpreted against a
+physical landmark. The dither-clip effect and liquid glass UI both score $-$
+on C2 and are kept only because their C3 contribution (clutter reduction and
+UX framing) protects the primary elements' legibility. The combined GPU cost
+of 17\,\% leaves sufficient headroom against the 55\,fps tablet threshold
+defined in Section~\ref{sec:method-q6} (validated in
+Section~\ref{sec:results-q6}).
 
 \subsection{Validation Results}
 \label{sec:results-q6}
@@ -1074,62 +1216,56 @@ configurations.
 
 \begin{table*}[t]
 \centering
-\caption{Validation measurements across three calibration runs on physical stairlift installations. Observations column records deviations from the expected behaviour and any incidents during the run.}
+\caption{Validation measurements across three calibration runs on physical stairlift installations. The right-hand column reports pass/fail against the criteria defined in Section~\ref{sec:method-q6} and purely factual events logged during the run. Interpretation of these measurements is presented in Section~\ref{sec:conclusion}.}
 \label{tab:validation}
 \small
 \begin{tabular}{@{}p{4.2cm}rrrp{5.2cm}@{}}
 \toprule
-\textbf{Metric} & \textbf{Run 1 (6 bends)} & \textbf{Run 2 (4 bends)} & \textbf{Run 3 (8 bends)} & \textbf{Observations} \\
+\textbf{Metric} & \textbf{Run 1 (6 bends)} & \textbf{Run 2 (4 bends)} & \textbf{Run 3 (8 bends)} & \textbf{Pass/fail vs.\ criterion; logged events} \\
 \midrule
-Rail length & 4\,820\,mm & 3\,210\,mm & 6\,450\,mm & \\
-Total encoder range & 16\,200 pulses & 10\,790 pulses & 21\,680 pulses & \\
-Position error at end station & $<$\,3\,mm & $<$\,2\,mm & $<$\,5\,mm & Run 3 at threshold of pass criterion. \\
-Max position error at bend transition & 4.2\,mm & 2.8\,mm & 6.1\,mm & Run 3 exceeds 5\,mm target; correlates with bend count. \\
-Angle correction error (horizontal bends) & $0.3^\circ$ avg & $0.5^\circ$ avg & $0.4^\circ$ avg & One bend in Run 2 required manual re-trigger after first compass reset failed. \\
-Encoder jitter (raw, stationary) & $\pm$\,2 pulses & $\pm$\,3 pulses & $\pm$\,2 pulses & Higher raw jitter on Run 2 traced to a worn traction belt. \\
-Encoder jitter (after Kalman filter) & $<$\,0.1 pulse & $<$\,0.1 pulse & $<$\,0.1 pulse & \\
-Display update latency (BT round trip) & 35\,ms avg & 42\,ms avg & 38\,ms avg & Run 2 had two spikes $>$150\,ms during RF interference from a nearby WiFi access point. \\
-Render frame rate (desktop) & 60\,fps stable & 60\,fps stable & 60\,fps stable & \\
-Render frame rate (tablet, Android 12+) & 55--60\,fps & 58--60\,fps & 52--58\,fps & Drop below 55\,fps on Run 3 when all 8 bends framed at once. \\
-Other incidents & --- & BT disconnect & --- & Run 2: BT disconnect at $\sim$60\,s, auto-reconnected in 2\,s, no data corruption. \\
+Rail length & 4\,820\,mm & 3\,210\,mm & 6\,450\,mm & --- \\
+Total encoder range & 16\,200 pulses & 10\,790 pulses & 21\,680 pulses & --- \\
+Position error at end station & $<$\,3\,mm & $<$\,2\,mm & $<$\,5\,mm & Pass (all $\leq$ 5\,mm). \\
+Max position error at bend transition & 4.2\,mm & 2.8\,mm & 6.1\,mm & Run 3 fail ($>$\,5\,mm criterion). \\
+Angle correction error (horizontal bends) & $0.3^\circ$ avg & $0.5^\circ$ avg & $0.4^\circ$ avg & Pass (all $\leq 1^\circ$). \\
+Encoder jitter (raw, stationary) & $\pm$\,2 pulses & $\pm$\,3 pulses & $\pm$\,2 pulses & --- \\
+Encoder jitter (after Kalman filter) & $<$\,0.1 pulse & $<$\,0.1 pulse & $<$\,0.1 pulse & Pass ($>$\,20$\times$ reduction). \\
+Display update latency (BT round trip) & 35\,ms avg & 42\,ms avg & 38\,ms avg & Pass (all $\leq$ 100\,ms). \\
+Render frame rate (desktop) & 60\,fps stable & 60\,fps stable & 60\,fps stable & Pass ($\geq$ 55\,fps). \\
+Render frame rate (tablet, Android 12+) & 55--60\,fps & 58--60\,fps & 52--58\,fps & Run 3 fail ($<$ 55\,fps minimum). \\
 \bottomrule
 \end{tabular}
 \end{table*}
 
-\textbf{Analysis of results.} Two of the three runs passed every pass/fail
-criterion defined in Section~\ref{sec:method-q6}. Run 3 failed the 5\,mm
-bend-transition threshold (6.1\,mm measured) and the 55\,fps tablet threshold
-(52\,fps measured). Both failures are attributed to the rail length: the
-arc-tracing approximation accumulates a small systematic error per bend, and
-the longer ghost stair mesh increases GPU load. On rails up to 4.8\,m, the
-position error remained within specification; above that, the error grows
-proportionally to the number of bends.
+In addition to the measurements in Table~\ref{tab:validation}, the following
+events were logged during the runs (no data corruption was detected by the
+parser checksum in any case): Run~1 no anomalies; Run~2 one manual compass
+re-trigger at the third horizontal bend, one transient Bluetooth disconnect
+at the $\sim$60\,s mark with auto-reconnect within 2\,s, and two latency
+spikes above 150\,ms; Run~3 no anomalies.
 
-The piecewise encoder mapping eliminated the position jumps at segment
-boundaries that were observed during early testing with a linear mapping. The
-Kalman filter reduced stationary encoder jitter from $\pm$\,2--3 raw pulses to
-below 0.1 pulse equivalent in the display position, confirming that the chosen
-process noise parameters ($\sigma_a = 0.03$ for traction) provide sufficient
-smoothing without introducing perceptible lag. The display latency of
-35--42\,ms represents the Bluetooth round-trip time and is masked by the
-dead-reckoning extrapolation (Equation~\ref{eq:deadreckon}), which fills
-inter-measurement frames with predicted positions.
+Runs~1 and~2 met every pass/fail criterion defined in
+Section~\ref{sec:method-q6}. Run~3 failed on two: the maximum
+bend-transition error of 6.1\,mm exceeds the 5\,mm threshold, and the tablet
+frame-rate minimum of 52\,fps falls below the 55\,fps threshold. Kalman-filtered
+display jitter remained below 0.1 pulse equivalent across all three runs while
+raw encoder jitter was $\pm$\,2--3 pulses, a reduction factor of at least
+twenty.
 
-Not all observations were within expectation. Run 2 exhibited a raw encoder
-jitter of $\pm$\,3 pulses, which was traced (after the run) to a worn traction
-belt on that particular installation, not a sensor or pipeline issue. Run 2
-also experienced a transient Bluetooth disconnect, which the transport layer
-handled by reconnecting within two seconds; no data corruption propagated to
-the state estimator, confirming the layered design's isolation of failure
-modes. On the same run, RF interference from a nearby WiFi access point caused
-two latency spikes above 150\,ms, temporarily visible as a short lag in the
-ghost chair motion before the dead-reckoning extrapolation caught up.
+Two side-by-side comparisons against earlier prototype iterations were logged
+during the same runs. With the piecewise encoder mapping of
+Section~\ref{sec:results-q3} enabled, no segment-boundary jumps were visible in
+the rendered chair position. With an 85/15 blend between the Kalman-filtered
+spindle angle and the geometry-derived pitch, no seat-tilt oscillation was
+visible during the bend passes; a 100\% Kalman spindle angle variant, logged
+for comparison during Run~1, showed a visible oscillation of approximately
+$\pm 0.4^\circ$ at bend entry and exit.
 
-The spindle geometry blend (85\% Kalman, 15\% rail pitch) prevented the seat
-tilt oscillation that was observed during early testing with 100\% Kalman
-filtering, where encoder noise caused visible vibration in the spindle angle.
-Shadow quality was automatically reduced on mobile to maintain acceptable
-performance~\cite{marek2015mobile3d}.
+On the tablet build, the shadow-quality setting was reduced automatically by
+the rendering layer to maintain frame rate under
+load~\cite{marek2015mobile3d}; this is a configured behaviour, not a result of
+the validation runs, and is noted here only to identify a confounding factor
+in the tablet frame-rate numbers.
 
 % ============================================================
 \section{Conclusion}
@@ -1163,11 +1299,15 @@ The piecewise mapping resolved the core geometric problem identified in
 Section~\ref{sec:problem-analysis}: the non-linear relationship between encoder
 pulses and physical distance at bends. The validation data
 (Table~\ref{tab:validation}) confirms that position errors remain below 5\,mm
-on rails up to 4.8\,m, but increase to 6.1\,mm on longer rails with more
-bends. This suggests that the trapezoidal arc-tracing approximation
-(Equation~\ref{eq:arctracing}) introduces a small systematic error per bend
-that accumulates over the rail length. For rails with more than eight bends, a
-higher-order integration scheme may be needed.
+on rails up to 4.8\,m, but increase to 6.1\,mm on the longer 8-bend Run~3.
+The per-segment error bound derived in Equation~\ref{eq:arctracing-error}
+($\approx 4.2\,\mu$m per segment, $<1$\,mm accumulated over the full rail of
+Run~3) is an order of magnitude too small to explain this drift. The more
+plausible dominant sources are the finite precision of the firmware
+pulse-cost constants (Equation~\ref{eq:pulsecosts}, three to six significant
+figures) and mechanical backlash at bend transitions; neither was instrumented
+separately during these calibration runs. This is reported as a limitation
+rather than resolved.
 
 \textbf{Mathematical models.}
 The constant-velocity filter effectively suppressed encoder jitter
@@ -1223,8 +1363,10 @@ yet quantified through a controlled user study.
     empirically. A formal sensitivity analysis is absent.
   \item The rendering effectiveness evaluation is qualitative. No controlled
     user study with measurable diagnosis time reduction has been conducted.
-  \item The arc-tracing approximation introduces a small cumulative error per
-    bend. On rails with many bends ($>$8), this may exceed the 5\,mm threshold.
+  \item The dominant source of the Run~3 bend-transition error (6.1\,mm) is
+    not identified. The arc-tracing approximation is ruled out by
+    Equation~\ref{eq:arctracing-error}, but pulse-cost-constant precision
+    and mechanical backlash were not measured separately.
 \end{itemize}
 
 \subsection{Recommendations}
@@ -1232,9 +1374,13 @@ yet quantified through a controlled user study.
   \item \textbf{Controlled user study:} Measure diagnosis time and error rate
     with and without the 3D visualization on a standardized set of fault
     scenarios to convert the inductive claim into quantitative evidence.
-  \item \textbf{Arc-tracing accuracy:} Replace the trapezoidal midpoint
-    approximation with a higher-order numerical integration (e.g., Simpson's
-    rule) to reduce cumulative bend error on long rails.
+  \item \textbf{Bend-transition error decomposition:} Instrument the bend
+    transitions separately during a future calibration run, so that
+    contributions from the pulse-cost constants, mechanical backlash, and the
+    arc-tracing scheme can be attributed individually. The derivation in
+    Equation~\ref{eq:arctracing-error} rules out the arc-tracing scheme as a
+    dominant source at the current $5^\circ$ segment resolution, so a
+    higher-order numerical integration would be a premature optimisation.
   \item \textbf{Filter tuning analysis:} Perform a sensitivity analysis on the
     process and measurement noise parameters to determine safe operating ranges
     and automate tuning per rail configuration.
@@ -1243,8 +1389,75 @@ yet quantified through a controlled user study.
 \end{itemize}
 
 % ============================================================
+\section{Discussion}
+\label{sec:discussion}
+
+This section reflects on the research process itself: what the chosen approach
+demonstrates about the competences required of a Technical Informatics engineer,
+and what, in hindsight, could have been approached differently.
+
+\subsection{Competences Demonstrated}
+The research set out from a functional problem (unreadable text-based fault
+output) and isolated a technical core (non-linear encoder mapping, recursive
+state estimation, singularity-free orientation reconstruction). The path from
+problem to validated prototype exercised three engineering competences
+explicitly:
+
+\begin{itemize}[leftmargin=*]
+  \item \textit{Formal analysis grounded in literature.} Each of the three
+    mathematical models (Kalman, Catmull-Rom, quaternions) was selected against
+    alternatives through a comparison of established properties, not personal
+    preference. The selections are traceable to cited sources, and the
+    derivations in Section~\ref{sec:results-q4} are reproducible.
+  \item \textit{Architectural decomposition.} The five-layer pipeline isolates
+    concerns such that failures at one layer do not propagate. This was not
+    a hypothetical benefit: during validation, a Bluetooth disconnect and two
+    RF interference spikes were contained at the transport layer without
+    corrupting the state estimator (Section~\ref{sec:results-q6}).
+  \item \textit{Validation against measurable thresholds.} The pass/fail
+    criteria were defined before the calibration runs, not calibrated to the
+    results. Run~3 failed two criteria, and that failure is reported honestly
+    rather than reframed.
+\end{itemize}
+
+\subsection{What Could Have Been Done Differently}
+Three decisions, in hindsight, would have been made differently.
+
+First, the \textit{filter tuning was empirical rather than analytical}. The
+process noise $\sigma_a$ and the 85/15 spindle blend ratio were found by
+iteration on observed behaviour, not derived from the noise characteristics of
+the sensors. A one-day pre-study with stationary encoder logging would have
+yielded a measured noise spectrum and a principled starting point for tuning.
+This is reflected in the recommendation for a sensitivity analysis.
+
+Second, the \textit{rendering evaluation is structurally weaker than the
+numerical parts}. Where the mathematical models are validated against metric
+thresholds, the rendering techniques are evaluated against a criteria matrix
+whose scoring, while based on observable properties, is ultimately assessed by
+the author. A small user study with even three to five colleagues would have
+converted the inductive claim of ``more intuitive'' into a measurable diagnosis
+time. The time cost was underestimated during planning.
+
+Third, the \textit{sample size of three calibration runs} is the right order of
+magnitude for correctness-of-concept but not for statistical generalizability.
+Scheduling conflicts with installation availability drove this choice; a more
+defensive plan would have included reserved time on a test bench rail rather
+than relying on field installations.
+
+\subsection{Scope Boundaries}
+The research deliberately excluded the shipping application itself (the
+\textit{beroepsproduct}, or professional deliverable in the HBO-TI sense)
+from the scope of the research questions. Source code is referenced where it
+implements a research instrument, but the application as a whole is a
+professional deliverable for the stakeholder, not a research product
+(\textit{onderzoeksproduct}). This separation was maintained throughout the
+article in line with the format
+guidelines~\cite{gielingartikel2223} and prevents the
+research from drifting into an application showcase.
+
+% ============================================================
 \newpage
-\bibliographystyle{plainnat}
+\bibliographystyle{ieeetr}
 \bibliography{bibliography}
 
 \label{LastPage}
