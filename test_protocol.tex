@@ -305,15 +305,13 @@ nieuw logfile starten.
   \item \emph{CSV samples} teller loopt op zodra encoder-data binnenkomt
 \end{itemize}
 
-\textbf{Klok-tijd app gestart:} \fillshort
-
-\textbf{Klok-tijd BT verbonden:} \fillshort
+Geen klok-tijden noteren --- elke knop-druk schrijft zelf een
+millisecond-timestamp in het log.
 
 \begin{notebox}
-\small \textbf{Probleem-oplossing:} Geen \texttt{[CSV]} regels?
-Controleer of de status \emph{Verbonden} is (groene tekst). Geen
-\texttt{[BT\_RTT]}? Check of de BT-verbinding écht actief is, niet
-demo-modus. App crash? Stop, herstart, noteer hieronder.
+\small \textbf{Probleem-oplossing:} Geen oplopende CSV samples teller?
+Controleer of status \emph{Verbonden} is (groene tekst). App crash?
+Stop, herstart, noteer hieronder.
 \end{notebox}
 
 \textbf{Eventuele opstart-issues:}
@@ -331,18 +329,13 @@ Validatie-sectie van de app.
   \item Wacht $\sim$5\,s zodat eventuele opstartfluctuaties verdwijnen
   \item Tik \textbf{Start baseline} (\texttt{[BASELINE\_START]} regel verschijnt in log)
   \item Status verandert naar \emph{BASELINE ACTIEF} (oranje)
-  \item Noteer hieronder onmiddellijk de klok-tijd
-  \item Wacht 10 seconden (gebruik telefoon-timer)
+  \item Wacht $\sim$10 seconden (telefoon-timer, of gewoon op het oog)
   \item Tik \textbf{Eind baseline} (\texttt{[BASELINE\_END]} regel)
   \item Status verandert naar \emph{Niet actief (1 voltooid)}
-  \item Noteer eind-klok-tijd
 \end{itemize}
 
-\textbf{Baseline start (klok-tijd, hh:mm:ss):} \fillline
-
-\textbf{Baseline eind (klok-tijd, hh:mm:ss):} \fillline
-
-\textbf{Encoder-waarde tijdens baseline (van scherm aflezen):} \fillshort\ \,pulses
+De begin- en eind-timestamps komen automatisch in het log. Geen
+klok-tijden noteren.
 
 \textbf{Visuele observatie tijdens baseline (was er zichtbare beweging op het scherm?):}
 
@@ -359,8 +352,6 @@ in de tabel hieronder de getoonde positie.
   \item Lift begint te bewegen, vermoedelijk langzaam (firmware speed 20--50)
 \end{itemize}
 
-\textbf{Klok-tijd run B$\to$T gestart:} \fillshort
-
 \textbf{Bij elke marker (MP1 t/m MP5) doe je:}
 
 \begin{enumerate}[leftmargin=2.5em]
@@ -373,25 +364,24 @@ in de tabel hieronder de getoonde positie.
 \textbf{Tip:} tik \emph{nét voor} de marker; menselijke reactietijd is
 $\sim$200\,ms en de chair is traag genoeg dat een tikje vroeg/laat niet
 veel uitmaakt. De counter in de app loopt automatisch: \emph{Volgende:
-MP1} wordt \emph{Volgende: MP2} na elke tik.
+MP1} wordt \emph{Volgende: MP2} na elke tik. De timestamp komt vanzelf
+in het log.
 
 \renewcommand{\arraystretch}{1.9}
-\begin{tabular}{@{}|c|p{2cm}|p{2cm}|p{2.5cm}|p{4.5cm}|@{}}
+\begin{tabular}{@{}|c|p{2cm}|p{3cm}|p{5cm}|@{}}
 \hline
-\textbf{Marker} & \textbf{Klok-tijd} & \textbf{Foto?} & \textbf{Display toont} & \textbf{Observatie (smooth? glitch?)} \\ \hline
-MP1 (B$\to$T) & & \cbox ja \cbox nee & & \\ \hline
-MP2 (B$\to$T) & & \cbox ja \cbox nee & & \\ \hline
-MP3 (B$\to$T) & & \cbox ja \cbox nee & & \\ \hline
-MP4 (B$\to$T) & & \cbox ja \cbox nee & & \\ \hline
-MP5 (B$\to$T) & & \cbox ja \cbox nee & & \\ \hline
+\textbf{Marker} & \textbf{Foto?} & \textbf{Display toont} & \textbf{Observatie (smooth? glitch?)} \\ \hline
+MP1 (B$\to$T) & \cbox ja \cbox nee & & \\ \hline
+MP2 (B$\to$T) & \cbox ja \cbox nee & & \\ \hline
+MP3 (B$\to$T) & \cbox ja \cbox nee & & \\ \hline
+MP4 (B$\to$T) & \cbox ja \cbox nee & & \\ \hline
+MP5 (B$\to$T) & \cbox ja \cbox nee & & \\ \hline
 \end{tabular}
 \renewcommand{\arraystretch}{1.0}
 
 \begin{itemize}[leftmargin=2em, label=$\square$]
   \item Lift bereikt top station
 \end{itemize}
-
-\textbf{Klok-tijd lift bij top:} \fillshort
 
 \textbf{Globale indruk B$\to$T (smooth motion, geen jumps?):}
 
@@ -406,21 +396,17 @@ marker.}
   \item Joystick activeren in tegengestelde richting
 \end{itemize}
 
-\textbf{Klok-tijd run T$\to$B gestart:} \fillshort
-
 \renewcommand{\arraystretch}{1.9}
-\begin{tabular}{@{}|c|p{2cm}|p{2cm}|p{2.5cm}|p{4.5cm}|@{}}
+\begin{tabular}{@{}|c|p{2cm}|p{3cm}|p{5cm}|@{}}
 \hline
-\textbf{Marker} & \textbf{Klok-tijd} & \textbf{Foto?} & \textbf{Display toont} & \textbf{Observatie} \\ \hline
-MP5 (T$\to$B) & & \cbox ja \cbox nee & & \\ \hline
-MP4 (T$\to$B) & & \cbox ja \cbox nee & & \\ \hline
-MP3 (T$\to$B) & & \cbox ja \cbox nee & & \\ \hline
-MP2 (T$\to$B) & & \cbox ja \cbox nee & & \\ \hline
-MP1 (T$\to$B) & & \cbox ja \cbox nee & & \\ \hline
+\textbf{Marker} & \textbf{Foto?} & \textbf{Display toont} & \textbf{Observatie} \\ \hline
+MP5 (T$\to$B) & \cbox ja \cbox nee & & \\ \hline
+MP4 (T$\to$B) & \cbox ja \cbox nee & & \\ \hline
+MP3 (T$\to$B) & \cbox ja \cbox nee & & \\ \hline
+MP2 (T$\to$B) & \cbox ja \cbox nee & & \\ \hline
+MP1 (T$\to$B) & \cbox ja \cbox nee & & \\ \hline
 \end{tabular}
 \renewcommand{\arraystretch}{1.0}
-
-\textbf{Klok-tijd lift weer bij bottom:} \fillshort
 
 \subsection{Stap 4 — Afsluiten}
 
@@ -475,10 +461,16 @@ cat ~/logs/tablet/session_*.log | grep "\[CSV\]" | sed 's/\[CSV\] //' \
     > ~/logs/csv_data.csv
 \end{lstlisting}
 
-Open \texttt{csv\_data.csv} in een spreadsheet of in Python. Filter de
-regels waarvan de timestamp tussen je baseline-start en baseline-eind
-klok-tijd valt (zie stap 1; convert hh:mm:ss naar ticks\_msec). Bereken
-binnen dat venster:
+Open \texttt{csv\_data.csv} in een spreadsheet of in Python. Filter
+de regels waarvan de timestamp \texttt{t} tussen
+\texttt{[BASELINE\_START]} en \texttt{[BASELINE\_END]} timestamps in
+het log valt. Voorbeeld om die twee snel op te zoeken:
+
+\begin{lstlisting}
+grep -E "\[BASELINE_(START|END)\]" ~/logs/tablet/session_*.log
+\end{lstlisting}
+
+Bereken binnen dat venster:
 
 \begin{itemize}[leftmargin=2em]
   \item T2 = $\max(\text{raw\_encoder}) - \min(\text{raw\_encoder})$
