@@ -56,23 +56,25 @@
 \newlabel{q:pipeline}{{1}{4}{Research Questions}{Item.4}{}}
 \newlabel{q:encoder}{{2}{4}{Research Questions}{Item.5}{}}
 \newlabel{q:math}{{3}{4}{Research Questions}{Item.6}{}}
-\newlabel{q:validation}{{4}{4}{Research Questions}{Item.7}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {3}Methods}{4}{section.3}\protected@file@percent }
 \newlabel{sec:methods}{{3}{4}{Methods}{section.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Data Pipeline Architecture (Design + Documentation Analysis)}{4}{subsection.3.1}\protected@file@percent }
 \newlabel{sec:method-q2}{{3.1}{4}{Data Pipeline Architecture (Design + Documentation Analysis)}{subsection.3.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Encoder-to-Position Mapping (Formal Analysis)}{5}{subsection.3.2}\protected@file@percent }
-\newlabel{sec:method-q3}{{3.2}{5}{Encoder-to-Position Mapping (Formal Analysis)}{subsection.3.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Encoder-to-Position Mapping (Formal Analysis)}{4}{subsection.3.2}\protected@file@percent }
+\newlabel{sec:method-q3}{{3.2}{4}{Encoder-to-Position Mapping (Formal Analysis)}{subsection.3.2}{}}
+\citation{shoemake1985quaternion,kuipers1999quaternions}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Mathematical Models (Formal Analysis)}{5}{subsection.3.3}\protected@file@percent }
 \newlabel{sec:method-q4}{{3.3}{5}{Mathematical Models (Formal Analysis)}{subsection.3.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Validation (Experiment)}{5}{subsection.3.4}\protected@file@percent }
-\newlabel{sec:method-q6}{{3.4}{5}{Validation (Experiment)}{subsection.3.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Validation Approach (Experiment)}{5}{subsection.3.4}\protected@file@percent }
+\newlabel{sec:method-validation}{{3.4}{5}{Validation Approach (Experiment)}{subsection.3.4}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {4}Results}{5}{section.4}\protected@file@percent }
 \newlabel{sec:results}{{4}{5}{Results}{section.4}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Data Pipeline Architecture}{5}{subsection.4.1}\protected@file@percent }
 \newlabel{sec:results-q2}{{4.1}{5}{Data Pipeline Architecture}{subsection.4.1}{}}
 \citation{graham2014fsm}
 \citation{bolton2019mechatronics}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Telemetry message types relevant for spatial visualization, classified along the three axes defined in Section~\ref {sec:method-q2}.}}{6}{table.caption.2}\protected@file@percent }
+\newlabel{tab:telemetry}{{2}{6}{Telemetry message types relevant for spatial visualization, classified along the three axes defined in Section~\ref {sec:method-q2}}{table.caption.2}{}}
 \newlabel{eq:checksum}{{1}{6}{Data Pipeline Architecture}{equation.1}{}}
 \newlabel{eq:swivel}{{2}{6}{Data Pipeline Architecture}{equation.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Encoder-to-Position Mapping}{6}{subsection.4.2}\protected@file@percent }
@@ -80,31 +82,29 @@
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.1}Rail Geometry Construction}{6}{subsubsection.4.2.1}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces The three rail segment types: straight (left), vertical bend (center), and horizontal bend (right), with their respective arc-tracing geometry and encoder pulse costs.}}{6}{figure.caption.5}\protected@file@percent }
 \newlabel{fig:rail-segments}{{3}{6}{The three rail segment types: straight (left), vertical bend (center), and horizontal bend (right), with their respective arc-tracing geometry and encoder pulse costs}{figure.caption.5}{}}
-\newlabel{eq:direction}{{3}{6}{Rail Geometry Construction}{equation.3}{}}
-\newlabel{eq:arclength}{{4}{6}{Rail Geometry Construction}{equation.4}{}}
 \citation{strang2016calculus}
 \citation{shoemake1985quaternion,diebel2006attitude}
-\citation{kalman1960,welch1995kalman}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Telemetry message types relevant for spatial visualization, classified along the three axes defined in Section~\ref {sec:method-q2}.}}{7}{table.caption.2}\protected@file@percent }
-\newlabel{tab:telemetry}{{2}{7}{Telemetry message types relevant for spatial visualization, classified along the three axes defined in Section~\ref {sec:method-q2}}{table.caption.2}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Layered telemetry pipeline from Bluetooth transport to 3D rendering. Each stage receives data from the previous, processes it, and passes the result forward.}}{7}{figure.caption.3}\protected@file@percent }
 \newlabel{fig:pipeline}{{1}{7}{Layered telemetry pipeline from Bluetooth transport to 3D rendering. Each stage receives data from the previous, processes it, and passes the result forward}{figure.caption.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces The pipeline output: the 3D ghost chair follows the rail based on live telemetry, with semi-transparent ghost stairs providing spatial context and rail annotations identifying segment boundaries.}}{7}{figure.caption.4}\protected@file@percent }
+\newlabel{fig:ghost-chair}{{2}{7}{The pipeline output: the 3D ghost chair follows the rail based on live telemetry, with semi-transparent ghost stairs providing spatial context and rail annotations identifying segment boundaries}{figure.caption.4}{}}
+\newlabel{eq:direction}{{3}{7}{Rail Geometry Construction}{equation.3}{}}
+\newlabel{eq:arclength}{{4}{7}{Rail Geometry Construction}{equation.4}{}}
 \newlabel{eq:arctracing}{{5}{7}{Rail Geometry Construction}{equation.5}{}}
 \newlabel{eq:arctracing-error}{{6}{7}{Rail Geometry Construction}{equation.6}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.2}Piecewise Encoder Mapping}{7}{subsubsection.4.2.2}\protected@file@percent }
 \newlabel{eq:pulsecosts}{{7}{7}{Piecewise Encoder Mapping}{equation.7}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.3}Spindle Angle Lookup}{7}{subsubsection.4.2.3}\protected@file@percent }
-\newlabel{eq:spindle}{{8}{7}{Spindle Angle Lookup}{equation.8}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Mathematical Models for State Estimation}{7}{subsection.4.3}\protected@file@percent }
-\newlabel{sec:results-q4}{{4.3}{7}{Mathematical Models for State Estimation}{subsection.4.3}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.1}Kalman Filter}{7}{subsubsection.4.3.1}\protected@file@percent }
+\citation{kalman1960,welch1995kalman}
 \citation{labbe2015kalman}
 \citation{bowditch2002}
 \citation{driscoll2016damping}
 \citation{catmullrom1974}
 \citation{kuipers1999quaternions}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces The pipeline output: the 3D ghost chair follows the rail based on live telemetry, with semi-transparent ghost stairs providing spatial context and rail annotations identifying segment boundaries.}}{8}{figure.caption.4}\protected@file@percent }
-\newlabel{fig:ghost-chair}{{2}{8}{The pipeline output: the 3D ghost chair follows the rail based on live telemetry, with semi-transparent ghost stairs providing spatial context and rail annotations identifying segment boundaries}{figure.caption.4}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.3}Spindle Angle Lookup}{8}{subsubsection.4.2.3}\protected@file@percent }
+\newlabel{eq:spindle}{{8}{8}{Spindle Angle Lookup}{equation.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Mathematical Models for State Estimation}{8}{subsection.4.3}\protected@file@percent }
+\newlabel{sec:results-q4}{{4.3}{8}{Mathematical Models for State Estimation}{subsection.4.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.1}Kalman Filter}{8}{subsubsection.4.3.1}\protected@file@percent }
 \newlabel{eq:kf-predict}{{9}{8}{Kalman Filter}{equation.9}{}}
 \newlabel{eq:kf-Q}{{10}{8}{Kalman Filter}{equation.10}{}}
 \newlabel{eq:kf-correct}{{11}{8}{Kalman Filter}{equation.11}{}}
@@ -122,27 +122,24 @@
 \newlabel{eq:pitch-quat}{{18}{9}{Quaternion Orientation}{equation.18}{}}
 \newlabel{eq:spindle-quat}{{19}{9}{Quaternion Orientation}{equation.19}{}}
 \newlabel{eq:spindle-blend}{{20}{9}{Quaternion Orientation}{equation.20}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Validation Results}{9}{subsection.4.4}\protected@file@percent }
-\newlabel{sec:results-q6}{{4.4}{9}{Validation Results}{subsection.4.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Validation Evidence}{9}{subsection.4.4}\protected@file@percent }
+\newlabel{sec:results-validation}{{4.4}{9}{Validation Evidence}{subsection.4.4}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces The calibration run in progress: the ghost chair tracks the physical lift position while compass-based angle corrections are applied at horizontal bends.}}{9}{figure.caption.7}\protected@file@percent }
 \newlabel{fig:calibration-run}{{4}{9}{The calibration run in progress: the ghost chair tracks the physical lift position while compass-based angle corrections are applied at horizontal bends}{figure.caption.7}{}}
-\newlabel{eq:compass}{{21}{9}{Validation Results}{equation.21}{}}
-\newlabel{eq:anglecorrection}{{22}{9}{Validation Results}{equation.22}{}}
+\newlabel{eq:compass}{{21}{9}{Validation Evidence}{equation.21}{}}
 \citation{marek2015mobile3d}
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Validation measurements across three calibration runs on physical stairlift installations. The right-hand column reports pass/fail against the criteria defined in Section~\ref {sec:method-q6} and purely factual events logged during the run. Interpretation of these measurements is presented in Section~\ref {sec:conclusion}.}}{10}{table.caption.8}\protected@file@percent }
-\newlabel{tab:validation}{{4}{10}{Validation measurements across three calibration runs on physical stairlift installations. The right-hand column reports pass/fail against the criteria defined in Section~\ref {sec:method-q6} and purely factual events logged during the run. Interpretation of these measurements is presented in Section~\ref {sec:conclusion}}{table.caption.8}{}}
+\newlabel{eq:anglecorrection}{{22}{10}{Validation Evidence}{equation.22}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {5}Conclusion}{10}{section.5}\protected@file@percent }
 \newlabel{sec:conclusion}{{5}{10}{Conclusion}{section.5}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Answers to Research Questions}{10}{subsection.5.1}\protected@file@percent }
-\citation{gielingartikel2223}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Answer to Central Question}{11}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Answer to Central Question}{10}{subsection.5.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Validation measurements across three calibration runs on physical stairlift installations. The right-hand column reports pass/fail against the criterion in the originating method section; rows marked \textit  {observation} are reported for completeness without an associated criterion.}}{11}{table.caption.8}\protected@file@percent }
+\newlabel{tab:validation}{{4}{11}{Validation measurements across three calibration runs on physical stairlift installations. The right-hand column reports pass/fail against the criterion in the originating method section; rows marked \textit {observation} are reported for completeness without an associated criterion}{table.caption.8}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Limitations}{11}{subsection.5.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Recommendations}{11}{subsection.5.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{11}{section.6}\protected@file@percent }
 \newlabel{sec:discussion}{{6}{11}{Discussion}{section.6}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Competences Demonstrated}{11}{subsection.6.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}What Could Have Been Done Differently}{11}{subsection.6.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Scope Boundaries}{11}{subsection.6.3}\protected@file@percent }
+\citation{gielingartikel2223}
 \bibstyle{ieeetr}
 \bibdata{bibliography}
 \bibcite{boehm1988spiral}{{1}{}{{}}{{}}}
@@ -161,6 +158,9 @@
 \bibcite{catmullrom1974}{{14}{}{{}}{{}}}
 \bibcite{diebel2006attitude}{{15}{}{{}}{{}}}
 \bibcite{kuipers1999quaternions}{{16}{}{{}}{{}}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Competences Demonstrated}{12}{subsection.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}What Could Have Been Done Differently}{12}{subsection.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Scope Boundaries}{12}{subsection.6.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{Bibliography}{12}{subsection.6.3}\protected@file@percent }
 \bibcite{khronos2021gltf}{{17}{}{{}}{{}}}
 \bibcite{linietsky2014godot}{{18}{}{{}}{{}}}
