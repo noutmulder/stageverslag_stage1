@@ -2,7 +2,7 @@ PWD /home/nmu/stageverslag_periode_1_2_26/project
 INPUT /home/nmu/.TinyTeX/texmf.cnf
 INPUT /home/nmu/.TinyTeX/texmf-dist/web2c/texmf.cnf
 INPUT /home/nmu/.TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt
-INPUT /home/nmu/stageverslag_periode_1_2_26/project/main.tex
+INPUT main.tex
 OUTPUT main.log
 INPUT /home/nmu/.TinyTeX/texmf-dist/tex/latex/base/article.cls
 INPUT /home/nmu/.TinyTeX/texmf-dist/tex/latex/base/article.cls
@@ -458,6 +458,9 @@ INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/vf/adobe/palatino/pplr8t.vf
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/adobe/palatino/pplr8r.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/vf/adobe/palatino/pplr7t.vf
+INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/zplmb7t.tfm
+INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/zplmb7t.tfm
+INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/zplmb7t.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/vf/public/mathpazo/zplmr7m.vf
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/fplmri.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/cm/cmmi10.tfm
@@ -465,9 +468,6 @@ INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/adobe/palatino/pplri8r.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/vf/public/mathpazo/zplmr7t.vf
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/fplmr.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/cm/cmr10.tfm
-INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/zplmb7t.tfm
-INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/zplmb7t.tfm
-INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/zplmb7t.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/vf/public/mathpazo/zplmr7m.vf
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/fplmri.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/cm/cmmi10.tfm

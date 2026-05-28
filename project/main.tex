@@ -98,15 +98,16 @@
 \small
 \textbf{Abstract.}
 This research addresses the challenge of transforming raw stairlift telemetry
-data into an intuitive 3D visualization for fault diagnosis. The core technical
-problem is the live mapping of noisy, asynchronous sensor readings onto a
-curved 3D rail geometry with segment-dependent encoder-to-distance ratios. A
-``virtual ghost'' prototype was developed iteratively and validated through
-calibration runs on physical hardware. The results show that a processing
-pipeline combining non-linear encoder mapping, recursive state estimation, and
-smooth tangent-based orientation reconstruction produces a stable live 3D
-representation. This enables faster spatial interpretation of stairlift
-position and fault conditions compared to text-based error codes.
+into a stable, accurate live 3D visualization for fault diagnosis. The core
+technical problem is the mapping of noisy, asynchronous sensor readings onto
+a curved 3D rail geometry with segment-dependent encoder-to-distance ratios.
+A ``virtual ghost'' prototype was developed iteratively and a single
+calibration run on physical hardware was used to verify that the deductive
+chain of derivations holds under real-world conditions. The results show
+that a processing pipeline combining non-linear encoder mapping, recursive
+state estimation, and smooth tangent-based orientation reconstruction
+produces a stable, accurate live 3D representation of stairlift position
+and fault state.
 \end{minipage}
 \end{center}
 \vspace{0.3cm}
@@ -724,11 +725,14 @@ serial link:
 \begin{itemize}[leftmargin=*]
   \item \textit{Fast loop} ($\sim$20\,Hz): alternates traction (MSG\,110) and
     spindle (MSG\,111) requests each frame tick.
-  \item \textit{Swivel loop} ($\sim$20\,Hz): polls the swivel angle via the
-    APP\_TO\_BUS multiplexed channel (MSG\,168) with a two-step handshake
-    (send request, poll for response) at 50\,ms intervals. Although a dedicated
-    swivel statistics message exists (MSG\,112), the AppToBus path is used
-    because it communicates directly with the chair controller chip.
+  \item \textit{Swivel loop}: polls the swivel angle via the APP\_TO\_BUS
+    multiplexed channel (MSG\,168). The AppToBus protocol uses a two-step
+    handshake (send request; if the response is a single-byte ACK, poll for
+    the actual data at 100\,ms intervals up to ten times). Successive
+    swivel-polling cycles are separated by a 50\,ms delay. Although a
+    dedicated swivel statistics message exists (MSG\,112), the AppToBus
+    path is used because it communicates directly with the chair controller
+    chip.
   \item \textit{Slow loop} (0.5\,Hz): polls system status (MSG\,114) and
     footrest state (MSG\,113) every 2\,s.
 \end{itemize}
