@@ -89,9 +89,44 @@ Tester: \fillline\hfill Begeleider aanwezig? \cbox ja \cbox nee
 
 \section*{Overzicht}
 
-Eén calibratie-run, één rail, vier metingen + twee observaties. Doel:
-elk DV1--DV3 criterium in de validatie-tabel van het verslag van een
-echt cijfer voorzien in plaats van \texttt{[meet]}.
+Eén rijbeweging op- en neer, één rail, vier metingen + twee observaties.
+Doel: elk DV1--DV3 criterium in de validatie-tabel van het verslag van
+een echt cijfer voorzien in plaats van \texttt{[meet]}.
+
+\textbf{Belangrijk: dit is gewoon de lift normaal omhoog en omlaag
+rijden met de joystick/knoppen op de stoel.} Geen firmware-calibratie
+mode (die \texttt{CalibrationRunService} flow in de code is voor
+installatie, niet voor validatie). De firmware kent zijn rail al; wij
+kijken alleen mee.
+
+\subsection*{Wat we WEL testen}
+
+\begin{itemize}[leftmargin=2em, label=$\bullet$]
+  \item Of onze \texttt{IpcEncoderMapper} cumulatief de juiste positie
+        oplevert door pulse-counts van straight + bend segmenten te
+        integreren
+  \item Of de Catmull-Rom interpolatie en quaternion-compositie van de
+        chair op het scherm overeenkomen met de werkelijkheid
+  \item Of het Kalman-filter encoder-ruis significant reduceert
+  \item Of de Bluetooth round-trip binnen het 100\,ms budget blijft
+  \item Of de hele pipeline live, end-to-end, soepel werkt
+\end{itemize}
+
+\subsection*{Wat we NIET testen}
+
+\begin{itemize}[leftmargin=2em, label=$\bullet$]
+  \item Encoder-hardware (al door DeVi geverifieerd)
+  \item Firmware pulse-cost constanten (al geverifieerd)
+  \item Lengte van bochten met meetlint (kan niet accuraat; lengte
+        wordt door de firmware berekend uit pulse-count $\times$
+        bend-radius $\times$ segment-hoek)
+\end{itemize}
+
+Dus: markers plak je \textbf{alleen op rechte stukken en bij de
+stations}. Bochten meten we niet --- de software berekent ze, en
+indirect testen we of die berekening klopt door te kijken of de chair
+op de \emph{volgende} marker (op een rechte na de bocht) komt waar
+verwacht.
 
 \begin{table}[h]
 \small
@@ -123,85 +158,74 @@ Pass/fail logica:
   \item Toegang tot één werkende fysieke stairlift
   \item Meetlint (rolmaat) met mm-graduatie, minimaal 5\,m lang
   \item Schilderstape of stickertjes voor 4--5 markers
-  \item Laptop met de app, Bluetooth-adapter werkend
-  \item Telefoon voor foto's van het scherm bij elke marker
+  \item Tablet met de app (UP-Studio debug build, recent geïnstalleerd)
+  \item Tablet-oplader (alleen voor opladen achteraf)
+  \item Telefoon voor foto's van het scherm bij elke marker (mag dezelfde
+        zijn als de tablet als die alleen wordt)
   \item Pen + dit document uitgeprint
-  \item Reservebatterijen / oplader voor laptop
-  \item Tijd: $\sim$1\,uur op de lift
+  \item Tijd: $\sim$1\,uur op de lift, daarna $\sim$15\,min thuis voor data-pull
+  \item \emph{Voor de data-pull achteraf:} laptop + USB-kabel + adb tools.
+        Niet nodig tijdens de rijbeweging zelf.
 \end{itemize}
 
-\section{Code-instrumentatie (vóór de run, op kantoor)}
+\section{Logfile-capture}
 
-Drie kleine toevoegingen in de Godot-codebase. Test ze eerst in demo-mode
-voordat je naar de lift gaat.
+De \texttt{TestLogger} autoload in de app schrijft alle validatie-events
+automatisch naar een file op de tablet, in de app-private external
+storage map (geen permissies nodig). Geen handmatig print-redirect of
+\texttt{adb logcat} vereist tijdens de rijbeweging zelf. Je hoeft de
+tablet niet met USB-kabel aan een laptop te koppelen tijdens het rijden
+--- alleen \emph{na} de run om het bestand te pullen.
 
-\subsection{Logfile redirect}
+\subsection{Wat er automatisch gelogd wordt}
 
-Start de app vanuit terminal zodat alle \texttt{print()} output naar een
-bestand gaat:
+Zodra je de app opent:
+\begin{itemize}[leftmargin=2em, label=$\bullet$]
+  \item \texttt{[CSV]} per encoder-meting ($\sim$20 Hz tijdens beweging)
+  \item \texttt{[BT\_RTT]} per request/response paar (round-trip in ms)
+  \item \texttt{[BASELINE\_START]} / \texttt{[BASELINE\_END]} bij knop-druk
+  \item \texttt{[MARKER]} per MARK-druk, inclusief encoder en positie
+  \item \texttt{[VALIDATION\_SUMMARY]} bij Print summary
+\end{itemize}
 
+Bestand op de tablet:
 \begin{lstlisting}
-cd ~/MergeIPC/GD-UP-Studio
-godot --path . > ~/logs/run_$(date +%Y%m%d_%H%M).txt 2>&1
+/storage/emulated/0/Android/data/com.devistairlifts/files/
+    validation_logs/session_<datetime>.log
 \end{lstlisting}
 
-\textbf{Bestandsnaam van jouw logfile:} \filllong
+In de app onderaan de \emph{Validatie / Tests} sectie zie je de huidige
+bestandsnaam en het aantal regels.
 
-\subsection{Per-frame CSV-log (voor T2, T3)}
+\subsection{Knop \emph{Nieuw logfile}}
 
-In \texttt{assets/code/ipc/ipc\_lift\_controller.gd}, in de functie
-\texttt{on\_encoder\_received(encoder: int)}, vlak vóór de
-\texttt{\_kf\_predict(dt)} aanroep:
+Sluit het huidige bestand en opent een nieuw bestand. Counters van de
+sessie worden ook gereset. Gebruik dit als je een nieuwe sessie wilt
+starten (bv.\ na een testrun in demo-modus en vóór de echte run op de
+lift).
 
-\begin{lstlisting}
-# [VALIDATIE] tijdelijk: per-meting log voor jitter-analyse
-print("[CSV] %d,%d,%.6f,%.6f,%.6f" % [
-    Time.get_ticks_msec(), encoder,
-    _kf_pos, _kf_vel, _display_pos if not is_nan(_display_pos) else 0.0
-])
-\end{lstlisting}
+\subsection{Na de rijbeweging: log pullen via adb}
 
-Geeft regels: \texttt{[CSV] timestamp\_ms, raw\_encoder, kf\_pos, kf\_vel, display\_pos}.
-
-\subsection{Bluetooth round-trip log (voor T1)}
-
-In \texttt{assets/code/ipc/net/lift/lift\_client.gd}, in de functie
-\texttt{send\_and\_receive(...)}, nét na de while-loop die op de response
-wacht (rond regel 137, vóór \texttt{var result := \_pending\_result}):
+Tablet via USB aansluiten op de laptop, dan:
 
 \begin{lstlisting}
-if _pending_result != null:
-    print("[BT_RTT] msg_id=%d rtt_ms=%.1f" % [msg_id, elapsed_ms])
+adb devices  # bevestig dat tablet zichtbaar is
+mkdir -p ~/logs/tablet
+adb pull /storage/emulated/0/Android/data/com.devistairlifts/files/\
+validation_logs/ ~/logs/tablet/
 \end{lstlisting}
 
-\subsection{Marker-knop (voor T4)}
-
-Bovenaan \texttt{ipc\_lift\_controller.gd} (class-velden):
-\begin{lstlisting}
-var _marker_was_pressed: bool = false
-\end{lstlisting}
-
-In \texttt{\_process(delta)} aan de top:
-\begin{lstlisting}
-# [VALIDATIE] markeer huidige positie als referentiepunt-passage
-if Input.is_key_pressed(KEY_SPACE) and not _marker_was_pressed:
-    _marker_was_pressed = true
-    print("[MARKER] t=%d encoder=%d kf_pos=%.5f display_pos=%.5f" % [
-        Time.get_ticks_msec(), last_encoder_value,
-        _kf_pos, _display_pos if not is_nan(_display_pos) else 0.0
-    ])
-elif not Input.is_key_pressed(KEY_SPACE):
-    _marker_was_pressed = false
-\end{lstlisting}
+Alle session\_*.log bestanden staan dan in \texttt{\textasciitilde/logs/tablet/}.
 
 \subsection{Sanity-check vóór vertrek}
 
 \begin{itemize}[leftmargin=2em, label=$\square$]
-  \item Build de app, geen compile errors
-  \item Run in demo mode: \texttt{[CSV]} regels verschijnen continu
-  \item Druk spatie: \texttt{[MARKER]} regel verschijnt
-  \item Demo mode genereert geen BT, dus \texttt{[BT\_RTT]} pas op locatie zichtbaar
-  \item Logfile groeit, output is leesbaar
+  \item App opent zonder errors in Live-tab
+  \item Onderaan Validatie-sectie zie je: \emph{Log: session\_*.log (N regels)}
+  \item Connect via \emph{Demo} entry → CSV samples teller in app loopt
+  \item Klik \textbf{MARK} → markers teller loopt op, log-regels teller loopt op
+  \item Klik \textbf{Start baseline} → status wordt oranje \emph{BASELINE ACTIEF}
+  \item Klik \textbf{Nieuw logfile} → bestandsnaam in label verandert
 \end{itemize}
 
 \textbf{Sanity-check voltooid op (datum/tijd):} \filllong
@@ -230,18 +254,31 @@ elif not Input.is_key_pressed(KEY_SPACE):
 
 \subsection{Stap 0b — Marker-posities kiezen en meten}
 
-Kies 4--5 markers, verspreid over de rail. Plak een stukje tape op de rail
-bij elke gekozen positie, en meet daarna met de meetlint vanaf het
-bottom-stootblok hoeveel mm de tape zit. Noteer hieronder.
+\textbf{Markers alleen op rechte stukken en bij de stations.} Bochten
+sla je over --- die kun je niet accuraat met meetlint meten.
 
-\textit{Tip: zet markers exact daar waar de chair een herkenbaar
-oppervlak van de rail passeert (bv.\ een bout, een rail-overgang), zodat
-je tijdens de run goed kunt zien wanneer de chair de marker bereikt.}
+Plan voor markers:
+\begin{enumerate}[leftmargin=2em]
+  \item MP1 --- vlak bij bottom station (op de eerste rechte, $\sim$100--300\,mm vanaf bottom)
+  \item MP2 --- midden van een lang recht stuk
+  \item MP3 --- net na een bocht, op een recht stuk (zo test je of de software de bocht correct integreert)
+  \item MP4 --- volgend recht stuk
+  \item MP5 --- vlak bij top station (op de laatste rechte)
+\end{enumerate}
+
+Per marker: plak een stukje tape, meet de positie ten opzichte van
+bottom station langs het rechte stuk waar de marker zit, en noteer
+hieronder.
+
+\textit{Tip: zet markers op de buitenkant van de rail waar een
+herkenbaar punt op de chair (bv.\ wieltje, plaatje) duidelijk
+zichtbaar overheen rolt. Zo zie je tijdens de rijbeweging precies
+wanneer de marker gepasseerd wordt.}
 
 \renewcommand{\arraystretch}{2.0}
-\begin{tabular}{@{}|c|p{6.5cm}|p{3cm}|@{}}
+\begin{tabular}{@{}|c|p{6cm}|p{3.5cm}|@{}}
 \hline
-\textbf{ID} & \textbf{Beschrijving (waar zit de marker?)} & \textbf{Fysieke positie (mm)} \\ \hline
+\textbf{ID} & \textbf{Beschrijving (welk recht stuk?)} & \textbf{Fysieke positie (mm)} \\ \hline
 MP1 & & \\ \hline
 MP2 & & \\ \hline
 MP3 & & \\ \hline
@@ -250,21 +287,22 @@ MP5 & & \\ \hline
 \end{tabular}
 \renewcommand{\arraystretch}{1.0}
 
-\section{De run zelf}
+\section{De rijbeweging zelf}
 
 \subsection{Stap 0c — Opstart en verbinding ($\sim$10 min)}
 
-\textit{Wat je doet:} laptop aan, terminal openen, app starten met log
-redirect, en controleren of telemetrie binnenkomt.
+\textit{Wat je doet:} tablet aan, app openen, verbinden met lift,
+nieuw logfile starten.
 
 \begin{itemize}[leftmargin=2em, label=$\square$]
-  \item Laptop aan, op een vlakke ondergrond binnen handbereik
-  \item Terminal openen, commando uit sectie 3.1 typen (niet uitvoeren)
-  \item Lift inschakelen, sleutel aan
-  \item Druk \emph{enter} op terminal — de app start, logfile begint te schrijven
-  \item In de app: ga naar het IPC-scherm met de ghost chair view
-  \item Verbind via Bluetooth met de lift
-  \item Wacht tot in de console regels verschijnen met \texttt{[CSV]} en \texttt{[BT\_RTT]}
+  \item Lift aan (sleutel om)
+  \item Tablet aan, app openen (UP-Studio)
+  \item Ga naar \emph{Live}-tab (laatste knop in zijbalk)
+  \item Bluetooth: kies de juiste lift uit de dropdown → tik \textbf{Connect}
+  \item Wacht tot status \emph{Verbonden} verschijnt (groen), lift-naam in oranje
+  \item Tik \textbf{Nieuw logfile} in Validatie-sectie → start frisse sessie
+  \item Onder Validatie-sectie zie je: \emph{Log: session\_YYYYMMDD\_HHMMSS.log}
+  \item \emph{CSV samples} teller loopt op zodra encoder-data binnenkomt
 \end{itemize}
 
 \textbf{Klok-tijd app gestart:} \fillshort
@@ -272,10 +310,10 @@ redirect, en controleren of telemetrie binnenkomt.
 \textbf{Klok-tijd BT verbonden:} \fillshort
 
 \begin{notebox}
-\small \textbf{Probleem-oplossing:} Geen \texttt{[CSV]} regels? Controleer
-of de code-aanpassing uit §3.2 is doorgevoerd. Geen
-\texttt{[BT\_RTT]}? Controleer §3.3. App crash? Stop, herstart, noteer
-de tijd en het type fout hieronder.
+\small \textbf{Probleem-oplossing:} Geen \texttt{[CSV]} regels?
+Controleer of de status \emph{Verbonden} is (groene tekst). Geen
+\texttt{[BT\_RTT]}? Check of de BT-verbinding écht actief is, niet
+demo-modus. App crash? Stop, herstart, noteer hieronder.
 \end{notebox}
 
 \textbf{Eventuele opstart-issues:}
@@ -285,16 +323,18 @@ de tijd en het type fout hieronder.
 \subsection{Stap 1 — Stationaire baseline (10 s — voor T2 en T3)}
 
 \textit{Wat je doet:} chair staat helemaal stil, je laat 10 seconden
-data lopen. Tussendoor druk je twee keer spatie om begin/eind in de
-logfile te markeren.
+data lopen. Markeer begin en eind met de knoppen in de
+Validatie-sectie van de app.
 
 \begin{itemize}[leftmargin=2em, label=$\square$]
   \item Chair op MP1 (bottom-marker), motoren uit, chair geheel stil
   \item Wacht $\sim$5\,s zodat eventuele opstartfluctuaties verdwijnen
-  \item \textbf{Klik spatie} in de terminal-window (lijn \texttt{[MARKER]} verschijnt). Dit is begin baseline.
+  \item Tik \textbf{Start baseline} (\texttt{[BASELINE\_START]} regel verschijnt in log)
+  \item Status verandert naar \emph{BASELINE ACTIEF} (oranje)
   \item Noteer hieronder onmiddellijk de klok-tijd
   \item Wacht 10 seconden (gebruik telefoon-timer)
-  \item \textbf{Klik spatie} opnieuw. Dit is eind baseline.
+  \item Tik \textbf{Eind baseline} (\texttt{[BASELINE\_END]} regel)
+  \item Status verandert naar \emph{Niet actief (1 voltooid)}
   \item Noteer eind-klok-tijd
 \end{itemize}
 
@@ -308,11 +348,11 @@ logfile te markeren.
 
 \fillblock{\textwidth}\hfill\fillblock{\textwidth}
 
-\subsection{Stap 2 — Bottom $\to$ Top run}
+\subsection{Stap 2 — Rijbeweging Bottom $\to$ Top}
 
 \textit{Wat je doet:} de lift rijdt langzaam van bottom naar top. Bij
-elke marker druk je spatie + maak je foto + noteer je in de tabel
-hieronder de getoonde positie.
+elke marker tik je \textbf{MARK} in de app + maak je foto + noteer je
+in de tabel hieronder de getoonde positie.
 
 \begin{itemize}[leftmargin=2em, label=$\square$]
   \item Joystick / startknop op de lift indrukken
@@ -325,14 +365,15 @@ hieronder de getoonde positie.
 
 \begin{enumerate}[leftmargin=2.5em]
   \item \textbf{Kijken} naar de fysieke chair en de markers
-  \item \textbf{Op het moment dat de chair fysiek over de marker rijdt:} druk \emph{spatie} op de laptop (genereert \texttt{[MARKER]} log-regel)
+  \item \textbf{Op het moment dat de chair fysiek over de marker rijdt:} tik de grote \textbf{MARK} knop in de Validatie-sectie. Op desktop kan ook \emph{spatie}. Genereert \texttt{[MARKER] n=N label="MPN"} regel in log
   \item Maak \emph{foto} van het scherm: zorg dat de getoonde positie zichtbaar is
   \item Lees de getoonde positie af (mm of \% of normalized 0--1, wat de UI ook toont) en noteer in de tabel hieronder
 \end{enumerate}
 
-\textbf{Tip:} druk \emph{nét voor} de marker; menselijke reactietijd is
+\textbf{Tip:} tik \emph{nét voor} de marker; menselijke reactietijd is
 $\sim$200\,ms en de chair is traag genoeg dat een tikje vroeg/laat niet
-veel uitmaakt.
+veel uitmaakt. De counter in de app loopt automatisch: \emph{Volgende:
+MP1} wordt \emph{Volgende: MP2} na elke tik.
 
 \renewcommand{\arraystretch}{1.9}
 \begin{tabular}{@{}|c|p{2cm}|p{2cm}|p{2.5cm}|p{4.5cm}|@{}}
@@ -356,7 +397,7 @@ MP5 (B$\to$T) & & \cbox ja \cbox nee & & \\ \hline
 
 \fillblock{\textwidth}\hfill\fillblock{\textwidth}
 
-\subsection{Stap 3 — Top $\to$ Bottom return}
+\subsection{Stap 3 — Rijbeweging Top $\to$ Bottom (terugweg)}
 
 \textit{Idem als stap 2, maar omgekeerd. Levert tweede meting per
 marker.}
@@ -416,7 +457,7 @@ Geheugen vervaagt snel. Schrijf nu op wat je zag, ook als het allemaal goed ging
 
 Commando:
 \begin{lstlisting}
-grep "\[BT_RTT\]" ~/logs/run_*.txt | \
+grep "\[BT_RTT\]" ~/logs/tablet/session_*.log | \
   awk -F"rtt_ms=" '{print $2}' | \
   awk '{sum+=$1; n++} END {printf "T1 = %.1f ms (n=%d samples)\n", sum/n, n}'
 \end{lstlisting}
@@ -430,7 +471,8 @@ grep "\[BT_RTT\]" ~/logs/run_*.txt | \
 Extract de stationaire window uit het CSV-log. Eerst de hele CSV grep'en:
 
 \begin{lstlisting}
-grep "\[CSV\]" ~/logs/run_*.txt | sed 's/\[CSV\] //' > ~/logs/csv_data.csv
+cat ~/logs/tablet/session_*.log | grep "\[CSV\]" | sed 's/\[CSV\] //' \
+    > ~/logs/csv_data.csv
 \end{lstlisting}
 
 Open \texttt{csv\_data.csv} in een spreadsheet of in Python. Filter de
@@ -457,7 +499,7 @@ Voor elke marker: vergelijk fysieke positie (sectie 4) met getoonde
 positie. Marker-passage log-regels:
 
 \begin{lstlisting}
-grep "\[MARKER\]" ~/logs/run_*.txt
+grep "\[MARKER\]" ~/logs/tablet/session_*.log
 \end{lstlisting}
 
 De \texttt{display\_pos} in de log is normalized (0--1). Omrekenen naar
