@@ -2,7 +2,7 @@ PWD /home/nmu/stageverslag_periode_1_2_26/project
 INPUT /home/nmu/.TinyTeX/texmf.cnf
 INPUT /home/nmu/.TinyTeX/texmf-dist/web2c/texmf.cnf
 INPUT /home/nmu/.TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt
-INPUT main.tex
+INPUT /home/nmu/stageverslag_periode_1_2_26/project/main.tex
 OUTPUT main.log
 INPUT /home/nmu/.TinyTeX/texmf-dist/tex/latex/base/article.cls
 INPUT /home/nmu/.TinyTeX/texmf-dist/tex/latex/base/article.cls

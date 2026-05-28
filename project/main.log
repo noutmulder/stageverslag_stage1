@@ -1,9 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2026.4.16)  28 MAY 2026 13:09
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2026.4.16)  28 MAY 2026 13:16
 entering extended mode
  restricted \write18 enabled.
+ file:line:error style messages enabled.
  %&-line parsing enabled.
-**main.tex
-(./main.tex
+**/home/nmu/stageverslag_periode_1_2_26/project/main.tex
+(/home/nmu/stageverslag_periode_1_2_26/project/main.tex
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
 (/home/nmu/.TinyTeX/texmf-dist/tex/latex/base/article.cls
@@ -822,53 +823,17 @@ Underfull \hbox (badness 1348) in paragraph at lines 1034--1040
 \T1/ppl/m/n/10 The 0.85/0.15 split is the value cur-rently con-fig-ured
  []
 
-
-Underfull \hbox (badness 1655) in paragraph at lines 1050--1066
-[]\T1/ppl/b/n/10 Measurement method-ol-ogy. \T1/ppl/m/n/10 Phys-i-cal chair po-si-tion
+[9]
+Underfull \hbox (badness 6252) in paragraph at lines 1113--1113
+[]\T1/ppl/m/n/9 Bluetooth round-trip time
  []
 
 
-Underfull \vbox (badness 6332) has occurred while \output is active []
-
- [9]
-Underfull \hbox (badness 1454) in paragraph at lines 1117--1117
-[]\T1/ppl/m/n/9 Max po-si-tion er-ror at bend
+Overfull \hbox (31.74356pt too wide) in paragraph at lines 1103--1117
+ [][] 
  []
 
-
-Underfull \hbox (badness 1509) in paragraph at lines 1117--1118
-[]\T1/ppl/m/n/9 DV2(b): pass (5mm thresh-old on
- []
-
-
-Underfull \hbox (badness 1728) in paragraph at lines 1118--1118
-[]\T1/ppl/m/n/9 Encoder jit-ter (raw, sta-tion-
- []
-
-
-Underfull \hbox (badness 1297) in paragraph at lines 1142--1149
-\T1/ppl/m/n/10 i-ble in the ren-dered chair po-si-tion. With an 85/15
- []
-
-
-Underfull \hbox (badness 3954) in paragraph at lines 1220--1230
-[]\T1/ppl/m/n/10 Across the three val-i-da-tion runs, the im-ple-mented
- []
-
-[10]
-Underfull \hbox (badness 4291) in paragraph at lines 1251--1256
-[]\T1/ppl/b/n/10 Tablet frame-rate con-found. \T1/ppl/m/n/10 The tablet frame-
- []
-
-
-Underfull \vbox (badness 2591) has occurred while \output is active []
-
- [11]
-Underfull \hbox (badness 1360) in paragraph at lines 1317--1323
-\T1/ppl/m/n/10 bend-transition er-ror on Run 3 against the 10mm
- []
-
-(./main.bbl
+[10] [11] (./main.bbl
 Underfull \hbox (badness 2790) in paragraph at lines 13--14
 \T1/ppl/m/it/10 Vi-enna Uni-ver-sity of Tech-nol-ogy, Aus-tria\T1/ppl/m/n/10 , no. TR
  []
@@ -878,19 +843,17 @@ Underfull \hbox (badness 1320) in paragraph at lines 16--17
 \T1/ppl/m/n/10 M. Stein-buch, ``Ve-loc-ity and ac-cel-er-a-tion es-ti-ma-
  []
 
-[12]
+
 Underfull \hbox (badness 1661) in paragraph at lines 66--68
 \T1/ppl/m/n/10 plat-form sup-port.'' Ven-dor doc-u-men-ta-tion, 2024.
  []
 
 
-Underfull \hbox (badness 1558) in paragraph at lines 107--109
+Underfull \hbox (badness 1558) in paragraph at lines 104--106
 \T1/ppl/m/n/10 ingenieurs) v.2223.'' In-hol-land Uni-ver-sity of Ap-
  []
 
-) [13
-
-] (./main.aux)
+) [12] (./main.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
@@ -899,18 +862,18 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 0CDF73377A886191DA8FB73858DC38A3;8127.
  ) 
 Here is how much of TeX's memory you used:
- 27085 strings out of 469418
- 491374 string characters out of 5467751
- 905417 words of memory out of 5000000
- 55148 multiletter control sequences out of 15000+600000
+ 27081 strings out of 469418
+ 491406 string characters out of 5467751
+ 905266 words of memory out of 5000000
+ 55145 multiletter control sequences out of 15000+600000
  683360 words of font info for 170 fonts, out of 8000000 for 9000
  76 hyphenation exceptions out of 8191
- 84i,13n,94p,435b,810s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,13n,94p,472b,810s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </home/nmu/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmr.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on main.pdf (13 pages, 2130512 bytes).
+Output written on main.pdf (12 pages, 2126379 bytes).
 PDF statistics:
- 477 PDF objects out of 1000 (max. 8388607)
- 433 compressed objects within 5 object streams
- 123 named destinations out of 1000 (max. 500000)
+ 471 PDF objects out of 1000 (max. 8388607)
+ 428 compressed objects within 5 object streams
+ 121 named destinations out of 1000 (max. 500000)
  354 words of extra memory for PDF output out of 10000 (max. 10000000)
 

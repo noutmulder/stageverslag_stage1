@@ -1041,28 +1041,23 @@ Section~\ref{sec:conclusion}.
 \subsection{Validation Evidence}
 \label{sec:results-validation}
 This section reports the empirical evidence for the DV1--DV3 criteria that
-require physical measurement. The prototype was validated through calibration
-runs on three physical stairlift installations with rail configurations of
-3.21, 4.82, and 6.45\,m and four, six, and eight horizontal bends
-respectively. During each run the lift is driven from bottom station to top
-station and back, while the system polls telemetry at 250\,ms intervals.
+require physical measurement. The prototype is validated through a single
+calibration run on one physical stairlift installation; rail configuration
+and measured values are reported below. During the run the lift is driven
+from bottom station to top station and back, while the system polls telemetry
+at 250\,ms intervals.
 
-\textbf{Measurement methodology.} Physical chair position is read from a
-calibrated steel tape (1\,mm graduation, $\pm$1\,mm reading uncertainty) fixed
-along the rail before the run. Reference points are physically marked at the
-bottom station, top station, and every bend entry/exit using adhesive markers
-positioned with the same tape. At each reference point, the displayed
-position in the visualization is logged simultaneously with the lift passing
-the marker; the absolute difference is the reported position error. Because
-the steel-tape reading uncertainty ($\pm$1\,mm) is a fixed component of every
-reported position error, any error below approximately 2\,mm should be
-interpreted as ``within measurement noise'' rather than as a meaningful
-deviation. Bluetooth round-trip time is measured per request/response pair by
-the application layer; the reported values are run-averages over the bulk of
-each calibration run, excluding the first and last 5\,s to suppress
-connection-setup and shutdown artefacts. Kalman-filtered jitter is measured
-with the chair stationary at a station boundary, with the filter running on
-the live encoder feed, over a 10\,s window.
+\textbf{Measurement methodology.} Physical chair position is read with a
+steel tape (graduation 1\,mm, reading uncertainty $\approx\pm$1\,mm) at
+reference points marked on the rail before the run (bottom station, top
+station, and selected intermediate points at bend entries and exits). At
+each reference point the displayed position in the visualization is compared
+to the physical position; the absolute difference is the reported position
+error. Bluetooth round-trip time is measured per request/response pair by
+the application layer and reported as a run-average. Kalman-filtered jitter
+is measured with the chair stationary at a station boundary, with the filter
+running on the live encoder feed, over a 10\,s window. The same 10\,s
+window is used to record the raw-encoder baseline jitter for comparison.
 
 \begin{figure}[H]
 \centering
@@ -1099,59 +1094,38 @@ detector identifies this pattern and applies the correction automatically.
 
 \textbf{Quantitative evidence per criterion.} Table~\ref{tab:validation}
 collects the measurements that bear directly on DV1(b), DV2(b), and DV3(b).
-Additional observations (frame rate, angle correction) are logged in the
-table for completeness but are not pass/fail criteria.
 
-\begin{table*}[t]
+\begin{table}[H]
 \centering
-\caption{Validation measurements across three calibration runs on physical stairlift installations. The right-hand column reports pass/fail against the criterion in the originating method section; rows marked \textit{observation} are reported for completeness without an associated criterion.}
+\caption{Validation measurements from the single calibration run on the physical stairlift. Bracketed placeholders are filled in at the time of the run.}
 \label{tab:validation}
 \small
-\begin{tabular}{@{}p{4.2cm}rrrp{5.2cm}@{}}
+\begin{tabular}{@{}p{4.0cm}rp{3.0cm}@{}}
 \toprule
-\textbf{Metric} & \textbf{Run 1 (6 bends)} & \textbf{Run 2 (4 bends)} & \textbf{Run 3 (8 bends)} & \textbf{Pass/fail vs.\ criterion} \\
+\textbf{Metric} & \textbf{Value} & \textbf{Pass/fail} \\
 \midrule
-Rail length & 4\,820\,mm & 3\,210\,mm & 6\,450\,mm & --- \\
-Total encoder range & 16\,200 pulses & 10\,790 pulses & 21\,680 pulses & --- \\
-Position error at end station & $<$\,3\,mm & $<$\,2\,mm & $<$\,5\,mm & DV2(b): pass. \\
-Max position error at bend transition & 4.2\,mm & 2.8\,mm & 6.1\,mm & DV2(b): pass (5\,mm threshold on rails $\leq$ 5\,m; 10\,mm on longer rails). \\
-Encoder jitter (raw, stationary) & $\pm$\,2 pulses & $\pm$\,3 pulses & $\pm$\,2 pulses & DV3(b): baseline. \\
-Encoder jitter (after Kalman filter) & $<$\,0.1 pulse & $<$\,0.1 pulse & $<$\,0.1 pulse & DV3(b): pass ($>$\,20$\times$ reduction). \\
-Bluetooth round-trip time & 35\,ms avg & 42\,ms avg & 38\,ms avg & DV1(b): pass (all $\leq$ 100\,ms). \\
-Render frame rate (desktop) & 60\,fps stable & 60\,fps stable & 60\,fps stable & Observation. \\
-Render frame rate (tablet, Android 12+) & 55--60\,fps & 58--60\,fps & 52--58\,fps & Observation (see confound below). \\
-Angle correction error (horizontal bends) & $0.3^\circ$ avg & $0.5^\circ$ avg & $0.4^\circ$ avg & Observation (see limitations). \\
+Rail length & [meet]\,mm & --- \\
+Number of horizontal bends & [meet] & --- \\
+Position error at end station & [meet]\,mm & DV2(b) \\
+Max position error at reference points & [meet]\,mm & DV2(b) \\
+Encoder jitter (raw, stationary, 10\,s) & $\pm$\,[meet] pulses & DV3(b) baseline \\
+Encoder jitter (after Kalman, 10\,s) & [meet] pulses & DV3(b) \\
+Bluetooth round-trip time (run avg) & [meet]\,ms & DV1(b) \\
+Visual smoothness through bends & observational & --- \\
 \bottomrule
 \end{tabular}
-\end{table*}
+\end{table}
 
-All three runs satisfy every formal DV1--DV3 criterion. The 6.1\,mm
-bend-transition error on Run~3 falls within the relaxed 10\,mm tolerance for
-rails longer than 5\,m, but exceeds the 5\,mm threshold that applies to
-shorter rails; this rail-length-dependent degradation is the basis for the
-encoder-mapping discussion in Section~\ref{sec:conclusion}. The
-Kalman-filtered jitter reduction factor exceeded the required tenfold on
-every run.
+The pass/fail outcome per DV1--DV3 criterion is to be assigned after the
+measurements have been collected: DV2(b) passes if the position error stays
+below 5\,mm on a rail $\leq$ 5\,m or 10\,mm on a longer rail; DV3(b) passes
+if the post-Kalman jitter is at least ten times smaller than the raw
+baseline; DV1(b) passes if the Bluetooth round-trip time stays below
+100\,ms.
 
-\textbf{Logged events.} The parser checksum reported zero corruption events
-across all three runs. Run~1: no anomalies. Run~2: one manual compass
-re-trigger at the third horizontal bend, one transient Bluetooth disconnect
-at the $\sim$60\,s mark with auto-reconnect within 2\,s, and two latency
-spikes above 150\,ms. Run~3: no anomalies.
-
-\textbf{Side-by-side comparisons against earlier prototype iterations.} With
-the piecewise encoder mapping of Section~\ref{sec:results-q3} enabled, no
-segment-boundary jumps were visible in the rendered chair position. With an
-85/15 blend between the Kalman-filtered spindle angle and the geometry-derived
-pitch, no seat-tilt oscillation was visible during the bend passes; a 100\%
-Kalman spindle angle variant, logged for comparison during Run~1, showed a
-visible oscillation of approximately $\pm 0.4^\circ$ at bend entry and exit.
-
-\textbf{Tablet frame rate confound.} On the tablet build, the shadow-quality
-setting is reduced automatically by the rendering layer under
-load~\cite{marek2015mobile3d}; the reported tablet frame-rate numbers
-therefore reflect the system's adaptive behaviour, not a fixed-settings
-benchmark.
+\textbf{Logged events.} Any anomalies that occur during the run (Bluetooth
+disconnects, parser checksum errors, latency spikes, manual interventions)
+are recorded here at the time of the run for completeness.
 
 % ============================================================
 \section{Conclusion}
@@ -1167,45 +1141,39 @@ these six messages with a multi-rate polling strategy, the pipeline sustains
 the sensor-side 20\,Hz update rate within the serial link's capacity; future
 extensions (e.g., vibration or temperature monitoring) would require
 evaluating whether the serial bandwidth can accommodate additional streams
-without degrading position update rates. The measured Bluetooth round-trip
-time of 35--42\,ms across the three runs is well below the 100\,ms working
-threshold, satisfying DV1(b). The five-layer architecture itself isolates
+without degrading position update rates. The pass/fail outcome of DV1(b)
+against the measured Bluetooth round-trip time is reported in
+Table~\ref{tab:validation}. The five-layer architecture itself isolates
 failure modes by design: byte-level errors are caught by the protocol
 parser's checksum, while higher-level issues (connection loss, timeout) are
-handled by the transport layer. The Run~2 Bluetooth disconnect was recovered
-transparently without corrupting the state estimator, which is consistent
-with this isolation, although a single uncorrupted disconnect is observational
-evidence rather than a proof of robustness under adversarial conditions.
+handled by the transport layer; robustness under adversarial fault injection
+was not exercised and is reported as a limitation.
 
 \textbf{Encoder mapping.}
 The piecewise mapping resolves the core geometric problem identified in
 Section~\ref{sec:problem-analysis}: the non-linear relationship between
-encoder pulses and physical distance at bends. The validation data
-(Table~\ref{tab:validation}) shows position errors below 5\,mm on the two
-shorter rails (Run~1, Run~2) and within the relaxed 10\,mm tolerance on the
-longer Run~3 rail, satisfying DV2(b). The 6.1\,mm bend-transition error on
-Run~3, while within tolerance, is larger than the per-segment arc-tracing
-error bound of Equation~\ref{eq:arctracing-error} ($\approx 4.2\,\mu$m per
-segment, $<1$\,mm accumulated) can explain. The more plausible dominant
-sources are the finite precision of the firmware pulse-cost constants
-(Equation~\ref{eq:pulsecosts}, three to six significant figures) and
-mechanical backlash at bend transitions; neither was instrumented separately
-during these calibration runs. This is reported as a limitation rather than
+encoder pulses and physical distance at bends. Whether the implementation
+meets the DV2(b) tolerance on the validation rail is reported in
+Table~\ref{tab:validation}. Equation~\ref{eq:arctracing-error} bounds the
+per-segment arc-tracing error at $\approx 4.2\,\mu$m per segment, so any
+position error materially above this accumulated bound is attributable to
+the finite precision of the firmware pulse-cost constants
+(Equation~\ref{eq:pulsecosts}, four to ten significant figures) or
+mechanical backlash at bend transitions; neither is instrumented separately
+in the present validation. This is reported as a limitation rather than
 resolved.
 
 \textbf{Mathematical models.}
-The constant-velocity Kalman filter suppressed stationary encoder jitter from
-$\pm$2--3 raw pulses to below 0.1 pulse-equivalent across all three runs, a
-reduction factor of more than twenty and well above the tenfold threshold of
-DV3(b). Dead-reckoning extrapolation maintained responsiveness between
-measurement updates. The Catmull-Rom tangent and quaternion composition
-produced visibly smooth chair motion through the bend transitions; no
-chair-snapping was observed during any of the three runs, which is the
-practical signature of singularity-free quaternion composition. The tuning
-parameters (Table~\ref{tab:kalman}) and the 85/15 spindle-pitch blend were
-determined empirically rather than from a first-principles noise model;
-sensitivity to these choices is therefore not formally bounded and is
-reported as a limitation.
+The constant-velocity Kalman filter, dead-reckoning extrapolation, Catmull-Rom
+tangent, and quaternion composition together produce a smooth, stable
+representation. Whether the measured jitter reduction meets the DV3(b)
+tenfold threshold is reported in Table~\ref{tab:validation}, alongside
+observational notes on chair-motion smoothness (the practical signature of
+singularity-free quaternion composition). The tuning parameters
+(Table~\ref{tab:kalman}) and the 85/15 spindle-pitch blend are configured
+values in the implementation rather than derivations from a first-principles
+noise model; sensitivity to these choices is therefore not formally bounded
+and is reported as a limitation.
 
 \subsection{Answer to Central Question}
 The data processing pipeline required to transform live stairlift telemetry
@@ -1217,42 +1185,39 @@ non-linear rail geometries, a constant-velocity recursive filter for noise
 rejection and inter-measurement prediction, and quaternion-based orientation
 reconstruction from spline tangent vectors.
 
-Across the three validation runs, the implemented pipeline and models meet
-every formal DV1--DV3 criterion: Bluetooth round-trip remains below 100\,ms,
-displayed position falls within 5\,mm on rails up to 5\,m (within 10\,mm on
-longer rails), and Kalman filtering reduces stationary encoder jitter by more
-than a factor of twenty. The deductive answer to the central question is
-therefore that the architecture and mathematical models described in
-Sections~\ref{sec:results-q2}--\ref{sec:results-q4} are sufficient to produce
-a stable, accurate live 3D visualization on the validated rail configurations,
-within the measurement methodology defined in
-Section~\ref{sec:results-validation}.
+The pass/fail outcome of every DV1--DV3 criterion on the validation run is
+collected in Table~\ref{tab:validation}. The deductive answer to the central
+question therefore reduces to the question whether the architecture and
+mathematical models described in
+Sections~\ref{sec:results-q2}--\ref{sec:results-q4} hold under the
+measurement methodology defined in Section~\ref{sec:results-validation}.
+Generalisation beyond the single validated rail configuration requires
+additional runs and is out of scope for this report.
 
 \subsection{Limitations}
 \begin{itemize}[leftmargin=*]
-  \item \textbf{Sample size.} The validation was performed on three rail
-    configurations. Statistical generalizability to the full range of rail
-    designs has not been established.
-  \item \textbf{Empirical filter tuning.} The Kalman tuning parameters and the
-    85/15 spindle blend ratio were determined empirically. A formal
+  \item \textbf{Sample size.} The validation reported in this article is a
+    single calibration run on one rail configuration. Statistical
+    generalizability to the full range of rail designs is not established;
+    additional runs on rails of differing length, bend count, and bend type
+    would be required.
+  \item \textbf{Empirical filter tuning.} The Kalman tuning parameters and
+    the 85/15 spindle blend ratio are configured values in the implementation
+    rather than derivations from a measured sensor noise model. A formal
     sensitivity analysis is absent.
-  \item \textbf{Bend-transition error not decomposed.} The 6.1\,mm bend error
-    on Run~3 stays within the relaxed 10\,mm tolerance for rails longer than
-    5\,m, but exceeds the 5\,mm threshold that applies to shorter rails. The
-    arc-tracing approximation is ruled out as a dominant source by
-    Equation~\ref{eq:arctracing-error}; pulse-cost-constant precision and
-    mechanical backlash were not measured separately.
-  \item \textbf{Angle-correction measurement is self-referential.} The
-    reported angle-correction error (0.3--0.5\,$^\circ$) is computed from the
-    same compass tracker that generates the correction itself, so it is an
-    internal consistency check rather than an independent validation. An
-    external reference (e.g., a digital protractor or laser angle meter) would
-    be required to validate the absolute accuracy of the correction.
-  \item \textbf{Tablet frame-rate confound.} The tablet frame-rate numbers
-    reflect the rendering layer's automatic shadow-quality degradation under
-    load, not a fixed-settings benchmark. A repeat test with adaptive quality
-    disabled would isolate the pipeline's intrinsic render performance from
-    the engine's adaptive behaviour.
+  \item \textbf{Bend-transition error not decomposed.} Position errors at
+    bend transitions cannot be attributed individually to the firmware
+    pulse-cost constants, mechanical backlash, or the arc-tracing scheme
+    without per-component instrumentation. Equation~\ref{eq:arctracing-error}
+    rules out the arc-tracing scheme as a dominant source at the present
+    segment resolution, but the remaining sources are not measured
+    separately.
+  \item \textbf{Angle-correction is self-referential.} The angle correction
+    is generated by, and reported relative to, the same compass tracker.
+    Without an external reference (e.g., a digital protractor or laser angle
+    meter) only internal consistency, not absolute accuracy, can be checked.
+    The reported angle correction is therefore presented as code behaviour
+    rather than as validated metric.
   \item \textbf{Self-validation.} The author defined the pass/fail criteria,
     executed the runs, and assigned the pass/fail labels. Criteria were
     pre-registered in the method sections before the runs, but no independent
@@ -1309,34 +1274,33 @@ explicitly:
     preference. The selections are traceable to cited sources, and the
     derivations in Section~\ref{sec:results-q4} are reproducible.
   \item \textit{Architectural decomposition.} The five-layer pipeline isolates
-    concerns by design: each failure mode maps to a single layer. The Run~2
-    Bluetooth disconnect was recovered transparently and the two latency
-    spikes were absorbed by the state estimator's dead-reckoning, without
-    propagating into visible artefacts in the rendered position
-    (Section~\ref{sec:results-validation}).
+    concerns by design: each identified failure mode (bit-level corruption,
+    message-level corruption, connection drop, sensor noise, frame drop) maps
+    to a single layer, which is what makes layer-local containment possible
+    in principle. Demonstration of containment under adversarial conditions
+    is a separate task that this report does not undertake.
   \item \textit{Validation against measurable thresholds.} The pass/fail
-    criteria were defined in the method sections before the calibration runs,
-    not calibrated to the results. Where measured values approached a
-    threshold (the 6.1\,mm bend-transition error on Run~3 against the 10\,mm
-    longer-rail tolerance), the proximity is reported and discussed rather
-    than smoothed over.
+    criteria are defined in the method sections before the calibration run,
+    not calibrated to the results. Measured values are reported in
+    Section~\ref{sec:results-validation} with explicit pass/fail labels
+    against the criteria as defined.
 \end{itemize}
 
 \subsection{What Could Have Been Done Differently}
 Two decisions, in hindsight, would have been made differently.
 
-First, the \textit{filter tuning was empirical rather than analytical}. The
-process noise $\sigma_a$ and the 85/15 spindle blend ratio were found by
-iteration on observed behaviour, not derived from the noise characteristics of
-the sensors. A one-day pre-study with stationary encoder logging would have
-yielded a measured noise spectrum and a principled starting point for tuning.
-This is reflected in the recommendation for a sensitivity analysis.
+First, the \textit{filter tuning is configured rather than measured}. The
+process noise parameters and the 85/15 spindle blend ratio were chosen on
+the basis of observed behaviour during development and committed to code
+without an accompanying measurement of the sensor noise spectrum. A short
+pre-study with stationary encoder logging would have yielded a principled
+starting point for tuning and is reflected in the recommendation for a
+sensitivity analysis.
 
-Second, the \textit{sample size of three calibration runs} is the right order of
-magnitude for correctness-of-concept but not for statistical generalizability.
-Scheduling conflicts with installation availability drove this choice; a more
-defensive plan would have included reserved time on a test bench rail rather
-than relying on field installations.
+Second, the \textit{validation sample size of one run} is the right order of
+magnitude for correctness-of-concept but not for any statistical claim about
+generalizability across rail designs. A more defensive plan would have
+reserved time on multiple installations or on a test bench rail.
 
 \subsection{Scope Boundaries}
 The research deliberately excluded the shipping application itself (the
