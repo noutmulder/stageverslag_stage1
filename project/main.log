@@ -1,9 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2026.4.16)  29 MAY 2026 15:53
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2026.4.16)  29 MAY 2026 16:00
 entering extended mode
  restricted \write18 enabled.
+ file:line:error style messages enabled.
  %&-line parsing enabled.
-**main.tex
-(./main.tex
+**/home/nmu/stageverslag_periode_1_2_26/project/main.tex
+(/home/nmu/stageverslag_periode_1_2_26/project/main.tex
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
 (/home/nmu/.TinyTeX/texmf-dist/tex/latex/base/article.cls
@@ -743,121 +744,118 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 ]
-Underfull \hbox (badness 2376) in paragraph at lines 270--273
+Underfull \hbox (badness 2376) in paragraph at lines 275--278
 []\T1/ppl/b/n/10 Multi-axis ori-en-ta-tion re-con-struc-tion: \T1/ppl/m/n/10 Com-bin-ing
  []
 
 
-Underfull \hbox (badness 1701) in paragraph at lines 270--273
+Underfull \hbox (badness 1701) in paragraph at lines 275--278
 \T1/ppl/m/n/10 four in-de-pen-dent ro-ta-tional sen-sor streams into a
  []
 
 [2]
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 9.37807pt on input line 401.
+(Font)              scaled to size 9.37807pt on input line 408.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 7.29405pt on input line 401.
+(Font)              scaled to size 7.29405pt on input line 408.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 5.21004pt on input line 401.
+(Font)              scaled to size 5.21004pt on input line 408.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 9.37807pt on input line 401.
+(Font)              scaled to size 9.37807pt on input line 408.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 7.29405pt on input line 401.
+(Font)              scaled to size 7.29405pt on input line 408.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 5.21004pt on input line 401.
+(Font)              scaled to size 5.21004pt on input line 408.
+
+Underfull \vbox (badness 2418) has occurred while \output is active []
+
  [3]
-Underfull \hbox (badness 1102) in paragraph at lines 433--439
+Underfull \hbox (badness 1102) in paragraph at lines 440--446
 \T1/ppl/m/n/10 multi-axis ori-en-ta-tion re-con-struc-tion), while the prior
  []
 
 
-Underfull \hbox (badness 1253) in paragraph at lines 433--439
+Underfull \hbox (badness 1253) in paragraph at lines 440--446
 \T1/ppl/m/n/10 search ques-tion into in-de-pen-dently an-swer-able parts,
  []
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-Underfull \hbox (badness 3713) in paragraph at lines 476--476
+Underfull \hbox (badness 3713) in paragraph at lines 483--483
 |[]\T1/ppl/b/n/12 Data Pipeline Ar-chi-tec-ture (De-sign +
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 519--519
+[4]
+Underfull \hbox (badness 10000) in paragraph at lines 526--526
 |[]\T1/ppl/b/n/12 Encoder-to-Position Map-ping (For-mal
  []
 
 
-Underfull \vbox (badness 1939) has occurred while \output is active []
-
- [4]
-Underfull \hbox (badness 1509) in paragraph at lines 603--629
+Underfull \hbox (badness 1509) in paragraph at lines 610--636
 \T1/ppl/m/n/10 stair-lift in-stal-la-tions with dif-fer-ent rail con-fig-u-ra-tions
  []
 
 [5]
-Underfull \hbox (badness 1331) in paragraph at lines 638--644
+Underfull \hbox (badness 1331) in paragraph at lines 645--651
 []\T1/ppl/m/n/10 O3 (vis-i-ble mo-tion smooth-ness dur-ing steady-state
  []
 
 
-Underfull \hbox (badness 1270) in paragraph at lines 652--657
+Underfull \hbox (badness 1270) in paragraph at lines 659--664
 \T1/ppl/m/n/10 The in-put layer of the pipeline is the sub-set of the
  []
 
-LaTeX Font Info:    Trying to load font information for T1+pcr on input line 683.
+LaTeX Font Info:    Trying to load font information for T1+pcr on input line 690.
 (/home/nmu/.TinyTeX/texmf-dist/tex/latex/psnfss/t1pcr.fd
 File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
 )
-Underfull \hbox (badness 3189) in paragraph at lines 677--687
+Underfull \hbox (badness 3189) in paragraph at lines 684--694
 []\T1/ppl/m/n/10 The three high-frequency streams (trac-tion, spin-dle,
  []
 
 
-Underfull \hbox (badness 3078) in paragraph at lines 727--734
+Underfull \hbox (badness 3078) in paragraph at lines 734--741
 \T1/ppl/m/n/10 that moves through a fixed se-quence of states for
  []
 
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 8.33606pt on input line 737.
+(Font)              scaled to size 8.33606pt on input line 744.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 8.33606pt on input line 737.
-<images/ghost_chair_screenshot.png, id=288, 1715.40875pt x 961.5925pt>
+(Font)              scaled to size 8.33606pt on input line 744.
+<images/ghost_chair_screenshot.png, id=289, 1715.40875pt x 961.5925pt>
 File: images/ghost_chair_screenshot.png Graphic file (type png)
 <use images/ghost_chair_screenshot.png>
-Package pdftex.def Info: images/ghost_chair_screenshot.png  used on input line 789.
+Package pdftex.def Info: images/ghost_chair_screenshot.png  used on input line 796.
 (pdftex.def)             Requested size: 446.4554pt x 250.25758pt.
-[6] [7]
-Underfull \vbox (badness 10000) has occurred while \output is active []
+[6]
+Underfull \vbox (badness 1253) has occurred while \output is active []
 
- [8 <./images/ghost_chair_screenshot.png>]
-Underfull \hbox (badness 1348) in paragraph at lines 1070--1076
+ [7] [8 <./images/ghost_chair_screenshot.png>]
+Underfull \hbox (badness 1348) in paragraph at lines 1084--1090
 \T1/ppl/m/n/10 The 0.85/0.15 split is the value cur-rently con-fig-ured
  []
 
 [9]
-Underfull \hbox (badness 10000) in paragraph at lines 1151--1151
+Underfull \hbox (badness 10000) in paragraph at lines 1165--1165
 []\T1/ppl/m/n/9 Bluetooth round-trip time (mean,
  []
 
 
-Underfull \hbox (badness 5607) in paragraph at lines 1155--1155
+Underfull \hbox (badness 5607) in paragraph at lines 1169--1169
 []\T1/ppl/m/n/9 Continuous drive du-ra-tion with-out
  []
 
 
-Underfull \hbox (badness 5288) in paragraph at lines 1156--1156
+Underfull \hbox (badness 5288) in paragraph at lines 1170--1170
 []\T1/ppl/m/n/9 Visible mo-tion smooth-ness (steady-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1156--1157
+Underfull \hbox (badness 10000) in paragraph at lines 1170--1171
 []\T1/ppl/m/n/9 DV1(b), DV3(b)
  []
 
 
-Overfull \hbox (52.01808pt too wide) in paragraph at lines 1141--1160
+Overfull \hbox (52.01808pt too wide) in paragraph at lines 1155--1174
  [][] 
  []
 
@@ -865,29 +863,36 @@ Overfull \hbox (52.01808pt too wide) in paragraph at lines 1141--1160
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [10]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-Underfull \hbox (badness 3396) in paragraph at lines 1290--1300
+Underfull \hbox (badness 3396) in paragraph at lines 1304--1314
 \T1/ppl/m/n/10 thresh-old and the ten-fold Kalman jitter-reduction
  []
 
 
-Underfull \hbox (badness 1067) in paragraph at lines 1290--1300
+Underfull \hbox (badness 1067) in paragraph at lines 1304--1314
 \T1/ppl/m/n/10 tion smooth-ness, no per-cep-ti-ble step-jumps) be-fore
  []
 
 [11]
-Underfull \hbox (badness 1721) in paragraph at lines 1307--1315
+Underfull \hbox (badness 1721) in paragraph at lines 1321--1329
 \T1/ppl/b/n/10 tributes to ob-served ac-cu-racy. \T1/ppl/m/n/10 In-de-pen-dent tape
  []
 
 
-Underfull \hbox (badness 1168) in paragraph at lines 1307--1315
+Underfull \hbox (badness 1168) in paragraph at lines 1321--1329
 \T1/ppl/m/n/10 mea-sure-ment of the val-i-da-tion rail re-vealed up to
  []
 
-[12] (./main.bbl
+
+Underfull \hbox (badness 1655) in paragraph at lines 1377--1382
+[]\T1/ppl/b/n/10 Filter tun-ing grounded in mea-sured inter-sample
+ []
+
+[12]
+Underfull \hbox (badness 1275) in paragraph at lines 1428--1438
+\T1/ppl/m/n/10 ti-vated against the ac-tual gap-and-velocity be-haviour
+ []
+
+(./main.bbl
 Underfull \hbox (badness 2790) in paragraph at lines 13--14
 \T1/ppl/m/it/10 Vi-enna Uni-ver-sity of Tech-nol-ogy, Aus-tria\T1/ppl/m/n/10 , no. TR
  []
@@ -914,26 +919,22 @@ Underfull \hbox (badness 1558) in paragraph at lines 104--106
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 0CDF73377A886191DA8FB73858DC38A3;8127.
+(rerunfilecheck)             Checksum: BB9C9FD8A30F0D57812B429EB16963EA;8162.
  ) 
 Here is how much of TeX's memory you used:
- 27082 strings out of 469418
- 491284 string characters out of 5467751
- 909436 words of memory out of 5000000
+ 27083 strings out of 469418
+ 491420 string characters out of 5467751
+ 909437 words of memory out of 5000000
  55145 multiletter control sequences out of 15000+600000
  683360 words of font info for 170 fonts, out of 8000000 for 9000
  76 hyphenation exceptions out of 8191
- 84i,13n,94p,461b,810s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,13n,94p,507b,810s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </home/nmu/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmr.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></home/nmu/.TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on main.pdf (14 pages, 2142717 bytes).
+Output written on main.pdf (14 pages, 2144241 bytes).
 PDF statistics:
- 485 PDF objects out of 1000 (max. 8388607)
- 438 compressed objects within 5 object streams
+ 487 PDF objects out of 1000 (max. 8388607)
+ 440 compressed objects within 5 object streams
  123 named destinations out of 1000 (max. 500000)
  354 words of extra memory for PDF output out of 10000 (max. 10000000)
 

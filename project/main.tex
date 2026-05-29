@@ -227,27 +227,32 @@ non-linear function rather than a simple linear scaling. Without such a model,
 position errors accumulate at every bend transition, growing proportionally to
 the number of bends in the rail.
 
-\subsubsection{State Estimation from Noisy Telemetry}
+\subsubsection{State Estimation from Asynchronous Telemetry}
 The telemetry link between the stairlift controller and the visualization
-application introduces additional challenges. The Bluetooth Classic Serial Port
-Profile~\cite{bluetoothsig2022spp} provides a virtual serial connection at
-approximately 20\,Hz, but with variable latency (10--80\,ms per round trip) and
-occasional packet loss. The visualization, however, must render at 60\,fps
-(16.7\,ms per frame).
+application introduces additional challenges. The Bluetooth Classic Serial
+Port Profile~\cite{bluetoothsig2022spp} provides a virtual serial connection
+at approximately 20\,Hz; the round-trip time at the application layer
+depends on link-layer latency plus controller response time and was
+measured in the validation runs of Section~\ref{sec:results-validation}.
+The visualization, however, must render at 60\,fps (16.7\,ms per frame).
 
 This creates a temporal mismatch: new sensor data arrives roughly every third
 frame, and frames between measurements must be filled with predicted values. If
 the most recent measurement is simply held constant until the next arrives, the
-display exhibits visible staircase-like jumps. If measurements are used directly
-without filtering, encoder quantization noise (inherent to incremental
-encoders~\cite{merry2013encoder}) causes jitter. Both artifacts undermine the
-interpretability of the visualization.
+display exhibits visible staircase-like jumps at the sensor sample rate. The
+traction encoder used by the stairlift is a digital incremental
+pulse-counter~\cite{merry2013encoder}: it does not produce per-sample
+quantization noise on a stationary chair, but it does produce sampled
+positions at a rate well below the display refresh, so the gap-filling
+problem (not noise rejection) is the dominant artifact source for this
+visualization.
 
-The general solution to this class of problem is recursive state estimation: a
-filter that maintains a probabilistic model of the system state and updates it
-with each new measurement~\cite{kalman1960}. The choice of filter, its process
-model, and its tuning determine the trade-off between responsiveness and
-smoothness.
+The general solution to this class of problem is recursive state estimation:
+a filter that maintains a model of the system state (position and velocity)
+and updates it with each new measurement~\cite{kalman1960}. For this
+application the filter's role is primarily temporal interpolation between
+sensor samples and velocity estimation for dead-reckoning, rather than
+noise rejection on the sample itself.
 
 \subsubsection{Multi-Axis Orientation from Independent Sensors}
 The stairlift chair has four independent rotational degrees of freedom: yaw
@@ -310,13 +315,15 @@ The \textbf{Kalman filter} maintains a probabilistic estimate of system state
 (position and velocity) and updates it with each new measurement, optimally
 balancing prediction uncertainty against measurement
 noise~\cite{kalman1960, welch1995kalman, bolton2019mechatronics}. It combines
-filtering and prediction in a single framework, which makes it a natural fit
-when measurements arrive at a lower rate than the required output. The cost
-is higher computational complexity and the need to tune process and
-measurement noise parameters. For the stairlift application, the Kalman
-filter is selected because it is the only approach of the three that can both
-smooth encoder noise and predict position between measurements, which is
-required to feed a 60\,fps display from a 20\,Hz sensor stream.
+state estimation and prediction in a single framework, which makes it a
+natural fit when measurements arrive at a lower rate than the required
+output. The cost is higher computational complexity and the need to tune
+process and measurement noise parameters. For the stairlift application,
+the Kalman filter is selected because it is the only approach of the three
+that can both estimate a continuous velocity from the discrete pulse-counter
+stream and predict position between measurements --- both of which are
+required to feed a 60\,fps display from a $\sim$20\,Hz sensor stream
+without visible staircase-like jumps at the sample rate.
 
 \subsubsection{Spline Interpolation for Smooth Trajectories}
 To produce smooth position and orientation transitions along a discrete set
@@ -899,18 +906,20 @@ corresponding angle:
 \label{sec:results-q4}
 The sensor readings arrive roughly every 50\,ms, but the display must update
 every 17\,ms (60 frames per second). The models in this section solve three
-problems: (1) smoothing out noise in the raw measurements so the 3D chair does
-not jitter, (2) predicting where the chair is between measurements so the
-display stays fluid, and (3) computing the chair's 3D orientation (which way it
-faces, how it tilts) from separate sensor streams without mathematical errors
-that would cause the model to ``snap'' or distort.
+problems: (1) estimating a continuous velocity from the discrete pulse-counter
+stream so that motion can be interpolated between samples, (2) predicting
+where the chair is between measurements so the display stays fluid, and (3)
+computing the chair's 3D orientation (which way it faces, how it tilts) from
+separate sensor streams without mathematical errors that would cause the
+model to ``snap'' or distort.
 
 \subsubsection{Kalman Filter}
 In essence, the Kalman filter maintains a running estimate of the chair's
 position and speed. Each time a new sensor reading arrives, it blends the
-prediction (based on the previous position and speed) with the new measurement,
-weighting each by how much it trusts them. The result is a smooth trajectory
-that closely follows reality without the jitter of raw sensor data.
+prediction (based on the previous position and speed) with the new measurement.
+The result is a continuously updated position-and-velocity state that the
+render loop can extrapolate between sensor samples, so the chair moves
+fluidly at 60\,fps even though the sensor only updates at $\sim$20\,Hz.
 
 Formally, a 2D constant-velocity Kalman
 filter~\cite{kalman1960, welch1995kalman} is applied independently to each
@@ -946,11 +955,16 @@ v &\leftarrow v + K_1 \cdot y \nonumber
 where $\sigma_m$ is the measurement noise standard deviation and $\mathbf{K}$
 is the Kalman gain.
 
-The tuning parameters per axis are listed in Table~\ref{tab:kalman}. These
-values were determined empirically by iterating on observed filter output
-during test runs rather than derived from a measured sensor noise spectrum;
-the consequences of this for generalisability are discussed in
-Section~\ref{sec:conclusion}.
+The tuning parameters per axis are listed in Table~\ref{tab:kalman}. The
+$\sigma_a$ (process noise / acceleration uncertainty) and $\sigma_m$
+(measurement uncertainty) values were determined empirically by iterating on
+observed filter output during test runs. Because the traction encoder is a
+digital pulse-counter rather than an analog noisy sensor, $\sigma_m$
+functions here as a smoothness/responsiveness knob between sample points
+rather than as a literal measurement-noise standard deviation; $\sigma_a$
+controls how aggressively dead-reckoning extrapolates between samples. The
+consequences of this empirical-rather-than-derived tuning for
+generalisability are discussed in Section~\ref{sec:conclusion}.
 
 \begin{table*}[t]
 \centering
@@ -1341,20 +1355,30 @@ report.
 
 \subsection{Recommendations}
 \begin{itemize}[leftmargin=*]
-  \item \textbf{Bend-transition error decomposition.} Instrument the bend
-    transitions separately during a future calibration run so that
-    contributions from the pulse-cost constants, mechanical backlash, and the
-    arc-tracing scheme can be attributed individually. Equation~\ref{eq:arctracing-error}
-    rules out the arc-tracing scheme as a dominant source at the current
-    $5^\circ$ segment resolution, so a higher-order numerical integration
-    would be a premature optimisation.
+  \item \textbf{Rail-configurator precision study.} The observation that
+    firmware-encoded rail-part lengths deviated from physical tape
+    measurements by up to 16\,mm per part
+    (Section~\ref{sec:results-validation}, Limitations) is a candidate
+    upstream contributor to end-to-end position error. A dedicated study
+    that traces a rail through the configurator workflow with an external
+    reference (laser distance meter) would quantify this source separately
+    from the pipeline-integration error reported here.
+  \item \textbf{Quantitative smoothness and latency measurement.} The
+    observational pass/fail used here for DV1(b) and DV3(b) could be made
+    quantitative with frame-level logging of the rendered display position
+    (for inter-sample smoothness) and high-speed video comparing physical
+    vs.\ displayed chair position (for visible lag). Both would replace the
+    current qualitative observation with measurable numbers.
   \item \textbf{Independent angle reference.} Add an external angle reference
     (digital protractor, laser angle meter) to the calibration setup so that
     the compass-based correction can be validated against a non-self-referential
     measurement.
-  \item \textbf{Filter tuning analysis.} Perform a sensitivity analysis on the
-    process and measurement noise parameters to determine safe operating ranges
-    and automate tuning per rail configuration.
+  \item \textbf{Filter tuning grounded in measured inter-sample gaps and
+    velocity profile.} Re-derive $\sigma_a$ and the dead-reckoning decay
+    constant from a measured distribution of inter-sample gaps and typical
+    chair velocities (data for both is already present in the logs of the
+    current validation runs), so the tuning is motivated rather than
+    eyeballed.
   \item \textbf{Robustness testing.} Apply fault injection (corrupted bytes,
     forced disconnects, latency spikes) to verify the byte-level corruption
     handling and transport-layer recovery claims of
@@ -1386,10 +1410,11 @@ explicitly:
     derivations in Section~\ref{sec:results-q4} are reproducible.
   \item \textit{Architectural decomposition.} The five-layer pipeline isolates
     concerns by design: each identified failure mode (bit-level corruption,
-    message-level corruption, connection drop, sensor noise, frame drop) maps
-    to a single layer, which is what makes layer-local containment possible
-    in principle. Demonstration of containment under adversarial conditions
-    is a separate task that this report does not undertake.
+    message-level corruption, connection drop, sample-rate / inter-sample
+    gap, frame drop) maps to a single layer, which is what makes
+    layer-local containment possible in principle. Demonstration of
+    containment under adversarial conditions is a separate task that this
+    report does not undertake.
   \item \textit{Validation against measurable thresholds.} The pass/fail
     criteria are defined in the method sections before the calibration run,
     not calibrated to the results. Measured values are reported in
@@ -1403,10 +1428,13 @@ Three decisions, in hindsight, would have been made differently.
 First, the \textit{filter tuning is configured rather than measured}. The
 process noise parameters and the 85/15 spindle blend ratio were chosen on
 the basis of observed behaviour during development and committed to code
-without an accompanying measurement of the sensor noise spectrum. A short
-pre-study with stationary encoder logging would have yielded a principled
-starting point for tuning and is reflected in the recommendation for a
-sensitivity analysis.
+without an accompanying derivation from a first-principles uncertainty
+model. In retrospect, given that the traction encoder turned out to have
+no sample-level value-jitter (Section~\ref{sec:results-validation}), a more
+useful pre-study would have characterised the inter-sample gap distribution
+and the chair-velocity profile during typical drive segments, so that
+$\sigma_a$ and the dead-reckoning decay constant could be motivated against
+the actual gap-and-velocity behaviour rather than tuned by eye.
 
 Second, the \textit{validation sample size of two runs} is the right order of
 magnitude for correctness-of-concept but not for any statistical claim about
