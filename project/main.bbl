@@ -22,11 +22,10 @@ W.~Bolton, {\em Mechatronics: Electronic Control Systems in Mechanical and Elect
 \bibitem{bluetoothsig2022spp}
 {Bluetooth SIG}, ``Serial port profile,'' Adopted Specification v1.2, Bluetooth Special Interest Group, 2022.
 
-\bibitem{kalman1960}
-R.~E. Kalman, ``A new approach to linear filtering and prediction problems,'' {\em Transactions of the ASME -- Journal of Basic Engineering}, vol.~82, no.~1, pp.~35--45, 1960.
-
-\bibitem{shoemake1985quaternion}
-K.~Shoemake, ``Animating rotation with quaternion curves,'' in {\em Proceedings of the 12th Annual Conference on Computer Graphics and Interactive Techniques ({SIGGRAPH} '85)}, pp.~245--254, ACM, 1985.
+\bibitem{strang2016calculus}
+G.~Strang and E.~Herman, {\em Calculus Volume 2}.
+\newblock OpenStax, 2016.
+\newblock Section 3.6: Numerical Integration. Open access, CC BY-NC-SA 4.0.
 
 \bibitem{smith1997dsp}
 S.~W. Smith, {\em The Scientist and Engineer's Guide to Digital Signal Processing}.
@@ -36,6 +35,9 @@ S.~W. Smith, {\em The Scientist and Engineer's Guide to Digital Signal Processin
 \bibitem{narkhede2021cascaded}
 P.~Narkhede, S.~Poddar, R.~Walambe, G.~Ghinea, and K.~Kotecha, ``Cascaded complementary filter architecture for sensor fusion in attitude estimation,'' {\em arXiv preprint arXiv:2107.03970}, 2021.
 \newblock Open access, CC BY 4.0.
+
+\bibitem{kalman1960}
+R.~E. Kalman, ``A new approach to linear filtering and prediction problems,'' {\em Transactions of the ASME -- Journal of Basic Engineering}, vol.~82, no.~1, pp.~35--45, 1960.
 
 \bibitem{welch1995kalman}
 G.~Welch and G.~Bishop, ``An introduction to the {Kalman} filter,'' Tech. Rep. TR 95-041, University of North Carolina at Chapel Hill, 1995.
@@ -50,6 +52,9 @@ E.~Catmull and R.~Rom, ``A class of local interpolating splines,'' in {\em Compu
 \bibitem{diebel2006attitude}
 J.~Diebel, ``Representing attitude: {E}uler angles, unit quaternions, and rotation vectors,'' tech. rep., Stanford University, October 2006.
 
+\bibitem{shoemake1985quaternion}
+K.~Shoemake, ``Animating rotation with quaternion curves,'' in {\em Proceedings of the 12th Annual Conference on Computer Graphics and Interactive Techniques ({SIGGRAPH} '85)}, pp.~245--254, ACM, 1985.
+
 \bibitem{kuipers1999quaternions}
 J.~B. Kuipers, {\em Quaternions and Rotation Sequences: A Primer with Applications to Orbits, Aerospace, and Virtual Reality}.
 \newblock Princeton University Press, 1999.
@@ -60,7 +65,7 @@ J.~B. Kuipers, {\em Quaternions and Rotation Sequences: A Primer with Applicatio
 
 \bibitem{linietsky2014godot}
 J.~Linietsky and A.~Manzur, ``Godot engine: Multi-platform 2d and 3d open source game engine.'' Software, MIT License, 2014.
-\newblock Version 4.6 used in this work. Feature flag \texttt{"4.6", "Forward Plus"} in \texttt{project.godot}.
+\newblock Version 4.6 used in this work. Licence text at \url{https://godotengine.org/license/}; feature flag \texttt{"4.6", "Forward Plus"} in \texttt{project.godot}.
 
 \bibitem{unity2024}
 {Unity Technologies}, ``Unity engine 6 -- licensing and platform support.'' Vendor documentation, 2024.
@@ -81,11 +86,6 @@ J.~Schreier, ``Unity reverses course on controversial game-engine fees.'' Bloomb
 \bibitem{graham2014fsm}
 R.~D. Graham and P.~C. Johnson, ``Finite state machine parsing for internet protocols: Faster than you think,'' in {\em IEEE Symposium on Security and Privacy Workshops}, pp.~185--190, IEEE, 2014.
 
-\bibitem{strang2016calculus}
-G.~Strang and E.~Herman, {\em Calculus Volume 2}.
-\newblock OpenStax, 2016.
-\newblock Section 3.6: Numerical Integration. Open access, CC BY-NC-SA 4.0.
-
 \bibitem{labbe2015kalman}
 R.~R. Labbe, {\em Kalman and {Bayesian} Filters in {Python}}.
 \newblock Self-published (GitHub), 2015.
@@ -95,10 +95,6 @@ R.~R. Labbe, {\em Kalman and {Bayesian} Filters in {Python}}.
 {National Imagery and Mapping Agency}, {\em The American Practical Navigator}.
 \newblock Bethesda, MD: National Imagery and Mapping Agency, bicentennial~ed., 2002.
 \newblock Chapter 7: Dead Reckoning. U.S. Government, public domain.
-
-\bibitem{driscoll2016damping}
-R.~Driscoll, ``Frame rate independent damping using lerp,'' 2016.
-\newblock Derives $\text{lerp}(a, b, 1 - e^{-\lambda \Delta t})$ from exponential decay.
 
 \bibitem{gielingartikel2223}
 A.~M. Gieling, ``Onderzoeksartikelformat (t.b.v.\ ti-ingenieurs) v.2223.'' Inholland University of Applied Sciences, Technical Informatics, 2023.

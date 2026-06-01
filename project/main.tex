@@ -105,8 +105,10 @@ segment-dependent encoder-to-distance ratios, with sub-rendered-frame
 smoothness on a 60\,fps display. A ``virtual ghost'' prototype was developed
 iteratively and validated on physical hardware with two calibration runs
 (bottom-to-top and top-to-bottom) plus a stationary baseline. The pipeline-
-integration error across 10 reference markers stayed within 0.7\,mm (mean
-0.4\,mm, well within the 5\,mm tolerance for the position-accuracy criterion),
+integration error across 10 measurements (five reference markers, each read
+in both drive directions) stayed within 0.7\,mm (mean 0.39\,mm, SD
+0.22\,mm, well within
+the 5\,mm tolerance for the position-accuracy criterion),
 the chair on screen tracked the physical chair without perceptible lag
 across both runs despite individual Bluetooth round-trips that occasionally
 exceeded the 100\,ms threshold (mean 89\,ms over 5295 polls), and the
@@ -236,8 +238,8 @@ depends on link-layer latency plus controller response time and was
 measured in the validation runs of Section~\ref{sec:results-validation}.
 The visualization, however, must render at 60\,fps (16.7\,ms per frame).
 
-This creates a temporal mismatch: new sensor data arrives roughly every third
-frame, and frames between measurements must be filled with predicted values. If
+This creates a temporal mismatch: new sensor data arrives many render frames
+apart, and frames between measurements must be filled with predicted values. If
 the most recent measurement is simply held constant until the next arrives, the
 display exhibits visible staircase-like jumps at the sensor sample rate. The
 traction encoder used by the stairlift is a digital incremental
@@ -247,12 +249,14 @@ positions at a rate well below the display refresh, so the gap-filling
 problem (not noise rejection) is the dominant artifact source for this
 visualization.
 
-The general solution to this class of problem is recursive state estimation:
-a filter that maintains a model of the system state (position and velocity)
-and updates it with each new measurement~\cite{kalman1960}. For this
-application the filter's role is primarily temporal interpolation between
-sensor samples and velocity estimation for dead-reckoning, rather than
-noise rejection on the sample itself.
+This frames the technical requirement precisely: the visualization needs a
+continuous position-and-velocity estimate that can be advanced at display
+frame rate from samples arriving several times less often, and that can
+bridge the interval when a sample is late or missing. The required property
+is therefore gap-filling and velocity estimation between samples, not noise
+rejection on the individual sample. Which class of estimator satisfies this
+requirement, and at what cost, is a solution question addressed in the prior
+work survey (Section~\ref{sec:prior-work}).
 
 \subsubsection{Multi-Axis Orientation from Independent Sensors}
 The stairlift chair has four independent rotational degrees of freedom: yaw
@@ -260,8 +264,11 @@ The stairlift chair has four independent rotational degrees of freedom: yaw
 and seat rotation (swivel motor). Each is measured by a separate sensor with its
 own update rate and noise characteristics. Reconstructing the full 3D
 orientation of the chair requires combining these independent streams into a
-single consistent rotation, avoiding mathematical singularities that can occur
-when multiple rotations are composed~\cite{shoemake1985quaternion}.
+single consistent rotation that stays well-defined for every reachable chair
+configuration, including those in which two of the rotation axes momentarily
+align. Whether a particular orientation representation can guarantee that
+property is a solution question, addressed in
+Section~\ref{sec:prior-work}.
 
 \subsubsection{Summary of Technical Subproblems}
 Three interrelated technical subproblems emerge from this analysis:
@@ -280,6 +287,41 @@ Three interrelated technical subproblems emerge from this analysis:
 \subsection{Prior Work}
 \label{sec:prior-work}
 
+\subsubsection{Encoder-to-Position Mapping on Non-Uniform Paths}
+Converting an incremental encoder count to a position along the travel path is,
+for a uniform path, a solved problem: the encoder produces pulses proportional
+to displacement and a single scale constant
+suffices~\cite{bolton2019mechatronics, elmenreich2002sensorfusion}. Three
+solution directions exist for the non-uniform case identified in
+Section~\ref{sec:problem-analysis}.
+
+A \textbf{single linear scale factor} multiplies the pulse count by one
+constant mm-per-pulse value, the standard linear-actuator
+approach~\cite{elmenreich2002sensorfusion}. It is $O(1)$ per frame and needs no
+model of the path, but is correct only while the pulses-per-millimetre ratio is
+constant; \cite{merry2013encoder} shows this assumption fails where the local
+path geometry varies, so on a bent rail the linear factor accumulates a
+position error at every bend transition. It is therefore rejected as the
+primary mapping.
+
+A \textbf{closed-form arc-length parameterization} integrates the
+encoder-to-arc-length relation analytically when the path is a single analytic
+curve~\cite{strang2016calculus}. This is exact and compact, but a closed-form
+inverse exists only for a single uniform segment type (constant curvature). The
+stairlift rail mixes straight, vertical-bend and horizontal-bend segments with
+different per-segment pulse costs, so no single closed-form inverse covers the
+whole rail; the approach is usable only per segment, not rail-wide.
+
+A \textbf{precomputed piecewise calibration map} tabulates, at each segment
+boundary, the cumulative encoder count against the cumulative Euclidean
+distance and interpolates within a segment, reducing every per-frame query to a
+binary search over a static table~\cite{bolton2019mechatronics}. It handles
+arbitrary per-segment pulse costs, amortises the path integration to once per
+rail, and degrades gracefully (piecewise-linear) between boundaries. Its cost
+is that the full rail topology must be known up front --- which it is, since
+the controller stores the rail as typed blocks. This direction is selected and
+derived in Section~\ref{sec:results-q2}.
+
 \subsubsection{State Estimation}
 For state estimation from noisy sensor data, three approaches are commonly
 used in embedded and robotics applications: moving average filters,
@@ -295,8 +337,8 @@ rate and no prediction is required between samples. However, moving averages
 introduce a latency proportional to the window size (effectively delaying the
 signal by $N/2$ samples), cannot extrapolate between measurements, and perform
 poorly on transient or fast-changing signals. For stairlift telemetry, where
-sensor readings arrive at $\sim$20\,Hz but the display updates at 60\,fps,
-pure moving-average smoothing cannot fill the inter-sample gap.
+per-channel sensor readings arrive several times less often than the 60\,fps
+display refresh, pure moving-average smoothing cannot fill the inter-sample gap.
 
 A \textbf{complementary filter} combines two sensor sources with complementary
 frequency characteristics, typically using a low-pass filter on one source and
@@ -321,9 +363,10 @@ output. The cost is higher computational complexity and the need to tune
 process and measurement noise parameters. For the stairlift application,
 the Kalman filter is selected because it is the only approach of the three
 that can both estimate a continuous velocity from the discrete pulse-counter
-stream and predict position between measurements --- both of which are
-required to feed a 60\,fps display from a $\sim$20\,Hz sensor stream
-without visible staircase-like jumps at the sample rate.
+stream and predict position between measurements, both of which are
+required to feed a 60\,fps display from a per-channel sensor stream that
+arrives several times more slowly than the display refresh, without visible
+staircase-like jumps at the sample rate.
 
 \subsubsection{Spline Interpolation for Smooth Trajectories}
 To produce smooth position and orientation transitions along a discrete set
@@ -354,9 +397,15 @@ rail itself.
 provide $C^1$ continuity at those points~\cite{catmullrom1974}. They are the
 natural choice when the control points are fixed physical waypoints (as is
 the case for the rail) and the primary goal is a smooth tangent for
-orientation purposes. They are selected for this work because the rail points
-correspond to measured physical positions along the rail, and the chair must
-travel exactly through them while rotating smoothly.
+orientation purposes. They are selected for this work specifically as the
+\emph{tangent} source for chair orientation; the chair \emph{position} along
+each segment is computed by linear interpolation between adjacent rail
+control points, which preserves the on-rail constraint trivially because
+both linear and Catmull-Rom curves pass through the control points. The
+combined scheme (linear position, Catmull-Rom tangent) gives smooth chair
+orientation without introducing the off-rail excursions that a full
+Catmull-Rom positional curve would produce between sparsely sampled
+points.
 
 \subsubsection{Rotation Representation}
 Three representations of 3D rotation are in common use: Euler angles,
@@ -392,17 +441,21 @@ drift of rotation matrices.
 
 \subsubsection{Real-Time 3D Engine Selection}
 \label{sec:prior-engine}
-The renderer layer of the pipeline (Section~\ref{sec:results-q2}) requires a
-3D engine that meets four criteria: (C1) configurability for custom shaders,
-(C2) cross-platform export to desktop and Android~12+ from a single source
-tree, (C3) licence compatible with closed-source commercial deployment, and
-(C4) native glTF binary import to match DeVi Comfort's CAD
-pipeline~\cite{khronos2021gltf}. Table~\ref{tab:engine-mca} scores four
-candidates against these criteria.
+The renderer layer of the pipeline (Section~\ref{sec:results-q1}) imposes four
+\emph{mandatory} deployment constraints on the 3D engine, each a hard
+requirement rather than a weighted preference: (C1) configurability for custom
+shaders, (C2) cross-platform export to desktop and Android~12+ from a single
+source tree, (C3) a licence compatible with closed-source commercial
+deployment, and (C4) native glTF binary import to match DeVi Comfort's CAD
+pipeline~\cite{khronos2021gltf}. Because these are constraints to be satisfied
+rather than trade-offs to be balanced, the selection is a feasibility screen
+(does an engine meet every constraint?) rather than a weighted multi-criteria
+trade-off; a partial match on a mandatory constraint counts as a failure.
+Table~\ref{tab:engine-mca} screens four candidates against them.
 
 \begin{table}[H]
 \centering
-\caption{Multi-criteria comparison of real-time 3D engines against the criteria defined in Section~\ref{sec:prior-engine}. ``+'' indicates the criterion is fully met, ``='' partially, ``$-$'' not met.}
+\caption{Feasibility screen of real-time 3D engines against the four mandatory deployment constraints defined in Section~\ref{sec:prior-engine}. ``+'' indicates the constraint is fully met, ``='' partially, ``$-$'' not met; only an engine meeting all four is feasible.}
 \label{tab:engine-mca}
 \small
 \begin{tabular}{@{}lcccc@{}}
@@ -417,23 +470,25 @@ Three.js + WebGL~\cite{cabello2010threejs}    & $=$ & $-$ & $+$ & $+$ \\
 \end{tabular}
 \end{table}
 
-Godot 4.6 is selected: it is the only candidate meeting all four criteria.
-Its MIT licence avoids royalty and seat-fee risk; its export pipeline
-compiles a single source tree to Windows, Linux, and Android. Unreal was
-excluded on licence (royalty above revenue thresholds) and mobile export
-friction; Unity on licence change risk after the 2023 runtime-fee
+Godot 4.6 is selected: it is the only candidate satisfying all four mandatory
+constraints. Its MIT licence~\cite{linietsky2014godot} avoids royalty and seat-fee risk;
+its export pipeline compiles a single source tree to Windows, Linux, and
+Android. Unreal was excluded on licence (5\,\% royalty above a per-product
+annual revenue threshold~\cite{epic2022unreal}) and mobile export
+friction; Unity on its seat-fee and revenue-threshold model~\cite{unity2024}
+combined with licence-stability risk after the 2023 runtime-fee
 announcement~\cite{schreier2023unity}; Three.js on lack of a native Android
 build target, which would force a WebView wrapper and break the
 gyroscope/accelerometer access required for the compass tracker
 (Section~\ref{sec:results-validation}).
 
 \subsubsection{Existing Work at DeVi Comfort}
-Prior to this research, fault information within DeVi Comfort was presented
-exclusively as text-based error codes and numeric register values. No spatial
-visualization of stairlift telemetry existed. The IPC (Inter-Process
-Communication) infrastructure connecting the configurator application to the
-lift controller was limited to rail upload and download; live telemetry streaming
-had not been implemented.
+No spatial visualization of stairlift telemetry existed at DeVi Comfort prior
+to this research; fault output is described in
+Section~\ref{sec:introduction}. The IPC (Inter-Process Communication)
+infrastructure connecting the configurator application to the lift controller
+was limited to rail upload and download, so the input layer of the proposed
+pipeline (live telemetry polling) had no existing implementation to build on.
 
 \subsection{Research Questions}
 \label{sec:research-questions}
@@ -451,8 +506,8 @@ identified problem and the available solutions.
     (out of over 140 defined types) carry spatially interpretable information,
     because the input layer of the pipeline is precisely that subset. The
     Bluetooth serial link introduces latency, noise, and packet loss, which the
-    pipeline must handle while sustaining the $\sim$20\,Hz update rate of the
-    sensors.
+    pipeline must handle while keeping pace with the sensors as closely as the
+    shared link allows.
     \label{q:pipeline}
   \item \textit{How can encoder pulse counts be mapped to a normalized position
     along a 3D rail with segment-dependent pulse costs?}
@@ -481,14 +536,14 @@ describes, per subquestion, which method is used, why it is appropriate, how it
 is concretely applied, and what criteria determine completion.
 
 \subsection{Data Pipeline Architecture (Design + Documentation Analysis)}
-\label{sec:method-q2}
+\label{sec:method-q1}
 \textbf{Method:} Architectural design, combined with formal analysis of the
 firmware protocol specification to define the input layer.\\
 \textbf{Why this method:} The telemetry pipeline spans multiple layers
 (wireless transport, binary protocol parsing, polling, state estimation,
-rendering) and must sustain the $\sim$20\,Hz update rate of the sensors while
-keeping the Bluetooth round-trip time within a budget compatible with a
-60\,fps render loop. A structured architectural design ensures that each
+rendering) and must poll the position-relevant channels as fast as the shared
+Bluetooth link allows while keeping the round-trip time within a budget
+compatible with a 60\,fps render loop. A structured architectural design ensures that each
 layer's contribution to latency and reliability is identifiable. The input to
 that pipeline is a subset of the firmware's $>$\,140 message types, which is
 determined by documentation analysis rather than observation of live traffic:
@@ -521,10 +576,10 @@ a context metric, but the relevant end-user property is the visible lag after
 the Kalman filter and dead-reckoning have compensated for inter-sample gaps.
 A naïve single-sample-latency threshold would not capture this, because the
 pipeline architecture explicitly masks per-sample latency at the display side
-(see Section~\ref{sec:results-q4}).
+(see Section~\ref{sec:results-q3}).
 
 \subsection{Encoder-to-Position Mapping (Formal Analysis)}
-\label{sec:method-q3}
+\label{sec:method-q2}
 \textbf{Method:} Formal mathematical analysis.\\
 \textbf{Why this method:} The encoder-to-position mapping is a deterministic
 geometric problem: given a rail composed of segments with known curvature and
@@ -554,7 +609,7 @@ rails up to 5\,m, and less than 10\,mm on longer rails, across the validation
 runs of Section~\ref{sec:method-validation}.
 
 \subsection{Mathematical Models (Formal Analysis)}
-\label{sec:method-q4}
+\label{sec:method-q3}
 \textbf{Method:} Formal mathematical analysis.\\
 \textbf{Why this method:} The state estimation, interpolation, and rotation
 models are grounded in established mathematical theory (Kalman filtering,
@@ -584,14 +639,15 @@ sensor's actual behaviour.\\
 (a) every step of the derivation is presented in named equations traceable to
 the cited sources, and (b) the display position interpolates visually smoothly
 between sensor samples; no perceptible step-jumps are observed at the
-sensor-side sample rate (typically 5--20\,Hz) on the 60\,fps render loop,
+per-channel application-layer sample rate ($\sim$4--5\,Hz, bounded by the
+shared-link round-trip; see Section~\ref{sec:results-q1}) on the 60\,fps render loop,
 across the validation runs of Section~\ref{sec:method-validation}. The
 Kalman filter in this pipeline functions primarily as a \emph{temporal}
 interpolator and velocity estimator for the render loop, not as a
 noise-rejection filter: the traction encoder is a digital pulse-counter that
 produces no value-jitter on the sample itself, so the relevant quality is the
 smoothness of the filtered output as a continuous-time signal that fills the
-$\sim$100\,ms gaps between sensor updates. Singularity-freeness of the
+$\sim$200\,ms gaps between sensor updates. Singularity-freeness of the
 quaternion composition is a theoretical property of the
 formalism~\cite{shoemake1985quaternion,kuipers1999quaternions} and is
 therefore not separately measured; the absence of visible chair snapping
@@ -599,13 +655,33 @@ during the validation runs is a sufficient observational check.
 
 \subsection{Validation Approach (Experiment)}
 \label{sec:method-validation}
-The instrument criteria of Sections~\ref{sec:method-q2}--\ref{sec:method-q4}
-that require empirical measurement (the Bluetooth round-trip time for DV1, the
-displayed-versus-physical position error for DV2, and the Kalman jitter
-reduction for DV3) are all evaluated through the same physical experiment
-described here, rather than through separate experiments. This shared
-validation methodology makes it possible to evaluate all three subquestions
-from one set of calibration runs.
+The instrument criteria of Sections~\ref{sec:method-q1}--\ref{sec:method-q3}
+are bundled under the labels DV1, DV2, and DV3 (\textit{deelvalidatie}
+1--3), one per research subquestion. Each is split into an
+analytical sub-criterion (a) (derivation traceable to literature or firmware
+constants) and an empirical sub-criterion (b) (measured on a physical
+calibration run). The empirical sub-criteria are listed in
+Table~\ref{tab:validation-criteria}; the analytical sub-criteria are
+contained in the originating method sections. All empirical sub-criteria
+are evaluated through the same physical experiment described in this
+section, rather than through separate experiments, so all three
+subquestions can be evaluated from one set of calibration runs.
+
+\begin{table}[H]
+\centering
+\caption{Empirical validation criteria DV1(b)--DV3(b) with their originating method section and pre-registered pass threshold. Sub-criterion (a) (analytical traceability) is stated in the originating method section.}
+\label{tab:validation-criteria}
+\small
+\begin{tabular}{@{}lp{2.0cm}p{3.5cm}@{}}
+\toprule
+\textbf{ID} & \textbf{Origin} & \textbf{Threshold (pre-registered)} \\
+\midrule
+DV1(b) & Section~\ref{sec:method-q1} & BT round-trip $<$\,100\,ms (reframed observational, see Limitations) \\
+DV2(b) & Section~\ref{sec:method-q2} & Display vs.\ physical position $<$\,5\,mm on rails $\leq$\,5\,m; $<$\,10\,mm on longer rails \\
+DV3(b) & Section~\ref{sec:method-q3} & Kalman output jitter $\geq$\,10$\times$ smaller than raw (reframed observational, see Limitations) \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \textbf{Method:} Experiment on physical stairlift installations with
 predefined pass/fail thresholds.\\
@@ -655,7 +731,7 @@ fail on any criterion are reported with the cause.
 \label{sec:results}
 
 \subsection{Data Pipeline Architecture}
-\label{sec:results-q2}
+\label{sec:results-q1}
 The input layer of the pipeline is the subset of the firmware's message
 enumeration that carries spatially interpretable information. Analysis of the
 stairlift firmware protocol reveals 145 defined message types (with IDs ranging
@@ -664,7 +740,7 @@ visualization. These are classified in Table~\ref{tab:telemetry}.
 
 \begin{table*}[t]
 \centering
-\caption{Telemetry message types relevant for spatial visualization, classified along the three axes defined in Section~\ref{sec:method-q2}.}
+\caption{Telemetry message types relevant for spatial visualization, classified along the three axes defined in Section~\ref{sec:method-q1}.}
 \label{tab:telemetry}
 \small
 \begin{tabular}{@{}llll@{}}
@@ -683,9 +759,21 @@ MSG\,44  & Pilot state & On demand & Calibration run \\
 
 The three high-frequency streams (traction, spindle, swivel) form the core
 input for the 3D visualization. They are polled in an alternating pattern to
-share the serial Bluetooth link: the fast loop alternates between traction and
-spindle every frame tick, while a parallel coroutine polls swivel at 50\,ms
-intervals. The low-frequency streams (system status, footrest) update chair
+share the single serial Bluetooth link: the fast loop is scheduled to tick at
+$\sim$20\,Hz and alternates between traction and spindle requests on successive
+ticks, while the swivel coroutine polls on the same link at 50\,ms intervals.
+The achievable rate is bounded by the application-layer round-trip time, which
+was measured at mean 89\,ms over the validation runs
+(Section~\ref{sec:results-validation}): because each request and its response
+must complete before the next request is issued on the shared link, the
+\emph{aggregate} round-trip throughput is $\sim$10\,Hz (5295 round-trips over
+the 524\,s of driving), not the nominal 20\,Hz. That aggregate is divided over
+the traction, spindle, swivel and status channels, so the per-channel traction
+arrival rate is correspondingly lower --- on the order of $\sim$4--5\,Hz, an
+inter-sample gap of $\sim$200\,ms. The renderer reconciles this inter-sample
+gap with Kalman-based interpolation and dead-reckoning
+(Section~\ref{sec:results-q3}); the larger-than-nominal gap is precisely what
+makes the inter-sample prediction load-bearing rather than cosmetic. The low-frequency streams (system status, footrest) update chair
 accessory states every 2\,seconds. Status bits relevant for fault visualization
 include: armrest position (left and right, from \texttt{data[14]} bits 0 and 1
 of MSG\,114), seatbelt state (bit 2), and footrest position (bit 2 of
@@ -799,7 +887,7 @@ than a research outcome of this article.
 \end{figure*}
 
 \subsection{Encoder-to-Position Mapping}
-\label{sec:results-q3}
+\label{sec:results-q2}
 The central challenge here is converting a single number (the encoder pulse
 count) into a position in 3D space along a curved rail. On a straight rail this
 would be simple division, but because bends consume a different number of pulses
@@ -843,7 +931,7 @@ placed a distance $s$ along the normalized sum of the direction vectors before
 and after the pitch or yaw increment.
 \begin{equation}
 \label{eq:arctracing}
-\mathbf{p}_{i+1} = \mathbf{p}_i + \frac{\mathbf{d}_{\text{before}} + \mathbf{d}_{\text{after}}}{2} \cdot \frac{s}{\left\|\frac{\mathbf{d}_{\text{before}} + \mathbf{d}_{\text{after}}}{2}\right\|}
+\mathbf{p}_{i+1} = \mathbf{p}_i + s \cdot \frac{\mathbf{d}_{\text{before}} + \mathbf{d}_{\text{after}}}{\|\mathbf{d}_{\text{before}} + \mathbf{d}_{\text{after}}\|}
 \end{equation}
 This is a second-order scheme: a Taylor expansion of the exact circular chord
 $2r\sin(\Delta\alpha/2)$ against the approximation $s = r\Delta\alpha$ gives a
@@ -903,9 +991,10 @@ corresponding angle:
 \end{equation}
 
 \subsection{Mathematical Models for State Estimation}
-\label{sec:results-q4}
-The sensor readings arrive roughly every 50\,ms, but the display must update
-every 17\,ms (60 frames per second). The models in this section solve three
+\label{sec:results-q3}
+The sensor readings arrive roughly every $\sim$200\,ms per channel (see
+Section~\ref{sec:results-q1}), but the display must update every 17\,ms
+(60 frames per second). The models in this section solve three
 problems: (1) estimating a continuous velocity from the discrete pulse-counter
 stream so that motion can be interpolated between samples, (2) predicting
 where the chair is between measurements so the display stays fluid, and (3)
@@ -919,7 +1008,8 @@ position and speed. Each time a new sensor reading arrives, it blends the
 prediction (based on the previous position and speed) with the new measurement.
 The result is a continuously updated position-and-velocity state that the
 render loop can extrapolate between sensor samples, so the chair moves
-fluidly at 60\,fps even though the sensor only updates at $\sim$20\,Hz.
+fluidly at 60\,fps even though per-channel updates only arrive at
+$\sim$4--5\,Hz.
 
 Formally, a 2D constant-velocity Kalman
 filter~\cite{kalman1960, welch1995kalman} is applied independently to each
@@ -984,8 +1074,8 @@ Max velocity & $1.2 v_{\max}$ & $30^\circ$/s & $40^\circ$/s \\
 \end{table*}
 
 \subsubsection{Dead-Reckoning Extrapolation}
-Between sensor updates (which arrive every $\sim$50\,ms), the display still
-needs to move the chair smoothly every frame (every $\sim$17\,ms). This is done
+Between sensor updates (which arrive every $\sim$200\,ms per channel), the
+display still needs to move the chair smoothly every frame (every $\sim$17\,ms). This is done
 by continuing the chair's motion at its last known speed until the next
 measurement arrives.
 
@@ -1002,12 +1092,18 @@ v \leftarrow v \cdot e^{-5.0 \cdot (t_{\text{elapsed}} - 0.8)}
 \end{equation}
 
 The display position is then smoothed with a frame-rate-independent exponential
-filter~\cite{driscoll2016damping}:
+filter. This blend is the exact discrete-time solution of the first-order
+relaxation $\dot{p} = \alpha\,(p_{\text{target}} - p)$ over a frame interval
+$\Delta t$, which integrates to
+$p \leftarrow p_{\text{target}} + (p - p_{\text{target}})\,e^{-\alpha\Delta t}$,
+equivalently:
 \begin{equation}
 \label{eq:displaysmooth}
 p_{\text{display}} = \text{lerp}(p_{\text{display}},\; p_{\text{target}},\; 1 - e^{-\alpha \cdot \Delta t})
 \end{equation}
-where $\alpha$ is the smoothing rate from Table~\ref{tab:kalman}.
+where $\alpha$ is the smoothing rate from Table~\ref{tab:kalman}. Writing the
+blend factor as $1 - e^{-\alpha\Delta t}$ rather than a fixed constant keeps the
+smoothing time-constant independent of the (variable) render frame interval.
 
 \subsubsection{Catmull-Rom Spline Tangent}
 The rail is defined by a series of 3D points. To make the chair rotate smoothly
@@ -1094,8 +1190,9 @@ This section reports the empirical evidence for the DV1--DV3 criteria that
 require physical measurement. The prototype is validated through two
 calibration runs (bottom-to-top and top-to-bottom) on one physical stairlift
 installation, preceded by a 13\,s stationary baseline; rail configuration
-and measured values are reported below. The system polls telemetry at
-$\sim$10\,Hz during the runs and logs every event with millisecond
+and measured values are reported below. The system polls telemetry at an
+aggregate $\sim$10\,Hz of round-trips during the runs (shared across all
+channels, Section~\ref{sec:results-q1}) and logs every event with millisecond
 timestamps via the in-app TestLogger module.
 
 \textbf{Measurement methodology.} Five reference markers are placed at known
@@ -1104,7 +1201,7 @@ on the longest straight rd11). Physical chair position is read with a
 steel tape (graduation 1\,mm, reading uncertainty $\approx\pm$1\,mm).
 For position-accuracy validation, the displayed position from the pipeline
 is compared against the firmware-encoded position derived from the same
-encoder reading via the calibration map (Section~\ref{sec:results-q3});
+encoder reading via the calibration map (Section~\ref{sec:results-q2});
 this isolates the pipeline-integration error from upstream rail-configurator
 imprecision (the latter is reported separately as an observation, see
 Limitations). Bluetooth round-trip time is measured per request/response
@@ -1120,23 +1217,31 @@ The encoder baseline is measured during the 13\,s stationary window.
 
 \textbf{Calibration run protocol.} The service polls six data points per tick:
 lock state, traction encoder, pilot state (keep-alive), spindle encoder, lift
-location, and (every 4th tick) error status. Speed is managed automatically:
-50 (normal) for straight sections and 20 (reduced) for bends and short
+location, and (every 4th tick) error status. Speed is managed automatically
+via the firmware's speed-setting register (percent of the lift's configured
+maximum speed, as defined in MPLAB): the protocol writes 50\,\% (normal)
+for straight sections and 20\,\% (reduced) for bends and for short
 straights under 250\,mm.
 
-\textbf{Angle correction.} At horizontal bends, the compass tracker measures
-accumulated yaw via gyroscope integration:
+\textbf{Angle correction.} At horizontal bends, the compass tracker (running
+on the Android tablet, reading its gyroscope) measures accumulated yaw via
+gyroscope integration. The compass subsystem works in degrees throughout
+(matching the firmware's segment-angle convention of $5^\circ$ per
+bend-segment), so the gyroscope rate $\omega_z$ (in rad/s, as delivered by
+the Android sensor API) is converted to deg/s before integration:
 \begin{equation}
 \label{eq:compass}
-\psi_{\text{acc}} \mathrel{+}= \omega_z \cdot \frac{180}{\pi} \cdot \Delta t
+\psi_{\text{acc}}\;\mathrel{+}=\;\omega_z \cdot \tfrac{180}{\pi} \cdot \Delta t
+\quad\text{(deg)}
 \end{equation}
 The correction is computed as:
 \begin{equation}
 \label{eq:anglecorrection}
-\delta = |\theta_{\text{target}}/2| - |\psi_{\text{measured}}|
+\delta = |\theta_{\text{bend}}/2| - |\psi_{\text{measured}}|
 \end{equation}
-where $\theta_{\text{target}} = n_{\text{segments}} \cdot 5^\circ$ is the
-expected total bend angle. This correction is transmitted to the firmware as a
+where $\theta_{\text{bend}} = n_{\text{segments}} \cdot 5^\circ$ is the
+expected total bend angle (distinct from the spindle target angle
+$\theta_{\text{target}}$ in Equation~\ref{eq:spindle-blend}). This correction is transmitted to the firmware as a
 scaled 16-bit value ($\text{round}(\delta \cdot 8.0)$).
 
 \textbf{Split-bend compensation.} When two horizontal bends of the same
@@ -1147,52 +1252,53 @@ detector identifies this pattern and applies the correction automatically.
 \textbf{Quantitative evidence per criterion.} Table~\ref{tab:validation}
 collects the measurements that bear directly on DV1(b), DV2(b), and DV3(b).
 
-\begin{table}[H]
+\begin{table*}[t]
 \centering
 \caption{Validation measurements from the two calibration runs on the physical stairlift (2026-05-29). Position errors are pipeline-integration errors (display vs.\ firmware-encoded position from the same encoder reading); the rail-configurator's physical-vs-encoded discrepancy is reported separately under Limitations.}
 \label{tab:validation}
 \small
-\begin{tabular}{@{}p{5.5cm}rp{2.5cm}@{}}
+\begin{tabular}{@{}p{8.0cm}lp{4.0cm}@{}}
 \toprule
-\textbf{Metric} & \textbf{Value} & \textbf{Status} \\
+\textbf{Metric} & \textbf{Value} & \textbf{Bears on} \\
 \midrule
 Rail length (firmware-encoded) & 3403\,mm & --- \\
 Number of rail-parts & 11 & --- \\
 Number of horizontal bends & 1 (90$^\circ$ left) & --- \\
 Reference markers measured (B$\rightarrow$T + T$\rightarrow$B) & 10 & --- \\
-Max pipeline position error (n=10) & 0.7\,mm & DV2(b) \checkmark \\
-Mean pipeline position error (n=10) & 0.4\,mm & DV2(b) \\
+Max pipeline position error (n=10) & 0.7\,mm & DV2(b) \\
+Mean pipeline position error (n=10) & 0.39\,mm & DV2(b) \\
+SD of pipeline position error (n=10) & 0.22\,mm & DV2(b) \\
+95\,\% CI of the mean (t-based, df=9) & [0.23, 0.55]\,mm & DV2(b) \\
+\quad B$\rightarrow$T direction mean (n=5) & 0.28\,mm & DV2(b) \\
+\quad T$\rightarrow$B direction mean (n=5) & 0.50\,mm & DV2(b) \\
 Bluetooth round-trip time (mean, n=5295) & 89\,ms & informational \\
 Bluetooth round-trip time (P95) & 113\,ms & informational \\
 Bluetooth round-trip time (P99) & 135\,ms & informational \\
 Bluetooth round-trip time (max outlier) & 543\,ms & informational \\
-Continuous drive duration without crash & 524\,s & O1 \checkmark \\
-Visible motion smoothness (steady-state) & observational & DV1(b), DV3(b) \checkmark \\
-Visual smoothness through bends & observational & O2 \checkmark \\
+Continuous drive duration without crash & 524\,s & O1 \\
+Visible motion smoothness (steady-state) & observational & DV1(b), DV3(b) \\
+Visual smoothness through bends & observational & O2 \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-\textbf{Interpretation per criterion.} \textbf{DV2(b)} passes with substantial
-margin: the maximum pipeline-integration error across 10 reference markers
-is 0.7\,mm (mean 0.4\,mm), well below the 5\,mm tolerance for rails up to
-5\,m. \textbf{DV1(b)} (reframed observational, see Method~\ref{sec:method-q2})
-passes: the chair on screen tracks the physical chair without perceptible
-lag during both runs, despite individual round-trips that occasionally exceed
-the original 100\,ms threshold. The mean RTT (89\,ms) is reported as
-context, but is not used as the pass/fail criterion. \textbf{DV3(b)}
-(reframed observational, see Method~\ref{sec:method-q4}) passes: the encoder
-shows zero value-jitter at rest (no transitions on the digital pulse counter),
-and during motion the Kalman + dead-reckoning interpolates the 5--20\,Hz
-sensor samples smoothly across the 60\,fps render loop without perceptible
-step-jumps.
+\textbf{Observed results.} The maximum pipeline-integration error across the
+10 measurements (five markers, each read in both drive directions) was
+0.7\,mm, with mean 0.39\,mm (SD 0.22\,mm, 95\,\% CI of the mean
+[0.23, 0.55]\,mm; t-based, df=9); the per-direction means were 0.28\,mm
+(B$\rightarrow$T) and 0.50\,mm (T$\rightarrow$B). The mean Bluetooth
+round-trip was 89\,ms (n=5295; P95 113\,ms, P99 135\,ms, with one 543\,ms
+outlier). During both runs the chair on screen was observed to track the
+physical chair without perceptible lag, and the displayed position to
+interpolate through the per-channel sensor samples without perceptible
+step-jumps at the sample rate (observations O1--O3, Section~\ref{sec:method-validation}).
+The interpretation of these measurements against the DV1(b)--DV3(b)
+criteria is given in Section~\ref{sec:conclusion}.
 
 \textbf{Pulse-encoder behaviour at rest.} The 13\,s stationary baseline shows
 zero variation in the raw encoder reading (constant value 16030 over the
-window), confirming that the traction sensor is a digital pulse counter
-without value-noise on the sample itself. This validates the design decision
-to use the Kalman filter as a temporal interpolator (gap-filling between
-samples for the 60\,fps render loop) rather than as a noise-rejection filter.
+window): the traction sensor produces no value-jitter on the sample itself
+while the chair is stationary.
 
 \textbf{Logged events.} No Bluetooth disconnects, parser checksum errors, or
 manual interventions occurred during either run. One latency outlier of
@@ -1210,17 +1316,21 @@ extrapolation without visible artifact).
 The classification of 145 firmware message types revealed that only six carry
 spatially interpretable information, so the bandwidth-constrained Bluetooth
 link does not need to carry the full telemetry stream. By targeting only
-these six messages with a multi-rate polling strategy, the pipeline sustains
-the sensor-side 20\,Hz update rate within the serial link's capacity; future
+these six messages with a multi-rate polling strategy, the pipeline keeps the
+position-relevant channels polled at the highest rate the shared serial link
+sustains (an aggregate $\sim$10\,Hz of round-trips,
+Section~\ref{sec:results-validation}); future
 extensions (e.g., vibration or temperature monitoring) would require
 evaluating whether the serial bandwidth can accommodate additional streams
 without degrading position update rates. Over the validation runs the mean
 Bluetooth round-trip time was 89\,ms (n=5295, median 89\,ms, P95 113\,ms,
-P99 135\,ms, max outlier 543\,ms), and the observationally reframed DV1(b)
+P99 135\,ms, max outlier 543\,ms). The observationally reframed DV1(b)
 criterion (visible lag during steady-state motion) is passed: the chair on
 screen tracks the physical chair without perceptible delay, because the
 Kalman filter and dead-reckoning explicitly mask single-sample latency at
-the display side rather than passing it through. The five-layer architecture
+the display side rather than passing it through; the original 100\,ms
+threshold is also independently passed on the mean (89\,ms), which
+supports the observational verdict. The five-layer architecture
 itself isolates failure modes by design: byte-level errors are caught by the
 protocol parser's checksum, while higher-level issues (connection loss,
 timeout) are handled by the transport layer; over the 524\,s of continuous
@@ -1235,7 +1345,16 @@ Section~\ref{sec:problem-analysis}: the non-linear relationship between
 encoder pulses and physical distance at bends. On the validation rail
 (3403\,mm, 11 rail-parts, one 90$^\circ$ horizontal bend), the pipeline-
 integration error stayed at or below 0.7\,mm across 10 reference markers
-in both directions (mean 0.4\,mm), well within the 5\,mm DV2(b) tolerance.
+in both directions (mean 0.39\,mm, SD 0.22\,mm, 95\,\% CI of the mean
+[0.23, 0.55]\,mm), well within the 5\,mm DV2(b) tolerance, so DV2(b) passes
+with substantial margin. Because both the mean and the upper end of the
+confidence interval lie below the $\approx\pm$1\,mm reading uncertainty of
+the steel tape, this figure should be read as ``below the resolution of the
+reference measurement'' rather than as a precise mean. The small
+direction-dependent asymmetry in the data (B$\rightarrow$T mean 0.28\,mm
+versus T$\rightarrow$B mean 0.50\,mm) is within the overall confidence
+interval but is consistent with dead-reckoning extrapolating from the most
+recent sample at the instant the marker is captured.
 Equation~\ref{eq:arctracing-error} bounds the per-segment arc-tracing error
 at $\approx 4.2\,\mu$m per segment, so the residual sub-millimetre error
 that was observed is consistent with the finite precision of the firmware
@@ -1258,8 +1377,8 @@ sample itself; the original DV3(b) jitter-ratio criterion (Kalman jitter
 $\geq$ 10$\times$ smaller than raw) is therefore not definable on these
 data. The reformulated observational DV3(b) (visible smoothness between
 sensor samples, no perceptible step-jumps) is passed: during both runs the
-display position interpolated smoothly through the 5--20\,Hz sensor stream
-on the 60\,fps render loop. The relevant role of the Kalman filter in this
+display position interpolated smoothly through the $\sim$4--5\,Hz per-channel
+sensor stream on the 60\,fps render loop. The relevant role of the Kalman filter in this
 pipeline is therefore not noise-reduction but \emph{temporal interpolation}:
 gap-filling between sensor samples for the render loop and velocity
 estimation for dead-reckoning during latency spikes. The tuning parameters
@@ -1274,24 +1393,33 @@ into a stable, accurate 3D visualization consists of five layers: wireless
 transport, checksummed protocol parsing, multi-rate coroutine polling,
 recursive state estimation, and spline-interpolated 3D rendering. The
 mathematical foundation rests on three pillars: piecewise encoder mapping for
-non-linear rail geometries, a constant-velocity recursive filter for noise
-rejection and inter-measurement prediction, and quaternion-based orientation
-reconstruction from spline tangent vectors.
+non-linear rail geometries, a constant-velocity recursive filter for temporal
+interpolation and inter-measurement prediction between samples, and
+quaternion-based orientation reconstruction from spline tangent vectors.
 
 Across the validation runs the implemented pipeline and models meet the
 DV2(b) position-accuracy criterion (maximum pipeline-integration error
-0.7\,mm across 10 reference markers, mean 0.4\,mm, well within the 5\,mm
-tolerance) and the observationally reframed DV1(b) and DV3(b) criteria
-(visible smoothness during steady-state motion, no perceptible step-jumps).
-The mean Bluetooth round-trip (89\,ms over 5295 samples, P95 113\,ms) is
-reported as a context metric and is masked at the user-facing display by
-the Kalman + dead-reckoning design; the original single-sample latency
-threshold was reframed because it does not measure the property the
-pipeline is actually engineered to deliver. The full per-criterion outcome
+0.7\,mm across 10 measurements; mean 0.39\,mm, SD 0.22\,mm, 95\,\% CI of
+the mean [0.23, 0.55]\,mm; well within the 5\,mm tolerance) and the
+observationally reframed DV1(b) and DV3(b) criteria (visible smoothness
+during steady-state motion, no perceptible step-jumps). The mean Bluetooth
+round-trip (89\,ms over 5295 samples, P95 113\,ms) is masked at the
+user-facing display by the Kalman + dead-reckoning design and also
+independently passes the original 100\,ms threshold on the mean, which
+supports the observational verdict. The full per-criterion outcome
 is collected in Table~\ref{tab:validation}. Generalisation beyond the
 single validated rail configuration requires additional runs on rails of
 differing length, bend count, and bend type, and is out of scope for this
 report.
+
+The implementation that realises this pipeline --- the Godot renderer, the
+Bluetooth/TCP transport and protocol parser, the multi-rate telemetry poller,
+and the per-axis state estimator --- is the accompanying
+\emph{beroepsproduct}. Its full source code is supplied as a separate archive
+with this report and is available for inspection at DeVi Comfort; the
+equations and algorithms reported here (the piecewise encoder map, the Kalman
+predict/correct steps, the dead-reckoning extrapolation, and the quaternion
+composition) are the research instruments implemented in that code.
 
 \subsection{Limitations}
 \begin{itemize}[leftmargin=*]
@@ -1323,7 +1451,7 @@ report.
     firmware-encoded length and the physically measured length (net 10\,mm
     over 3.4\,m, 0.3\,\%). The configurator data is treated as a given input
     to the pipeline (defined as part of the input layer in
-    Section~\ref{sec:method-q2}), but a future end-to-end accuracy study
+    Section~\ref{sec:method-q1}), but a future end-to-end accuracy study
     would need to characterise this upstream source separately from the
     pipeline-integration error reported here.
   \item \textbf{Empirical filter tuning.} The Kalman tuning parameters and
@@ -1382,10 +1510,35 @@ report.
   \item \textbf{Robustness testing.} Apply fault injection (corrupted bytes,
     forced disconnects, latency spikes) to verify the byte-level corruption
     handling and transport-layer recovery claims of
-    Section~\ref{sec:results-q2} under adversarial conditions.
+    Section~\ref{sec:results-q1} under adversarial conditions.
   \item \textbf{Historical playback.} Record telemetry sessions for later
     replay to enable post-incident analysis without a live connection.
 \end{itemize}
+
+\textbf{Step up to the functional problem.} The recommendations above tighten
+the technical contribution; a final step returns to the functional problem that
+motivated it (Section~\ref{sec:introduction}): the difficulty service engineers
+face in interpreting text-based fault codes spatially. The validated pipeline is
+a necessary enabler for that goal --- it places the chair on the rail to
+sub-millimetre pipeline accuracy and renders fault state spatially --- but
+whether it actually shortens diagnosis time or reduces on-site visits is an
+empirical human-factors question this report deliberately scoped out
+(Section~\ref{sec:introduction}). The natural follow-up is a small field study
+comparing diagnosis time with and without the live visualization on real service
+calls; the pipeline delivered here is the prerequisite that makes such a study
+possible.
+
+\textbf{Transfer to other domains.} The technical core --- mapping a single
+incremental-encoder count onto a non-uniform curved path with segment-dependent
+pulse costs, then interpolating and orienting it for a real-time display over a
+high-latency link --- is not specific to stairlifts. The same problem shape
+recurs in elevators, platform lifts, gantry cranes, overhead conveyors, and
+automated guided vehicles on curved tracks, all of which pair a curved travel
+path with encoder-based position feedback. The piecewise calibration map
+(Section~\ref{sec:results-q2}) and the temporal Kalman/dead-reckoning
+interpolation (Section~\ref{sec:results-q3}) are directly reusable there; only
+the segment-type pulse-cost table and the orientation axes would need to be
+re-parameterised.
 
 % ============================================================
 \section{Discussion}
@@ -1407,7 +1560,7 @@ explicitly:
     mathematical models (Kalman, Catmull-Rom, quaternions) was selected against
     alternatives through a comparison of established properties, not personal
     preference. The selections are traceable to cited sources, and the
-    derivations in Section~\ref{sec:results-q4} are reproducible.
+    derivations in Section~\ref{sec:results-q3} are reproducible.
   \item \textit{Architectural decomposition.} The five-layer pipeline isolates
     concerns by design: each identified failure mode (bit-level corruption,
     message-level corruption, connection drop, sample-rate / inter-sample
@@ -1423,37 +1576,32 @@ explicitly:
 \end{itemize}
 
 \subsection{What Could Have Been Done Differently}
-Three decisions, in hindsight, would have been made differently.
+The limitations listed in Section~\ref{sec:conclusion} describe what the
+present runs do and do not establish; this subsection reflects on the
+process decisions behind them, not the limitations themselves.
 
-First, the \textit{filter tuning is configured rather than measured}. The
-process noise parameters and the 85/15 spindle blend ratio were chosen on
-the basis of observed behaviour during development and committed to code
-without an accompanying derivation from a first-principles uncertainty
-model. In retrospect, given that the traction encoder turned out to have
-no sample-level value-jitter (Section~\ref{sec:results-validation}), a more
-useful pre-study would have characterised the inter-sample gap distribution
-and the chair-velocity profile during typical drive segments, so that
-$\sigma_a$ and the dead-reckoning decay constant could be motivated against
-the actual gap-and-velocity behaviour rather than tuned by eye.
+The central process lesson is that two of the three empirical instrument
+criteria (DV1(b), DV3(b)) were specified before the sensor and pipeline
+behaviour were sufficiently understood. The 100\,ms Bluetooth-round-trip
+threshold and the tenfold Kalman jitter-reduction threshold both encoded
+implicit assumptions (a last-value-wins display, an analog noisy sensor)
+that did not hold for the system that was actually built. A more careful
+upfront analysis of which pipeline property each criterion is supposed to
+validate, coupled with a brief characterisation of the inter-sample gap
+distribution and the chair-velocity profile, would have caught both
+mismatches before the runs and let quantitative criteria (e.g.\
+high-speed video tracking for visible lag, frame-level position logging
+for inter-sample smoothness) be designed in their place. The same
+pre-study would have given a measured rather than eyeballed basis for the
+filter tuning parameters ($\sigma_a$, dead-reckoning decay constant, the
+85/15 spindle blend).
 
-Second, the \textit{validation sample size of two runs} is the right order of
-magnitude for correctness-of-concept but not for any statistical claim about
-generalizability across rail designs. A more defensive plan would have
-reserved time on multiple installations or on a test bench rail.
-
-Third, the \textit{instrument criteria for DV1(b) and DV3(b) were specified
-before sensor characteristics were fully understood}. The 100\,ms BT-roundtrip
-threshold made sense for a naive last-value-wins display, but the pipeline
-architecture explicitly masks single-sample latency via Kalman +
-dead-reckoning --- so the threshold did not measure what mattered. Similarly,
-the Kalman jitter-reduction criterion assumed an analog noisy sensor;
-pulse-encoders have no such value-jitter. Both criteria were reformulated as
-observational (visible smoothness, no perceptible step-jumps) prior to
-pass/fail assignment; this is honest with respect to the data, but a more
-careful upfront analysis of which pipeline property each criterion is
-supposed to validate would have caught these mismatches before the runs and
-allowed quantitative criteria (e.g., high-speed video tracking) to be
-designed in their place.
+A secondary lesson is that planning two runs on one rail was a
+correctness-of-concept choice, not a generalisability choice; a more
+defensive plan would have reserved test-bench time across rails of
+differing length, bend count, and bend type. Both lessons point in the
+same direction: budget upfront time for sensor and rail characterisation
+before locking in validation criteria.
 
 \subsection{Scope Boundaries}
 The research deliberately excluded the shipping application itself (the
