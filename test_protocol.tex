@@ -128,6 +128,25 @@ indirect testen we of die berekening klopt door te kijken of de chair
 op de \emph{volgende} marker (op een rechte na de bocht) komt waar
 verwacht.
 
+\subsection*{Workflow in één pagina}
+
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Vooraf op kantoor:} sanity-check in demo-modus (zie §3)
+  \item \textbf{Op locatie:} rail meten (§4) en markers plakken op
+        rechte stukken (sectie 0b in §4)
+  \item \textbf{Opstarten:} tablet aan, app openen, Live-tab, BT-dropdown
+        $\rightarrow$ Connect $\rightarrow$ \textbf{Nieuw logfile}
+  \item \textbf{Baseline (10\,s):} chair stil $\rightarrow$ \textbf{Start
+        baseline} $\rightarrow$ wacht 10\,s $\rightarrow$ \textbf{Eind baseline}
+  \item \textbf{Rijden B$\to$T:} bij elke marker $\rightarrow$ \textbf{MARK}
+        + foto + noteer wat het scherm toont
+  \item \textbf{Rijden T$\to$B:} idem omgekeerd
+  \item \textbf{Afsluiten:} \textbf{Print summary} $\rightarrow$ app afsluiten
+  \item \textbf{Thuis:} tablet via USB $\rightarrow$ \texttt{adb pull}
+        logfile $\rightarrow$ T1/T2/T3/T4 berekenen (§7) $\rightarrow$
+        invullen in main.tex (§8)
+\end{enumerate}
+
 \begin{table}[h]
 \small
 \begin{tabular}{@{}lll@{}}
@@ -168,62 +187,35 @@ Pass/fail logica:
         Niet nodig tijdens de rijbeweging zelf.
 \end{itemize}
 
-\section{Logfile-capture}
+\section{Wat de app voor je doet (logging)}
 
-De \texttt{TestLogger} autoload in de app schrijft alle validatie-events
-automatisch naar een file op de tablet, in de app-private external
-storage map (geen permissies nodig). Geen handmatig print-redirect of
-\texttt{adb logcat} vereist tijdens de rijbeweging zelf. Je hoeft de
-tablet niet met USB-kabel aan een laptop te koppelen tijdens het rijden
---- alleen \emph{na} de run om het bestand te pullen.
+De \emph{Validatie / Tests} sectie in de Live-tab heeft alles ingebouwd
+wat je nodig hebt. Zodra de app draait, schrijft \texttt{TestLogger}
+alle events automatisch naar een log-bestand op de tablet:
 
-\subsection{Wat er automatisch gelogd wordt}
+\begin{tabular}{@{}lp{8.2cm}@{}}
+\toprule
+\textbf{Event} & \textbf{Wanneer} \\
+\midrule
+\texttt{[CSV]}             & elke encoder-meting ($\sim$20\,Hz) --- T2, T3 \\
+\texttt{[BT\_RTT]}         & elke request/response paar --- T1 \\
+\texttt{[BASELINE\_START]} & klik op \textbf{Start baseline} \\
+\texttt{[BASELINE\_END]}   & klik op \textbf{Eind baseline} \\
+\texttt{[MARKER]}          & klik op \textbf{MARK} --- T4 \\
+\texttt{[VALIDATION\_SUMMARY]} & klik op \textbf{Print summary} \\
+\bottomrule
+\end{tabular}
 
-Zodra je de app opent:
-\begin{itemize}[leftmargin=2em, label=$\bullet$]
-  \item \texttt{[CSV]} per encoder-meting ($\sim$20 Hz tijdens beweging)
-  \item \texttt{[BT\_RTT]} per request/response paar (round-trip in ms)
-  \item \texttt{[BASELINE\_START]} / \texttt{[BASELINE\_END]} bij knop-druk
-  \item \texttt{[MARKER]} per MARK-druk, inclusief encoder en positie
-  \item \texttt{[VALIDATION\_SUMMARY]} bij Print summary
-\end{itemize}
-
-Bestand op de tablet:
-\begin{lstlisting}
-/storage/emulated/0/Android/data/com.devistairlifts/files/
-    validation_logs/session_<datetime>.log
-\end{lstlisting}
-
-In de app onderaan de \emph{Validatie / Tests} sectie zie je de huidige
-bestandsnaam en het aantal regels.
-
-\subsection{Knop \emph{Nieuw logfile}}
-
-Sluit het huidige bestand en opent een nieuw bestand. Counters van de
-sessie worden ook gereset. Gebruik dit als je een nieuwe sessie wilt
-starten (bv.\ na een testrun in demo-modus en vóór de echte run op de
-lift).
-
-\subsection{Na de rijbeweging: log pullen via adb}
-
-Tablet via USB aansluiten op de laptop, dan:
-
-\begin{lstlisting}
-adb devices  # bevestig dat tablet zichtbaar is
-mkdir -p ~/logs/tablet
-adb pull /storage/emulated/0/Android/data/com.devistairlifts/files/\
-validation_logs/ ~/logs/tablet/
-\end{lstlisting}
-
-Alle session\_*.log bestanden staan dan in \texttt{\textasciitilde/logs/tablet/}.
+\textbf{Geen handmatige terminal nodig tijdens de rijbeweging.} De
+tablet logt zelf, je hoeft alleen na afloop het bestand op te halen.
 
 \subsection{Sanity-check vóór vertrek}
 
 \begin{itemize}[leftmargin=2em, label=$\square$]
   \item App opent zonder errors in Live-tab
-  \item Onderaan Validatie-sectie zie je: \emph{Log: session\_*.log (N regels)}
-  \item Connect via \emph{Demo} entry → CSV samples teller in app loopt
-  \item Klik \textbf{MARK} → markers teller loopt op, log-regels teller loopt op
+  \item Onderaan Validatie-sectie staat: \emph{Log: session\_*.log (N regels)}
+  \item Connect via \emph{Demo} dropdown → \emph{CSV samples} en \emph{N regels} teller lopen op
+  \item Klik \textbf{MARK} → \emph{Volgende: MP1} wordt \emph{Volgende: MP2}, markers-teller +1
   \item Klik \textbf{Start baseline} → status wordt oranje \emph{BASELINE ACTIEF}
   \item Klik \textbf{Nieuw logfile} → bestandsnaam in label verandert
 \end{itemize}
@@ -536,36 +528,52 @@ MP5 & & & & & \\ \hline
 
 \textbf{DV2(b) pass?} \cbox ja (max $\leq$ threshold)\hspace{1em} \cbox nee
 
-\section{Verslag invullen}
+\section{Verslag valideren: meetdata in main.tex zetten}
 
-Open \texttt{project/main.tex}, ga naar \texttt{Table tab:validation}
-(rond regel 1100). Vervang \texttt{[meet]} per rij:
+Dit is de stap waar de meting iets gaat \emph{bewijzen}. Per
+DV-criterium dat in het verslag staat: open \texttt{project/main.tex},
+ga naar \texttt{Table tab:validation} (rond regel 1100), vervang
+\texttt{[meet]} per rij door de waarde uit de tabel hieronder.
 
-\renewcommand{\arraystretch}{1.5}
-\begin{tabular}{@{}|p{5.8cm}|p{2.5cm}|p{2.5cm}|p{3.5cm}|@{}}
+\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{@{}|p{4.7cm}|p{1.8cm}|p{2.2cm}|p{4.5cm}|@{}}
 \hline
-\textbf{Verslag-rij} & \textbf{Bron} & \textbf{In te vullen} & \textbf{Pass/fail tekst} \\ \hline
-Rail length & sectie 4 & \fillshort\ mm & --- \\ \hline
-Number of horizontal bends & sectie 4 & \fillshort & --- \\ \hline
-Position error at end station & MP1 of MP5 & \fillshort\ mm & DV2(b): \cbox pass \cbox fail \\ \hline
-Max position error at ref. points & T4 max & \fillshort\ mm & DV2(b): \cbox pass \cbox fail \\ \hline
-Encoder jitter (raw, stationary) & T2 & $\pm$\fillshort\ pulses & --- \\ \hline
-Encoder jitter (after Kalman) & T3 & \fillshort\ pulses & DV3(b): \cbox pass \cbox fail \\ \hline
-Bluetooth round-trip time & T1 & \fillshort\ ms & DV1(b): \cbox pass \cbox fail \\ \hline
-Visual smoothness through bends & O1 & korte zin & --- \\ \hline
+\textbf{Verslag-rij (main.tex)} & \textbf{Bron} & \textbf{Vul in} & \textbf{Bewijst} \\ \hline
+Rail length & sectie 4 (Stap 0a) & \fillshort\ mm & context \\ \hline
+Number of horizontal bends & sectie 4 (Stap 0a) & \fillshort & context \\ \hline
+Position error at end station & MP1 of MP5 error & \fillshort\ mm & DV2(b): \cbox pass \cbox fail \\ \hline
+Max position error at ref.\ points & T4 max (sectie 7) & \fillshort\ mm & DV2(b): \cbox pass \cbox fail \\ \hline
+Encoder jitter (raw, stationary) & T2 (sectie 7) & $\pm$\fillshort\ pulses & DV3(b) baseline \\ \hline
+Encoder jitter (after Kalman) & T3 (sectie 7) & \fillshort\ pulses & DV3(b): \cbox pass \cbox fail (ratio T2/T3 $\geq$ 10) \\ \hline
+Bluetooth round-trip time (run avg) & T1 (sectie 7) & \fillshort\ ms & DV1(b): \cbox pass \cbox fail ($\leq$ 100\,ms) \\ \hline
+Visual smoothness through bends & O1 & korte zin & observation \\ \hline
 \end{tabular}
 \renewcommand{\arraystretch}{1.0}
 
-\textbf{Logged events paragraaf} (regel $\sim$1126): vul werkelijke
-observaties O2 in.
+\textbf{Logged events paragraaf in main.tex:} vul de werkelijke
+observaties (O2) in. Bv.\ ``no anomalies'' of ``one Bluetooth disconnect
+at $\sim$XX\,s with auto-reconnect.''
 
-Build PDF:
+\subsection{Wat het verslag dan claimt}
+
+\begin{itemize}[leftmargin=2em, label=$\bullet$]
+  \item \textbf{DV1(b) pass} $\Rightarrow$ pipeline-latency is acceptabel
+        voor live visualisatie
+  \item \textbf{DV2(b) pass} $\Rightarrow$ de \texttt{IpcEncoderMapper}
+        integreert pulse-cost van straights + bochten correct over de
+        hele rail
+  \item \textbf{DV3(b) pass} $\Rightarrow$ Kalman-filter reduceert
+        encoder-ruis significant zonder bias
+\end{itemize}
+
+Als één criterium faalt: rapporteer dat eerlijk en bespreek de oorzaak
+in de Conclusion. Niet opnieuw meten tot het past.
+
+\subsection{Build + commit}
+
 \begin{lstlisting}
 cd project && latexmk -pdf main.tex
-\end{lstlisting}
 
-Commit:
-\begin{lstlisting}
 git add project/main.tex project/main.aux project/main.fdb_latexmk \
         project/main.fls project/main.log project/main.pdf
 git commit -m "validate: fill measurement results from physical run"

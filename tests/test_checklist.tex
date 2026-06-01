@@ -1,0 +1,133 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[dutch]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2cm]{geometry}
+\usepackage{enumitem}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+\usepackage{array}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+
+\newcommand{\cbox}{$\square$\hspace{0.5em}}
+\newcommand{\fillspace}[1][3em]{\underline{\hspace{#1}}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Stageverslag validatie}
+\lhead{Test-checklist calibratierun}
+\cfoot{\thepage}
+
+\setlist[itemize]{leftmargin=1.5em,itemsep=4pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large\bfseries Test-checklist -- Validatietabel Stageverslag}\\[0.3em]
+    {\small Branch: \texttt{feat/stage-report-logging} (v2) \hspace{1em}|\hspace{1em}
+     Logbestand: \texttt{user://calibration\_logs/calib\_<timestamp>.log}}
+\end{center}
+
+\vspace{0.5em}
+
+\section*{0. Voorbereiding (eenmalig)}
+\begin{itemize}
+    \item \cbox APK met instrumentatie staat op de tablet (\texttt{UP-Studio-dev.apk} of nieuwer)
+    \item \cbox Tablet via USB verbonden met laptop (voor logs ophalen met \texttt{adb}) --- \textit{optioneel, mag ook via bestandsmanager}
+    \item \cbox Oude logs opgeruimd: \\
+        \texttt{\small adb shell "rm -f /sdcard/Android/data/com.example.upstudiogdscript/files/calibration\_logs/*.log"}
+    \item \cbox Lift volledig geassembleerd op de testrail en werkt (handmatige piloting getest)
+    \item \cbox Laadcontact aan bovenzijde of onderzijde aangesloten (start-station gedefinieerd)
+\end{itemize}
+
+\section*{1. Per calibratierun (doe dit 3x op 3 verschillende rails)}
+
+\subsection*{Rail-configuraties}
+\begin{itemize}
+    \item \cbox \textbf{Run 1} --- middellange rail, $\geq 4$ horizontale bochten
+    \item \cbox \textbf{Run 2} --- korte rail ($\leq 3.5$ m), weinig bochten
+    \item \cbox \textbf{Run 3} --- lange rail ($\geq 6$ m), 6+ bochten (stress-test)
+\end{itemize}
+
+\subsection*{Stappen per run}
+\begin{enumerate}[leftmargin=2em]
+    \item \cbox Lift via BT verbonden, traction + spindle waardes zichtbaar in UI
+    \item \cbox Doorgelopen tot de calibratierun-stap in het stappenplan
+    \item \cbox Druk \textbf{''Start calibration''} in de app\\
+        \textcolor{gray}{\small $\rightarrow$ logger start automatisch, sessielabel = \texttt{calibration\_run}}
+    \item \cbox \textbf{Minimaal 5 seconden stilstaan} na het indrukken van Start\\
+        \textcolor{gray}{\small $\rightarrow$ nodig voor de stationaire jitter-metric (raw + Kalman)}
+    \item \cbox Joystick ingedrukt houden, lift van onder naar boven laten rijden
+    \item \cbox Firmware stopt automatisch bij elke horizontale bocht (STOPPED\_ON\_STATION)\\
+        \textcolor{gray}{\small $\rightarrow$ per bocht: hoekcorrectie + encoder-snapshot gelogd}
+    \item \cbox \textbf{Tussendoor 1--2x een rechte stuk van $\geq 1$m rijden met ingedrukte joystick}\\
+        \textcolor{gray}{\small $\rightarrow$ voor \texttt{motion\_jitter\_*} metric (raw vs Kalman RMSE tijdens beweging)}
+    \item \cbox Rijd door tot MOVE\_TO\_LAST (near-end waarschuwing)
+    \item \cbox Override inschakelen, lift precies op laadstation positioneren
+    \item \cbox \textbf{Confirm-knop ingedrukt} $\rightarrow$ SUMMARY + end-station error gelogd
+    \item \cbox Noteer rail-label + datum/tijd + gemeten fysieke afwijking bij eindstation
+\end{enumerate}
+
+\subsection*{Noteringen per run}
+\vspace{0.3em}
+
+\begin{tabularx}{\linewidth}{|l|X|X|X|}
+    \hline
+    & \textbf{Run 1} & \textbf{Run 2} & \textbf{Run 3} \\\hline
+    Rail-label / locatie & & & \\\hline
+    Datum \& tijd start  & & & \\\hline
+    Aantal bochten verwacht & & & \\\hline
+    Logbestand-timestamp & & & \\\hline
+    Bijzonderheden / handelingen & & & \\\hline
+\end{tabularx}
+
+\section*{2. Optionele stress-scenario's (eenmalig, niet per run)}
+
+Doe dit in één extra run zodat er logregels zijn die de ``logged events''-kolom van de verslagtabel vullen.
+
+\begin{itemize}
+    \item \cbox \textbf{BT disconnect-test}: schakel de BT-dongle van de lift 3 seconden uit tijdens de run\\
+        \textcolor{gray}{\small $\rightarrow$ verwacht: \texttt{[EVENT] bt\_disconnect} en \texttt{bt\_reconnect reconnect\_ms=...}}
+    \item \cbox \textbf{Latency spike}: tablet onder zware CPU-load zetten (grote andere app starten op achtergrond)\\
+        \textcolor{gray}{\small $\rightarrow$ verwacht: \texttt{[EVENT] latency\_spike msg\_id=... elapsed\_ms=...}}
+    \item \cbox \textbf{Manual compass re-trigger}: compass-reset-knop in UI tijdens een straight-section indrukken\\
+        \textcolor{gray}{\small $\rightarrow$ verwacht: \texttt{[COMPASS] reset reason=...}}
+    \item \cbox \textbf{Split-bend}: indien aanwezig, pak een rail met 2x horizontale bocht van zelfde richting $<250$\,mm uit elkaar\\
+        \textcolor{gray}{\small $\rightarrow$ verwacht: \texttt{[EVENT] split\_bend\_armed ...}}
+\end{itemize}
+
+\section*{3. Logs ophalen en verwerken}
+
+\begin{itemize}
+    \item \cbox Tablet via USB aansluiten, USB-debugging aan
+    \item \cbox Log-folder ophalen:\\
+        \texttt{\small adb pull /sdcard/Android/data/com.example.upstudiogdscript/files/calibration\_logs/ \~{}/stageverslag\_periode\_1\_2\_26/logs/}
+    \item \cbox Per logbestand: \texttt{grep "{[}SUMMARY{]}" calib\_*.log} $\rightarrow$ geeft de getallen voor de verslagtabel
+    \item \cbox Cijfers invullen in \texttt{main.tex} Tabel ``Validation measurements'' (regels 1222--1238)
+    \item \cbox Events (BT disconnect / latency spike / compass re-trigger) tekstueel in de ``logged events''-kolom
+\end{itemize}
+
+\vspace{0.5em}
+
+\section*{4. Desktop frame-rate meting (voor verslagtabel-rij ``Desktop FPS'')}
+
+\begin{itemize}
+    \item \cbox Build de Linux-export (\texttt{make linux} of via Godot-editor)\\
+          \textcolor{gray}{\small $\rightarrow$ \texttt{export/linux/UP-Studio.x86\_64} of vergelijkbaar}
+    \item \cbox Start de app op de laptop, verbind met een lift via TCP (of een mock-transport)
+    \item \cbox Doorloop één calibratierun --- de FPS-sampler schrijft \texttt{[FPS] fps=... platform=linux} weg
+    \item \cbox Haal de avg/min/max uit de SUMMARY-regels voor de desktop-kolom
+\end{itemize}
+
+\vfill
+\begin{center}
+    \textit{Notities onderaan}\\[0.5em]
+    \fillspace[\linewidth]\\[1em]
+    \fillspace[\linewidth]\\[1em]
+    \fillspace[\linewidth]
+\end{center}
+
+\end{document}
