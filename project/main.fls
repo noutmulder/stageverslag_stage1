@@ -466,13 +466,13 @@ INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/cm/cmr10.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/zplmb7t.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/zplmb7t.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/zplmb7t.tfm
+INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/vf/adobe/palatino/pplr8t.vf
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/vf/public/mathpazo/zplmr7m.vf
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/mathpazo/fplmri.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/public/cm/cmmi10.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/tfm/adobe/palatino/pplri8r.tfm
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/vf/adobe/palatino/pplr7t.vf
 INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/vf/adobe/palatino/pplr7t.vf
-INPUT /home/nmu/.TinyTeX/texmf-dist/fonts/vf/adobe/palatino/pplr8t.vf
 INPUT ./main.bbl
 INPUT ./main.bbl
 INPUT main.bbl

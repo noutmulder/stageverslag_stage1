@@ -10,9 +10,9 @@ M.~Grieves and J.~Vickers, ``Digital twin: Mitigating unpredictable, undesirable
 J.~Bofill, M.~Abisado, J.~Villaverde, and G.~A. Sampedro, ``Exploring digital twin-based fault monitoring: Challenges and opportunities,'' {\em Sensors}, vol.~23, no.~16, p.~7087, 2023.
 
 \bibitem{elmenreich2002sensorfusion}
-W.~Elmenreich, ``An introduction to sensor fusion,'' {\em Vienna University of Technology, Austria}, no.~TR 47/2001, 2002.
+W.~Elmenreich, ``An introduction to sensor fusion,'' Research Report 47/2001, Vienna University of Technology, Institut f\"ur Technische Informatik, 2002.
 
-\bibitem{merry2013encoder}
+\bibitem{merry2010encoder}
 R.~J.~E. Merry, M.~J.~G. van~de Molengraft, and M.~Steinbuch, ``Velocity and acceleration estimation for optical incremental encoders,'' {\em Mechatronics}, vol.~20, no.~1, pp.~20--26, 2010.
 
 \bibitem{bolton2019mechatronics}
@@ -90,6 +90,10 @@ R.~D. Graham and P.~C. Johnson, ``Finite state machine parsing for internet prot
 R.~R. Labbe, {\em Kalman and {Bayesian} Filters in {Python}}.
 \newblock Self-published (GitHub), 2015.
 \newblock Chapter 7: Continuous White Noise Model. CC BY 4.0 license.
+
+\bibitem{barshalom2001estimation}
+Y.~Bar-Shalom, X.-R. Li, and T.~Kirubarajan, {\em Estimation with Applications to Tracking and Navigation: Theory, Algorithms and Software}.
+\newblock New York: John Wiley \& Sons, 2001.
 
 \bibitem{bowditch2002}
 {National Imagery and Mapping Agency}, {\em The American Practical Navigator}.

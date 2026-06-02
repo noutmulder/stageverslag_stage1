@@ -9,20 +9,20 @@ Bron: `project/main.tex`. Regelnummers zijn indicatief (peilmoment review).
 
 ---
 
-## Fase 0 — Bureauwerk, geen metingen nodig
+## Fase 0 — Bureauwerk, geen metingen nodig ✅ AFGEROND
 
-Tilt vooral Methoden + Resultaten (samen 28% gewicht).
+Tilt vooral Methoden + Resultaten (samen 28% gewicht). Alle edits geverifieerd tegen de code; LaTeX compileert schoon (0 undefined refs/citations).
 
-- [ ] **0.1 Kalman-afleiding compleet maken.** Voeg covariantie-update `P ← (I − KH)P` toe ná de measurement-update (ontbreekt nu, r.1039–1041). _Raakt: Resultaten + instrument-criterium "every step presented" (r.638–640)._
-- [ ] **0.2 Q-matrix correct benoemen.** "white-noise-jerk" (r.1029) → constant-velocity / white-noise-acceleratie-model. _Raakt: Resultaten._
-- [ ] **0.3 DV3 herformuleren.** Vervang "from noisy telemetry" (r.519) door gap-filling / temporele interpolatie tussen samples; lost interne tegenspraak met r.246–256 op. _Raakt: Vraagstelling + coherentie._
-- [ ] **0.4 Transport-vooronderzoek bij RQ1.** Korte, bronnen-gedreven afweging Bluetooth vs. UART vs. wifi vs. ethernet (format: transportkeuze = kort-te-bespreken opzoekwerk). _Raakt: Vooronderzoek (RQ1-hiaat)._
-- [ ] **0.5 Bronnenhygiëne.** Vervang voor kennisclaims elmenreich (tech-report-als-`@article`) en labbe (self-published GitHub) door peer-reviewed bronnen (bv. Bar-Shalom). Fix jaar-inconsistentie `merry2013` (entry = 2010). _Raakt: Cross-cutting (bronnen)._
-- [ ] **0.6 Weesfiguur oplossen.** `fig:calibration-run` nergens ge-`\ref`d → verwijzen of verwijderen. _Raakt: Resultaten._
-- [ ] **0.7 Configurator-discrepantie naar Results.** rd1 +16 mm e.d. verschijnt nu pas in de conclusie (r.1364) → verplaatsen naar Results. _Raakt: Conclusie (geen nieuwe info) + Resultaten._
-- [ ] **0.8 Interpretatie-lekkage uit Results.** r.776, r.1306–1307 → naar Conclusie. _Raakt: Resultaten (objectiviteit)._
-- [ ] **0.9 Inleiding-relevantie minder hypothetisch** ("would/could"). _Raakt: Inleiding._
-- [ ] **0.10 Organisatorische aanbeveling toevoegen** (uitrol/inbedding bij service) naast de technische. _Raakt: Aanbevelingen._
+- [x] **0.1 Kalman-afleiding compleet maken.** Covariantie-update `P ← (I − KH)P` toegevoegd aan correctie-stap (`eq:kf-correct`). **Geverifieerd tegen code**: `ipc_lift_controller.gd:487–492` doet exact dit; verslag miste het juist. _Raakt: Resultaten._
+- [x] **0.2 Q-matrix correct benoemen.** "white-noise-jerk" → "white-noise-acceleratie / constant-velocity". Code-comment regel 3 bevestigt "constant-velocity model". _Raakt: Resultaten._
+- [x] **0.3 DV3 herformuleren.** "from noisy telemetry" → "sampled asynchronously and well below the display refresh rate". Lost tegenspraak met gap-filling-framing op. _Raakt: Vraagstelling._
+- [x] **0.4 Transport-vooronderzoek bij RQ1.** Nieuwe subsectie `sec:prior-transport`: Bluetooth als geërfde hardware-constraint (HC-module + historische app-comms), wired/wifi kort uitgesloten, TCP = dev-substituut. _Raakt: Vooronderzoek._
+- [x] **0.5 Bronnenhygiëne.** Bar-Shalom (canoniek, peer-reviewed) toegevoegd bij Q-matrix; elmenreich → `@techreport`; `merry2013encoder` → `merry2010encoder` (jaar consistent). _Raakt: Cross-cutting (bronnen)._
+- [x] **0.6 Weesfiguur oplossen.** `fig:calibration-run` nu ge-`\ref`d in "Calibration run protocol". _Raakt: Resultaten._
+- [x] **0.7 Configurator-discrepantie naar Results.** Per-deel getallen (rd1 +16 mm e.d.) nu als observatie in Validation Evidence; conclusie verwijst er alleen naar. _Raakt: Conclusie + Resultaten._
+- [x] **0.8 Interpretatie-lekkage uit Results.** "load-bearing rather than cosmetic" (Results-q1) en de outlier-duiding (Logged events) verwijderd. _Raakt: Resultaten (objectiviteit)._
+- [x] **0.9 Inleiding-relevantie minder hypothetisch.** "would/could" vervangen door concrete capability; diagnosetijd-claim blijft expliciet out-of-scope. _Raakt: Inleiding._
+- [x] **0.10 Organisatorische aanbeveling toevoegen.** "Organisational embedding"-item toegevoegd aan Recommendations. _Raakt: Aanbevelingen._
 
 ---
 

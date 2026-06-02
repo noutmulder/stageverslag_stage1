@@ -156,12 +156,15 @@ loss. The visualization must bridge the gap between these asynchronous
 measurements and a continuous, smooth spatial representation that updates at
 display frame rate.
 
-A live 3D visualization of stairlift position and movement would have direct
-practical value. Service engineers could visually identify whether the chair has
-lost its expected position, is stuck in a bend, or exhibits abnormal tilt. This
-would reduce diagnosis time and minimize unnecessary on-site visits. For the
-development team, a live telemetry view would enable rapid verification of
-firmware behavior during testing and commissioning of new rail configurations.
+A live 3D visualization of stairlift position and movement addresses this gap
+directly: it makes the chair's spatial state --- position on the rail, motion
+through bends, and seat tilt --- explicit where the current text-and-code output
+leaves it implicit. This gives service engineers an at-a-glance view of where
+the chair is and how it is oriented, and gives the development team a direct way
+to verify firmware behaviour during testing and commissioning of new rail
+configurations. Whether this spatial view in turn shortens diagnosis time or
+reduces on-site visits is the functional motivation for the work, examined as a
+human-factors question outside the present scope.
 
 The goal of this research is to determine which data processing and mathematical
 models are needed to transform live stairlift telemetry into a stable and
@@ -210,7 +213,7 @@ actuator, for example, produces pulses proportional to displacement, and the
 mapping from pulse count to position is a single constant. This assumption
 breaks down when the trajectory is non-linear: on a curved path, the
 relationship between encoder pulses and spatial displacement depends on the
-local curvature~\cite{merry2013encoder}.
+local curvature~\cite{merry2010encoder}.
 
 \subsubsection{Non-Linear Encoder Mapping on Curved Rails}
 A stairlift rail is composed of straight sections, vertical bends (pitch
@@ -243,7 +246,7 @@ apart, and frames between measurements must be filled with predicted values. If
 the most recent measurement is simply held constant until the next arrives, the
 display exhibits visible staircase-like jumps at the sensor sample rate. The
 traction encoder used by the stairlift is a digital incremental
-pulse-counter~\cite{merry2013encoder}: it does not produce per-sample
+pulse-counter~\cite{merry2010encoder}: it does not produce per-sample
 quantization noise on a stationary chair, but it does produce sampled
 positions at a rate well below the display refresh, so the gap-filling
 problem (not noise rejection) is the dominant artifact source for this
@@ -299,7 +302,7 @@ A \textbf{single linear scale factor} multiplies the pulse count by one
 constant mm-per-pulse value, the standard linear-actuator
 approach~\cite{elmenreich2002sensorfusion}. It is $O(1)$ per frame and needs no
 model of the path, but is correct only while the pulses-per-millimetre ratio is
-constant; \cite{merry2013encoder} shows this assumption fails where the local
+constant; \cite{merry2010encoder} shows this assumption fails where the local
 path geometry varies, so on a bent rail the linear factor accumulates a
 position error at every bend transition. It is therefore rejected as the
 primary mapping.
@@ -439,6 +442,27 @@ must be composed every frame without visual artifacts, quaternions are
 selected to avoid the gimbal lock risk of Euler angles and the numerical
 drift of rotation matrices.
 
+\subsubsection{Telemetry Transport Link}
+\label{sec:prior-transport}
+The input layer of the pipeline (Section~\ref{sec:results-q1}) must carry
+telemetry from a controller mounted on the moving chair to an off-board
+visualization host, which rules out a tethered link from the outset: a wired
+serial (UART/RS-232) or Ethernet connection would have to be dragged along the
+travelling carriage. A wireless link is therefore a hard requirement. The
+transport is, however, not a free design variable in this project but a property
+inherited from the deployed hardware: the lift controller carries an HC-series
+Bluetooth-to-serial module and has historically communicated with companion
+applications over that same Bluetooth-serial link. The pipeline consequently
+takes Bluetooth Classic with the Serial Port
+Profile~\cite{bluetoothsig2022spp} as a given input rather than selecting it
+against alternatives such as Wi-Fi, which would require an IP stack and network
+association the controller does not provide. A TCP transport is implemented
+behind the same interface, but only as a development and test-bench substitute
+when no physical lift is connected. The round-trip latency this inherited link
+imposes is precisely what makes the inter-sample prediction of
+Section~\ref{sec:results-q3} load-bearing, and characterising it is part of the
+first subquestion (Section~\ref{sec:research-questions}).
+
 \subsubsection{Real-Time 3D Engine Selection}
 \label{sec:prior-engine}
 The renderer layer of the pipeline (Section~\ref{sec:results-q1}) imposes four
@@ -516,7 +540,8 @@ identified problem and the available solutions.
     geometric challenge. No existing mapping exists for this rail type.
     \label{q:encoder}
   \item \textit{Which state estimation and orientation models produce a stable
-    live 3D representation from noisy telemetry?}
+    live 3D representation from telemetry sampled asynchronously and well below
+    the display refresh rate?}
     The prior work survey identified several candidate models per subproblem.
     This question addresses the formal derivation, parameterization, and
     empirical evaluation of the selected models for this specific application.
@@ -772,8 +797,7 @@ the traction, spindle, swivel and status channels, so the per-channel traction
 arrival rate is correspondingly lower --- on the order of $\sim$4--5\,Hz, an
 inter-sample gap of $\sim$200\,ms. The renderer reconciles this inter-sample
 gap with Kalman-based interpolation and dead-reckoning
-(Section~\ref{sec:results-q3}); the larger-than-nominal gap is precisely what
-makes the inter-sample prediction load-bearing rather than cosmetic. The low-frequency streams (system status, footrest) update chair
+(Section~\ref{sec:results-q3}). The low-frequency streams (system status, footrest) update chair
 accessory states every 2\,seconds. Status bits relevant for fault visualization
 include: armrest position (left and right, from \texttt{data[14]} bits 0 and 1
 of MSG\,114), seatbelt state (bit 2), and footrest position (bit 2 of
@@ -1025,8 +1049,11 @@ P_{01} &\leftarrow P_{01} + \Delta t \cdot P_{11} + \sigma_a^2 \cdot \tfrac{\Del
 P_{11} &\leftarrow P_{11} + \sigma_a^2 \cdot \Delta t \nonumber
 \end{align}
 where $\sigma_a$ is the process noise (acceleration standard deviation) and
-$\mathbf{P}$ is the covariance matrix. The process noise matrix corresponds to
-the continuous white-noise-jerk model~\cite{labbe2015kalman}:
+$\mathbf{P}$ is the covariance matrix. The process noise matrix is that of the
+continuous white-noise-acceleration model for a constant-velocity
+state~\cite{labbe2015kalman, barshalom2001estimation}, in which the unmodelled
+acceleration is treated as a zero-mean white-noise process of intensity
+$\sigma_a^2$:
 \begin{equation}
 \label{eq:kf-Q}
 \mathbf{Q} = \sigma_a^2 \begin{bmatrix} \Delta t^3/3 & \Delta t^2/2 \\ \Delta t^2/2 & \Delta t \end{bmatrix}
@@ -1040,10 +1067,20 @@ S &= P_{00} + \sigma_m^2 \nonumber\\
 K_0 &= P_{00} / S \\
 K_1 &= P_{01} / S \nonumber\\
 p &\leftarrow p + K_0 \cdot y \nonumber\\
-v &\leftarrow v + K_1 \cdot y \nonumber
+v &\leftarrow v + K_1 \cdot y \nonumber\\
+P_{11} &\leftarrow P_{11} - K_1 \cdot P_{01} \nonumber\\
+P_{00} &\leftarrow (1 - K_0)\,P_{00} \nonumber\\
+P_{01} &\leftarrow (1 - K_0)\,P_{01} \nonumber
 \end{align}
 where $\sigma_m$ is the measurement noise standard deviation and $\mathbf{K}$
-is the Kalman gain.
+is the Kalman gain. The last three lines propagate the covariance through the
+correction as $\mathbf{P} \leftarrow (\mathbf{I} - \mathbf{K}\mathbf{H})\,\mathbf{P}$
+with the scalar position-measurement model $\mathbf{H} = [\,1\;\;0\,]$, written
+out componentwise and ordered so that each assignment uses the pre-update
+entries. This closes the recursion: the prediction step
+(Equation~\ref{eq:kf-predict}) grows the covariance while the correction shrinks
+it, so the gain $\mathbf{K}$ adapts to the current estimate
+uncertainty~\cite{welch1995kalman}.
 
 The tuning parameters per axis are listed in Table~\ref{tab:kalman}. The
 $\sigma_a$ (process noise / acceleration uncertainty) and $\sigma_m$
@@ -1215,7 +1252,8 @@ The encoder baseline is measured during the 13\,s stationary window.
 \label{fig:calibration-run}
 \end{figure}
 
-\textbf{Calibration run protocol.} The service polls six data points per tick:
+\textbf{Calibration run protocol.} Figure~\ref{fig:calibration-run} shows a
+calibration run in progress. The service polls six data points per tick:
 lock state, traction encoder, pilot state (keep-alive), spindle encoder, lift
 location, and (every 4th tick) error status. Speed is managed automatically
 via the firmware's speed-setting register (percent of the lift's configured
@@ -1302,9 +1340,16 @@ while the chair is stationary.
 
 \textbf{Logged events.} No Bluetooth disconnects, parser checksum errors, or
 manual interventions occurred during either run. One latency outlier of
-543\,ms was observed (P99 = 135\,ms; the outlier is consistent with a
-transient BT scheduling event and was absorbed by the dead-reckoning
-extrapolation without visible artifact).
+543\,ms was observed (P99 = 135\,ms).
+
+\textbf{Rail-configurator discrepancy (observation).} An independent tape
+measurement of the validation rail showed the firmware-encoded rail-part
+lengths deviating from the physically measured lengths by up to 16\,mm per
+part (rd1: $+16$\,mm, rd5: $-9$\,mm, rd11: $-10$\,mm; net $+10$\,mm over the
+3.4\,m rail, or 0.3\,\%). This is a property of the rail-configurator's data
+acquisition during lift installation, not of the visualization pipeline; it
+is recorded here as a context observation and its scope implications are
+discussed in Section~\ref{sec:conclusion}.
 
 % ============================================================
 \section{Conclusion}
@@ -1359,12 +1404,11 @@ Equation~\ref{eq:arctracing-error} bounds the per-segment arc-tracing error
 at $\approx 4.2\,\mu$m per segment, so the residual sub-millimetre error
 that was observed is consistent with the finite precision of the firmware
 pulse-cost constants (Equation~\ref{eq:pulsecosts}, four to ten significant
-figures). A separate independent observation during the validation runs
-showed up to 16\,mm discrepancy between the firmware-encoded rail-part
-lengths and physical tape measurements (rd1: +16\,mm, rd5: -9\,mm,
-rd11: -10\,mm; net total +10\,mm over 3.4\,m, or 0.3\,\%); this is a
-property of the rail-configurator's data acquisition during lift
-installation and is outside the scope of this thesis, but is reported under
+figures). A separate observation during the runs (Section~\ref{sec:results-validation})
+showed the firmware-encoded rail-part lengths deviating from physical tape
+measurements by up to 16\,mm per part (net $+10$\,mm over 3.4\,m, 0.3\,\%);
+this is a property of the rail-configurator's data acquisition during lift
+installation, outside the scope of this thesis, and is discussed further under
 Limitations.
 
 \textbf{Mathematical models.}
@@ -1513,6 +1557,13 @@ composition) are the research instruments implemented in that code.
     Section~\ref{sec:results-q1} under adversarial conditions.
   \item \textbf{Historical playback.} Record telemetry sessions for later
     replay to enable post-incident analysis without a live connection.
+  \item \textbf{Organisational embedding.} Adoption in practice requires
+    integrating the live view into the service workflow: deciding where it
+    runs (a service tablet at the lift or a remote support desk), how it is
+    paired with a specific installation, and how its spatial output is combined
+    with --- rather than replacing --- the existing text-and-code fault channel.
+    A small pilot with a group of service engineers would surface these
+    integration requirements before a wider rollout.
 \end{itemize}
 
 \textbf{Step up to the functional problem.} The recommendations above tighten
