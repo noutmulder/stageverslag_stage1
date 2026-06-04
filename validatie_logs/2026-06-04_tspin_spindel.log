@@ -1,0 +1,2401 @@
+# UP-Studio validatie-sessie log
+# datetime: 2026-06-04T15:46:45
+# platform: Android
+# path: /storage/emulated/0/Android/data/com.example.upstudio/files/validation_logs/session_2026-06-04_15-46-45.log
+# session_start_ms: 60354
+[VALIDATION] session_reset t=60356
+[BT_RTT] msg_id=111 rtt_ms=117.6
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 60589,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=97.2
+[CSV] 60957,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=77.8
+[BT_RTT] msg_id=111 rtt_ms=97.2
+[BT_RTT] msg_id=168 rtt_ms=75.6
+[BT_RTT] msg_id=110 rtt_ms=75.1
+[CSV] 61309,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.1
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[MARKER] n=1 label="MP1" t=61623 encoder=4669 kf_pos=0.24687 display_pos=0.24687 fw_pos=0.24687 total_mm=5395.7 display_mm=1332.0 fw_mm=1332.0 spindle_kf=0.000 spindle_disp=0.000 swivel_kf=0.000 swivel_disp=0.000 compass_yaw=109.829
+[BT_RTT] msg_id=114 rtt_ms=92.6
+[BT_RTT] msg_id=113 rtt_ms=92.0
+[BT_RTT] msg_id=168 rtt_ms=92.1
+[BT_RTT] msg_id=110 rtt_ms=91.2
+[CSV] 61954,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=109.1
+[BT_RTT] msg_id=168 rtt_ms=109.1
+[BT_RTT] msg_id=110 rtt_ms=109.1
+[CSV] 62415,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 62767,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=91.9
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=110 rtt_ms=92.3
+[CSV] 63138,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.7
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=74.1
+[CSV] 63490,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=111.1
+[CSV] 63879,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=114 rtt_ms=74.1
+[BT_RTT] msg_id=113 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 64398,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 64769,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 65123,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 65474,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 65864,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=114 rtt_ms=92.6
+[BT_RTT] msg_id=113 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=74.1
+[CSV] 66457,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=110 rtt_ms=74.1
+[CSV] 66791,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 67162,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=111.1
+[BT_RTT] msg_id=168 rtt_ms=111.1
+[BT_RTT] msg_id=110 rtt_ms=74.1
+[CSV] 67587,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=111 rtt_ms=111.1
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 67995,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=110 rtt_ms=74.1
+[CSV] 68347,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=114 rtt_ms=74.1
+[BT_RTT] msg_id=113 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=74.1
+[CSV] 68867,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=111 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 69218,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 69627,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 70016,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=110 rtt_ms=74.1
+[CSV] 70387,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=111 rtt_ms=74.1
+[BT_RTT] msg_id=114 rtt_ms=92.6
+[BT_RTT] msg_id=113 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 70908,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=111.1
+[CSV] 71278,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 71648,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 72037,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=111.1
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=110 rtt_ms=111.1
+[CSV] 72482,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=114 rtt_ms=74.1
+[BT_RTT] msg_id=113 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=111.1
+[CSV] 73112,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=74.1
+[CSV] 73464,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 73814,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 74169,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=112.2
+[CSV] 74581,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=94.2
+[BT_RTT] msg_id=111 rtt_ms=132.4
+[BT_RTT] msg_id=168 rtt_ms=76.2
+[BT_RTT] msg_id=114 rtt_ms=95.2
+[BT_RTT] msg_id=113 rtt_ms=76.2
+[BT_RTT] msg_id=168 rtt_ms=76.2
+[BT_RTT] msg_id=110 rtt_ms=76.2
+[CSV] 75236,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=76.2
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 75591,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=100.0
+[BT_RTT] msg_id=111 rtt_ms=100.0
+[BT_RTT] msg_id=168 rtt_ms=100.0
+[BT_RTT] msg_id=110 rtt_ms=100.0
+[CSV] 76003,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=60.0
+[BT_RTT] msg_id=111 rtt_ms=120.0
+[BT_RTT] msg_id=168 rtt_ms=80.0
+[BT_RTT] msg_id=110 rtt_ms=80.0
+[CSV] 76360,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=79.0
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 76697,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=111 rtt_ms=117.6
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=114 rtt_ms=98.0
+[BT_RTT] msg_id=113 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=117.6
+[CSV] 77410,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 77767,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 78140,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 78515,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=117.6
+[BT_RTT] msg_id=111 rtt_ms=117.6
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=113 rtt_ms=58.8
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 82191,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=156.9
+[CSV] 82657,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 83016,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 83387,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 83763,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=114 rtt_ms=78.4
+[BT_RTT] msg_id=113 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 84269,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=117.6
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 84661,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 84999,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=117.6
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 85412,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 85768,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=114 rtt_ms=78.4
+[BT_RTT] msg_id=113 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=117.6
+[BT_RTT] msg_id=168 rtt_ms=117.6
+[BT_RTT] msg_id=110 rtt_ms=117.6
+[CSV] 86442,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=117.6
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 86855,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 87230,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 87586,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 87978,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=114 rtt_ms=117.6
+[BT_RTT] msg_id=113 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=117.6
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 88578,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 88918,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 89274,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 89629,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 90003,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=114 rtt_ms=98.0
+[BT_RTT] msg_id=113 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 90658,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 90976,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 91351,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=111 rtt_ms=117.6
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 91764,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 92158,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=114 rtt_ms=78.4
+[BT_RTT] msg_id=113 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 92721,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 93094,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=117.6
+[CSV] 93487,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 93863,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 94254,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=114 rtt_ms=98.0
+[BT_RTT] msg_id=113 rtt_ms=58.8
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 94836,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 95209,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=117.6
+[CSV] 95619,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 95992,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 96362,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[MARKER] n=2 label="MP2" t=96545 encoder=4669 kf_pos=0.24687 display_pos=0.24687 fw_pos=0.24687 total_mm=5395.7 display_mm=1332.0 fw_mm=1332.0 spindle_kf=15.100 spindle_disp=12.835 swivel_kf=0.000 swivel_disp=0.000 compass_yaw=56.871
+[BT_RTT] msg_id=114 rtt_ms=98.0
+[BT_RTT] msg_id=113 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=96.3
+[BT_RTT] msg_id=111 rtt_ms=77.8
+[BT_RTT] msg_id=168 rtt_ms=77.8
+[BT_RTT] msg_id=110 rtt_ms=95.0
+[CSV] 97004,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.3
+[BT_RTT] msg_id=111 rtt_ms=92.2
+[BT_RTT] msg_id=168 rtt_ms=73.4
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 97395,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 97779,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=111 rtt_ms=72.7
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 98150,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.6
+[BT_RTT] msg_id=111 rtt_ms=73.7
+[BT_RTT] msg_id=168 rtt_ms=73.6
+[BT_RTT] msg_id=110 rtt_ms=93.0
+[CSV] 98483,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.9
+[BT_RTT] msg_id=111 rtt_ms=92.8
+[BT_RTT] msg_id=114 rtt_ms=92.6
+[BT_RTT] msg_id=113 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=110 rtt_ms=111.1
+[CSV] 99079,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=111 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=111.1
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 99468,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 99840,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 100248,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=111 rtt_ms=129.6
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 100654,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=111 rtt_ms=111.1
+[BT_RTT] msg_id=168 rtt_ms=111.1
+[BT_RTT] msg_id=114 rtt_ms=74.1
+[BT_RTT] msg_id=113 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=110 rtt_ms=74.1
+[CSV] 101309,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 101690,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=111 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 102044,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=111 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 102378,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=111 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=74.1
+[CSV] 102716,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 103107,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=111.1
+[BT_RTT] msg_id=114 rtt_ms=92.6
+[BT_RTT] msg_id=113 rtt_ms=92.9
+[BT_RTT] msg_id=168 rtt_ms=75.4
+[BT_RTT] msg_id=111 rtt_ms=94.4
+[BT_RTT] msg_id=168 rtt_ms=93.3
+[BT_RTT] msg_id=110 rtt_ms=94.5
+[CSV] 103801,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.2
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=99.6
+[CSV] 104158,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=80.0
+[BT_RTT] msg_id=111 rtt_ms=100.0
+[BT_RTT] msg_id=168 rtt_ms=80.0
+[BT_RTT] msg_id=110 rtt_ms=120.0
+[CSV] 104555,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=100.0
+[BT_RTT] msg_id=111 rtt_ms=100.0
+[BT_RTT] msg_id=168 rtt_ms=100.0
+[BT_RTT] msg_id=110 rtt_ms=117.8
+[CSV] 104986,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=117.6
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 105397,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=114 rtt_ms=98.0
+[BT_RTT] msg_id=113 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 105901,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 106258,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 106632,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=117.6
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 107009,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 107362,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=114 rtt_ms=98.0
+[BT_RTT] msg_id=113 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 107923,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 108259,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 108615,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=117.6
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 109026,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 109361,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 109718,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=114 rtt_ms=98.0
+[BT_RTT] msg_id=113 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=117.6
+[CSV] 110261,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=111 rtt_ms=117.6
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 110651,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=97.7
+[CSV] 111002,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=58.3
+[BT_RTT] msg_id=111 rtt_ms=97.2
+[BT_RTT] msg_id=168 rtt_ms=97.2
+[BT_RTT] msg_id=110 rtt_ms=92.8
+[CSV] 111376,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.2
+[BT_RTT] msg_id=111 rtt_ms=92.5
+[BT_RTT] msg_id=168 rtt_ms=92.1
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 111759,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=114 rtt_ms=74.1
+[BT_RTT] msg_id=113 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=92.5
+[BT_RTT] msg_id=111 rtt_ms=147.8
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=111.1
+[CSV] 112445,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=111 rtt_ms=74.0
+[BT_RTT] msg_id=168 rtt_ms=73.2
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 112778,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=74.0
+[BT_RTT] msg_id=110 rtt_ms=92.5
+[CSV] 113148,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.0
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=55.4
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 113498,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=92.5
+[BT_RTT] msg_id=168 rtt_ms=92.0
+[BT_RTT] msg_id=110 rtt_ms=74.6
+[CSV] 113887,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=128.7
+[BT_RTT] msg_id=114 rtt_ms=127.3
+[BT_RTT] msg_id=113 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 114607,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[MARKER] n=3 label="MP3" t=114901 encoder=4669 kf_pos=0.24687 display_pos=0.24687 fw_pos=0.24687 total_mm=5395.7 display_mm=1332.0 fw_mm=1332.0 spindle_kf=30.000 spindle_disp=25.500 swivel_kf=0.000 swivel_disp=0.000 compass_yaw=40.235
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 114975,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=111 rtt_ms=91.5
+[BT_RTT] msg_id=168 rtt_ms=91.6
+[BT_RTT] msg_id=110 rtt_ms=73.4
+[CSV] 115342,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.4
+[BT_RTT] msg_id=111 rtt_ms=73.5
+[BT_RTT] msg_id=168 rtt_ms=92.1
+[BT_RTT] msg_id=110 rtt_ms=92.3
+[CSV] 115710,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=129.2
+[BT_RTT] msg_id=111 rtt_ms=92.4
+[BT_RTT] msg_id=168 rtt_ms=91.9
+[BT_RTT] msg_id=110 rtt_ms=74.0
+[CSV] 116135,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=110.2
+[BT_RTT] msg_id=114 rtt_ms=73.6
+[BT_RTT] msg_id=113 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=92.3
+[BT_RTT] msg_id=111 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=92.5
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 116800,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.5
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=73.6
+[BT_RTT] msg_id=110 rtt_ms=92.3
+[CSV] 117188,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.6
+[BT_RTT] msg_id=111 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=55.5
+[BT_RTT] msg_id=110 rtt_ms=73.7
+[CSV] 117502,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.2
+[BT_RTT] msg_id=111 rtt_ms=92.4
+[BT_RTT] msg_id=168 rtt_ms=73.9
+[BT_RTT] msg_id=110 rtt_ms=92.3
+[CSV] 117890,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=110.8
+[BT_RTT] msg_id=168 rtt_ms=92.5
+[BT_RTT] msg_id=110 rtt_ms=110.9
+[CSV] 118334,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.3
+[BT_RTT] msg_id=114 rtt_ms=92.5
+[BT_RTT] msg_id=113 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=92.3
+[BT_RTT] msg_id=111 rtt_ms=92.4
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=110 rtt_ms=92.2
+[CSV] 119016,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=55.4
+[BT_RTT] msg_id=111 rtt_ms=73.9
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 119369,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=111.0
+[BT_RTT] msg_id=111 rtt_ms=110.7
+[BT_RTT] msg_id=168 rtt_ms=73.6
+[BT_RTT] msg_id=110 rtt_ms=111.1
+[CSV] 119811,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=111 rtt_ms=92.4
+[BT_RTT] msg_id=168 rtt_ms=92.5
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 120180,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=55.5
+[BT_RTT] msg_id=111 rtt_ms=92.1
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 120549,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.8
+[BT_RTT] msg_id=114 rtt_ms=110.7
+[BT_RTT] msg_id=113 rtt_ms=91.9
+[BT_RTT] msg_id=168 rtt_ms=92.3
+[BT_RTT] msg_id=111 rtt_ms=74.0
+[BT_RTT] msg_id=168 rtt_ms=92.2
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 121214,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.0
+[BT_RTT] msg_id=111 rtt_ms=129.5
+[BT_RTT] msg_id=168 rtt_ms=73.4
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 121622,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.7
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=55.2
+[BT_RTT] msg_id=110 rtt_ms=74.0
+[CSV] 121954,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.9
+[BT_RTT] msg_id=111 rtt_ms=92.5
+[BT_RTT] msg_id=168 rtt_ms=74.0
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 122324,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=73.8
+[BT_RTT] msg_id=110 rtt_ms=73.7
+[CSV] 122674,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=92.0
+[BT_RTT] msg_id=168 rtt_ms=73.7
+[BT_RTT] msg_id=114 rtt_ms=92.3
+[BT_RTT] msg_id=113 rtt_ms=55.2
+[BT_RTT] msg_id=168 rtt_ms=111.0
+[BT_RTT] msg_id=110 rtt_ms=111.1
+[CSV] 123338,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.9
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=92.3
+[BT_RTT] msg_id=110 rtt_ms=110.6
+[CSV] 123744,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.4
+[BT_RTT] msg_id=111 rtt_ms=92.4
+[BT_RTT] msg_id=168 rtt_ms=92.3
+[BT_RTT] msg_id=110 rtt_ms=92.5
+[CSV] 124152,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.9
+[BT_RTT] msg_id=111 rtt_ms=92.5
+[BT_RTT] msg_id=168 rtt_ms=92.0
+[BT_RTT] msg_id=110 rtt_ms=92.3
+[CSV] 124558,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.3
+[BT_RTT] msg_id=111 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=110 rtt_ms=74.0
+[CSV] 124929,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.4
+[BT_RTT] msg_id=111 rtt_ms=110.3
+[BT_RTT] msg_id=114 rtt_ms=92.6
+[BT_RTT] msg_id=113 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=73.7
+[BT_RTT] msg_id=110 rtt_ms=111.1
+[CSV] 125499,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=55.4
+[BT_RTT] msg_id=111 rtt_ms=73.9
+[BT_RTT] msg_id=168 rtt_ms=92.4
+[BT_RTT] msg_id=110 rtt_ms=92.3
+[CSV] 125849,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.9
+[BT_RTT] msg_id=111 rtt_ms=92.4
+[BT_RTT] msg_id=168 rtt_ms=92.1
+[BT_RTT] msg_id=110 rtt_ms=92.4
+[CSV] 126236,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.9
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=92.3
+[BT_RTT] msg_id=110 rtt_ms=92.5
+[CSV] 126605,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=111 rtt_ms=92.4
+[BT_RTT] msg_id=168 rtt_ms=92.2
+[BT_RTT] msg_id=110 rtt_ms=74.1
+[CSV] 126959,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.8
+[BT_RTT] msg_id=111 rtt_ms=92.5
+[BT_RTT] msg_id=168 rtt_ms=92.4
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 127346,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=55.4
+[BT_RTT] msg_id=114 rtt_ms=92.4
+[BT_RTT] msg_id=113 rtt_ms=92.3
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=55.2
+[BT_RTT] msg_id=110 rtt_ms=92.4
+[CSV] 127937,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.5
+[BT_RTT] msg_id=111 rtt_ms=92.7
+[BT_RTT] msg_id=168 rtt_ms=55.2
+[BT_RTT] msg_id=110 rtt_ms=92.3
+[CSV] 128305,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.8
+[BT_RTT] msg_id=111 rtt_ms=92.3
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=74.1
+[CSV] 128660,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=110.7
+[BT_RTT] msg_id=168 rtt_ms=92.0
+[BT_RTT] msg_id=110 rtt_ms=74.0
+[CSV] 129064,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.2
+[BT_RTT] msg_id=111 rtt_ms=92.3
+[BT_RTT] msg_id=168 rtt_ms=55.4
+[BT_RTT] msg_id=110 rtt_ms=92.1
+[CSV] 129433,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.2
+[BT_RTT] msg_id=111 rtt_ms=92.1
+[BT_RTT] msg_id=168 rtt_ms=92.3
+[BT_RTT] msg_id=114 rtt_ms=73.9
+[BT_RTT] msg_id=113 rtt_ms=91.8
+[BT_RTT] msg_id=168 rtt_ms=92.4
+[BT_RTT] msg_id=110 rtt_ms=92.3
+[CSV] 130098,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.2
+[BT_RTT] msg_id=111 rtt_ms=91.9
+[BT_RTT] msg_id=168 rtt_ms=92.4
+[BT_RTT] msg_id=110 rtt_ms=73.8
+[CSV] 130483,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=111 rtt_ms=92.5
+[BT_RTT] msg_id=168 rtt_ms=91.8
+[BT_RTT] msg_id=110 rtt_ms=110.6
+[CSV] 130869,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.7
+[BT_RTT] msg_id=111 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=110.8
+[BT_RTT] msg_id=110 rtt_ms=92.4
+[CSV] 131259,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=110.4
+[BT_RTT] msg_id=111 rtt_ms=92.3
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=74.0
+[CSV] 131644,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.5
+[BT_RTT] msg_id=111 rtt_ms=92.5
+[BT_RTT] msg_id=168 rtt_ms=73.5
+[BT_RTT] msg_id=114 rtt_ms=92.6
+[BT_RTT] msg_id=113 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 132296,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 132644,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=111 rtt_ms=111.1
+[BT_RTT] msg_id=168 rtt_ms=55.5
+[BT_RTT] msg_id=110 rtt_ms=73.9
+[CSV] 132996,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.3
+[BT_RTT] msg_id=111 rtt_ms=110.4
+[BT_RTT] msg_id=168 rtt_ms=73.8
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 133381,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.0
+[BT_RTT] msg_id=111 rtt_ms=92.3
+[BT_RTT] msg_id=168 rtt_ms=55.2
+[BT_RTT] msg_id=110 rtt_ms=91.6
+[CSV] 133748,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.8
+[BT_RTT] msg_id=111 rtt_ms=92.4
+[BT_RTT] msg_id=168 rtt_ms=73.9
+[BT_RTT] msg_id=110 rtt_ms=92.3
+[CSV] 134119,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=114 rtt_ms=92.2
+[BT_RTT] msg_id=113 rtt_ms=92.3
+[BT_RTT] msg_id=168 rtt_ms=92.3
+[BT_RTT] msg_id=111 rtt_ms=92.3
+[BT_RTT] msg_id=168 rtt_ms=110.8
+[BT_RTT] msg_id=110 rtt_ms=111.1
+[CSV] 134747,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=92.5
+[CSV] 135115,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.6
+[BT_RTT] msg_id=111 rtt_ms=110.8
+[BT_RTT] msg_id=168 rtt_ms=55.2
+[BT_RTT] msg_id=110 rtt_ms=92.5
+[CSV] 135487,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.0
+[BT_RTT] msg_id=111 rtt_ms=92.2
+[BT_RTT] msg_id=168 rtt_ms=54.9
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 135856,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.5
+[BT_RTT] msg_id=111 rtt_ms=73.9
+[BT_RTT] msg_id=168 rtt_ms=73.7
+[BT_RTT] msg_id=110 rtt_ms=92.0
+[CSV] 136203,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=111.1
+[BT_RTT] msg_id=114 rtt_ms=92.2
+[BT_RTT] msg_id=113 rtt_ms=91.9
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[MARKER] n=4 label="MP4" t=136627 encoder=4669 kf_pos=0.24687 display_pos=0.24687 fw_pos=0.24687 total_mm=5395.7 display_mm=1332.0 fw_mm=1332.0 spindle_kf=30.000 spindle_disp=25.500 swivel_kf=0.000 swivel_disp=0.000 compass_yaw=44.424
+[BT_RTT] msg_id=111 rtt_ms=73.6
+[BT_RTT] msg_id=168 rtt_ms=91.5
+[BT_RTT] msg_id=110 rtt_ms=92.0
+[CSV] 136886,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.9
+[BT_RTT] msg_id=111 rtt_ms=92.1
+[BT_RTT] msg_id=168 rtt_ms=91.2
+[BT_RTT] msg_id=110 rtt_ms=92.1
+[CSV] 137271,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.6
+[BT_RTT] msg_id=111 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=92.1
+[BT_RTT] msg_id=110 rtt_ms=73.9
+[CSV] 137621,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.4
+[BT_RTT] msg_id=111 rtt_ms=92.4
+[BT_RTT] msg_id=168 rtt_ms=91.8
+[BT_RTT] msg_id=110 rtt_ms=92.2
+[CSV] 138005,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.4
+[BT_RTT] msg_id=111 rtt_ms=92.4
+[BT_RTT] msg_id=168 rtt_ms=147.6
+[BT_RTT] msg_id=110 rtt_ms=110.8
+[CSV] 138468,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=55.2
+[BT_RTT] msg_id=114 rtt_ms=92.3
+[BT_RTT] msg_id=113 rtt_ms=73.6
+[BT_RTT] msg_id=168 rtt_ms=92.2
+[BT_RTT] msg_id=111 rtt_ms=92.2
+[BT_RTT] msg_id=168 rtt_ms=55.5
+[BT_RTT] msg_id=110 rtt_ms=92.3
+[CSV] 139058,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=110.3
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=73.5
+[BT_RTT] msg_id=110 rtt_ms=92.4
+[CSV] 139464,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.0
+[BT_RTT] msg_id=111 rtt_ms=92.3
+[BT_RTT] msg_id=168 rtt_ms=55.2
+[BT_RTT] msg_id=110 rtt_ms=92.0
+[CSV] 139831,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.7
+[BT_RTT] msg_id=111 rtt_ms=92.2
+[BT_RTT] msg_id=168 rtt_ms=73.7
+[BT_RTT] msg_id=110 rtt_ms=73.8
+[CSV] 140180,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.2
+[BT_RTT] msg_id=111 rtt_ms=110.5
+[BT_RTT] msg_id=168 rtt_ms=110.8
+[BT_RTT] msg_id=110 rtt_ms=92.3
+[CSV] 140624,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.4
+[BT_RTT] msg_id=114 rtt_ms=92.1
+[BT_RTT] msg_id=113 rtt_ms=92.4
+[BT_RTT] msg_id=168 rtt_ms=73.6
+[BT_RTT] msg_id=111 rtt_ms=92.2
+[BT_RTT] msg_id=168 rtt_ms=91.9
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 141268,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.6
+[BT_RTT] msg_id=111 rtt_ms=73.8
+[BT_RTT] msg_id=168 rtt_ms=91.9
+[BT_RTT] msg_id=110 rtt_ms=92.2
+[CSV] 141636,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.7
+[BT_RTT] msg_id=111 rtt_ms=73.8
+[BT_RTT] msg_id=168 rtt_ms=92.4
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 142023,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.9
+[BT_RTT] msg_id=111 rtt_ms=92.5
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=110 rtt_ms=92.2
+[CSV] 142430,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.1
+[BT_RTT] msg_id=111 rtt_ms=92.0
+[BT_RTT] msg_id=168 rtt_ms=92.1
+[BT_RTT] msg_id=110 rtt_ms=73.8
+[CSV] 142814,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.7
+[BT_RTT] msg_id=114 rtt_ms=91.9
+[BT_RTT] msg_id=113 rtt_ms=110.6
+[BT_RTT] msg_id=168 rtt_ms=92.2
+[BT_RTT] msg_id=111 rtt_ms=92.0
+[BT_RTT] msg_id=168 rtt_ms=55.1
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 143465,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=111.1
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 143873,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=111.1
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 144302,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 144654,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 144990,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=114 rtt_ms=92.7
+[BT_RTT] msg_id=113 rtt_ms=55.6
+[BT_RTT] msg_id=168 rtt_ms=74.4
+[BT_RTT] msg_id=110 rtt_ms=112.2
+[CSV] 145553,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=75.0
+[BT_RTT] msg_id=111 rtt_ms=93.4
+[BT_RTT] msg_id=168 rtt_ms=74.3
+[BT_RTT] msg_id=110 rtt_ms=114.3
+[CSV] 145946,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=76.2
+[BT_RTT] msg_id=111 rtt_ms=95.2
+[BT_RTT] msg_id=168 rtt_ms=95.2
+[BT_RTT] msg_id=110 rtt_ms=95.2
+[CSV] 146337,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=95.2
+[BT_RTT] msg_id=111 rtt_ms=95.2
+[BT_RTT] msg_id=168 rtt_ms=57.1
+[BT_RTT] msg_id=110 rtt_ms=75.8
+[CSV] 146692,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=93.4
+[BT_RTT] msg_id=111 rtt_ms=74.6
+[BT_RTT] msg_id=168 rtt_ms=56.6
+[BT_RTT] msg_id=110 rtt_ms=93.2
+[CSV] 147045,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.6
+[BT_RTT] msg_id=111 rtt_ms=74.6
+[BT_RTT] msg_id=168 rtt_ms=56.1
+[BT_RTT] msg_id=110 rtt_ms=92.9
+[CSV] 147380,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=114 rtt_ms=93.0
+[BT_RTT] msg_id=113 rtt_ms=93.2
+[BT_RTT] msg_id=168 rtt_ms=74.6
+[BT_RTT] msg_id=111 rtt_ms=93.3
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=93.4
+[CSV] 147939,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=93.4
+[BT_RTT] msg_id=111 rtt_ms=75.4
+[BT_RTT] msg_id=168 rtt_ms=74.5
+[BT_RTT] msg_id=110 rtt_ms=93.6
+[CSV] 148312,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=56.2
+[BT_RTT] msg_id=111 rtt_ms=93.7
+[BT_RTT] msg_id=168 rtt_ms=75.0
+[BT_RTT] msg_id=110 rtt_ms=74.6
+[CSV] 148649,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.7
+[BT_RTT] msg_id=111 rtt_ms=93.2
+[BT_RTT] msg_id=168 rtt_ms=75.5
+[BT_RTT] msg_id=110 rtt_ms=93.2
+[CSV] 149024,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=75.1
+[BT_RTT] msg_id=111 rtt_ms=93.4
+[BT_RTT] msg_id=168 rtt_ms=111.9
+[BT_RTT] msg_id=110 rtt_ms=112.1
+[CSV] 149454,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.6
+[BT_RTT] msg_id=111 rtt_ms=92.9
+[BT_RTT] msg_id=114 rtt_ms=93.7
+[BT_RTT] msg_id=113 rtt_ms=93.1
+[BT_RTT] msg_id=168 rtt_ms=56.0
+[BT_RTT] msg_id=110 rtt_ms=93.2
+[CSV] 149995,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=93.1
+[BT_RTT] msg_id=111 rtt_ms=74.9
+[BT_RTT] msg_id=168 rtt_ms=74.3
+[BT_RTT] msg_id=110 rtt_ms=74.8
+[CSV] 150347,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=75.4
+[BT_RTT] msg_id=111 rtt_ms=74.4
+[BT_RTT] msg_id=168 rtt_ms=75.1
+[BT_RTT] msg_id=110 rtt_ms=111.7
+[CSV] 150722,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.9
+[BT_RTT] msg_id=111 rtt_ms=93.6
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=110 rtt_ms=74.7
+[CSV] 151064,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=113 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=99.6
+[BT_RTT] msg_id=168 rtt_ms=60.0
+[BT_RTT] msg_id=110 rtt_ms=100.0
+[CSV] 153544,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=100.0
+[BT_RTT] msg_id=111 rtt_ms=100.0
+[BT_RTT] msg_id=168 rtt_ms=60.0
+[BT_RTT] msg_id=110 rtt_ms=100.0
+[CSV] 153923,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=80.0
+[BT_RTT] msg_id=111 rtt_ms=99.8
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[MARKER] n=5 label="MP5" t=154225 encoder=4669 kf_pos=0.24687 display_pos=0.24687 fw_pos=0.24687 total_mm=5395.7 display_mm=1332.0 fw_mm=1332.0 spindle_kf=45.700 spindle_disp=38.845 swivel_kf=0.000 swivel_disp=0.000 compass_yaw=88.372
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 154302,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 154680,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 155023,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=114 rtt_ms=117.6
+[BT_RTT] msg_id=113 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 155669,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 156050,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 156431,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 156835,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=117.6
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 157248,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=114 rtt_ms=98.0
+[BT_RTT] msg_id=113 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 157875,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 158237,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 158602,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=117.6
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=117.6
+[CSV] 159038,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 159419,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=114 rtt_ms=98.0
+[BT_RTT] msg_id=113 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 160065,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 160462,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=117.6
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 160864,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 161242,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 161587,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=114 rtt_ms=98.0
+[BT_RTT] msg_id=113 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 162226,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=117.6
+[CSV] 162652,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=117.6
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 163084,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=110 rtt_ms=76.7
+[CSV] 163416,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=97.2
+[BT_RTT] msg_id=111 rtt_ms=97.2
+[BT_RTT] msg_id=168 rtt_ms=97.2
+[BT_RTT] msg_id=110 rtt_ms=75.8
+[CSV] 163813,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=114 rtt_ms=92.3
+[BT_RTT] msg_id=113 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=111.1
+[BT_RTT] msg_id=110 rtt_ms=111.1
+[CSV] 164425,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=111.1
+[CSV] 164814,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 165203,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=111.1
+[CSV] 165615,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=74.1
+[CSV] 165986,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=114 rtt_ms=111.1
+[BT_RTT] msg_id=113 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=111 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 166506,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 166878,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=111 rtt_ms=92.7
+[BT_RTT] msg_id=168 rtt_ms=74.5
+[BT_RTT] msg_id=110 rtt_ms=111.1
+[CSV] 167249,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 167620,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=111.1
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=110 rtt_ms=74.1
+[CSV] 168024,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=111.1
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=114 rtt_ms=92.6
+[BT_RTT] msg_id=113 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=110 rtt_ms=74.1
+[CSV] 168578,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=111.1
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=110 rtt_ms=74.1
+[CSV] 168943,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 169311,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=73.3
+[BT_RTT] msg_id=110 rtt_ms=92.0
+[CSV] 169695,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.5
+[BT_RTT] msg_id=111 rtt_ms=110.0
+[BT_RTT] msg_id=168 rtt_ms=54.3
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 170063,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=127.3
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 170468,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=114 rtt_ms=90.9
+[BT_RTT] msg_id=113 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=110 rtt_ms=72.7
+[CSV] 171038,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=91.7
+[BT_RTT] msg_id=110 rtt_ms=92.1
+[CSV] 171427,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.9
+[BT_RTT] msg_id=111 rtt_ms=110.4
+[BT_RTT] msg_id=168 rtt_ms=110.6
+[BT_RTT] msg_id=110 rtt_ms=129.7
+[CSV] 171903,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.9
+[BT_RTT] msg_id=111 rtt_ms=93.3
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 172239,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=111 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 172599,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=114 rtt_ms=74.1
+[BT_RTT] msg_id=113 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=74.1
+[CSV] 173180,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=111 rtt_ms=75.0
+[BT_RTT] msg_id=168 rtt_ms=56.4
+[BT_RTT] msg_id=110 rtt_ms=94.8
+[CSV] 173498,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=76.2
+[BT_RTT] msg_id=111 rtt_ms=114.3
+[BT_RTT] msg_id=168 rtt_ms=76.2
+[BT_RTT] msg_id=110 rtt_ms=95.2
+[CSV] 173893,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=76.2
+[BT_RTT] msg_id=111 rtt_ms=95.2
+[BT_RTT] msg_id=168 rtt_ms=76.2
+[BT_RTT] msg_id=110 rtt_ms=95.2
+[CSV] 174271,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.3
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 174647,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=100.0
+[BT_RTT] msg_id=114 rtt_ms=120.0
+[BT_RTT] msg_id=113 rtt_ms=80.0
+[BT_RTT] msg_id=168 rtt_ms=80.0
+[BT_RTT] msg_id=110 rtt_ms=100.0
+[CSV] 175209,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=60.0
+[BT_RTT] msg_id=111 rtt_ms=120.0
+[BT_RTT] msg_id=168 rtt_ms=100.0
+[BT_RTT] msg_id=110 rtt_ms=117.8
+[CSV] 175626,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 176025,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=117.6
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 176382,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 176741,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=114 rtt_ms=78.4
+[BT_RTT] msg_id=113 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=117.6
+[CSV] 177350,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=117.6
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 177752,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 178128,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 178488,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 178850,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=114 rtt_ms=78.4
+[BT_RTT] msg_id=113 rtt_ms=117.6
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=117.6
+[CSV] 179531,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 179870,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 180247,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 180630,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=117.6
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=117.6
+[CSV] 181047,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=98.0
+[BT_RTT] msg_id=111 rtt_ms=117.6
+[BT_RTT] msg_id=114 rtt_ms=78.4
+[BT_RTT] msg_id=113 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=78.4
+[CSV] 181594,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 181951,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=98.0
+[CSV] 182304,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=111 rtt_ms=98.0
+[BT_RTT] msg_id=168 rtt_ms=117.6
+[BT_RTT] msg_id=110 rtt_ms=117.6
+[CSV] 182711,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=117.6
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=110 rtt_ms=117.6
+[CSV] 183118,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=111 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=78.4
+[BT_RTT] msg_id=114 rtt_ms=98.0
+[BT_RTT] msg_id=113 rtt_ms=78.4
+[BT_RTT] msg_id=168 rtt_ms=58.8
+[BT_RTT] msg_id=110 rtt_ms=97.9
+[CSV] 183691,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=97.2
+[BT_RTT] msg_id=111 rtt_ms=116.6
+[BT_RTT] msg_id=168 rtt_ms=96.6
+[BT_RTT] msg_id=110 rtt_ms=93.4
+[CSV] 184120,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.6
+[BT_RTT] msg_id=111 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 184490,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.4
+[BT_RTT] msg_id=111 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=110 rtt_ms=111.1
+[CSV] 184860,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.2
+[BT_RTT] msg_id=111 rtt_ms=72.7
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 185230,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=111 rtt_ms=72.7
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 185563,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=114 rtt_ms=90.9
+[BT_RTT] msg_id=113 rtt_ms=73.1
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=92.5
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=110 rtt_ms=92.6
+[CSV] 186100,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.7
+[BT_RTT] msg_id=111 rtt_ms=74.1
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=110 rtt_ms=92.1
+[CSV] 186469,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.8
+[BT_RTT] msg_id=111 rtt_ms=110.1
+[BT_RTT] msg_id=168 rtt_ms=91.3
+[BT_RTT] msg_id=110 rtt_ms=110.4
+[CSV] 186888,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.8
+[BT_RTT] msg_id=111 rtt_ms=91.7
+[BT_RTT] msg_id=168 rtt_ms=73.5
+[BT_RTT] msg_id=110 rtt_ms=92.0
+[CSV] 187276,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.6
+[BT_RTT] msg_id=111 rtt_ms=91.5
+[BT_RTT] msg_id=168 rtt_ms=73.1
+[BT_RTT] msg_id=110 rtt_ms=91.9
+[CSV] 187659,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.1
+[MARKER] n=6 label="MP6" t=187785 encoder=4669 kf_pos=0.24687 display_pos=0.24687 fw_pos=0.24687 total_mm=5395.7 display_mm=1332.0 fw_mm=1332.0 spindle_kf=60.200 spindle_disp=51.170 swivel_kf=0.000 swivel_disp=0.000 compass_yaw=88.773
+[BT_RTT] msg_id=114 rtt_ms=73.3
+[BT_RTT] msg_id=113 rtt_ms=72.7
+[BT_RTT] msg_id=168 rtt_ms=54.6
+[BT_RTT] msg_id=111 rtt_ms=73.7
+[BT_RTT] msg_id=168 rtt_ms=73.4
+[BT_RTT] msg_id=110 rtt_ms=109.6
+[CSV] 188245,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.2
+[BT_RTT] msg_id=111 rtt_ms=73.1
+[BT_RTT] msg_id=168 rtt_ms=91.7
+[BT_RTT] msg_id=110 rtt_ms=73.4
+[CSV] 188611,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=128.2
+[BT_RTT] msg_id=111 rtt_ms=110.2
+[BT_RTT] msg_id=168 rtt_ms=73.4
+[BT_RTT] msg_id=110 rtt_ms=73.5
+[CSV] 189032,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.0
+[BT_RTT] msg_id=111 rtt_ms=91.6
+[BT_RTT] msg_id=168 rtt_ms=91.6
+[BT_RTT] msg_id=110 rtt_ms=73.6
+[CSV] 189398,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.6
+[BT_RTT] msg_id=111 rtt_ms=91.6
+[BT_RTT] msg_id=168 rtt_ms=91.5
+[BT_RTT] msg_id=110 rtt_ms=91.8
+[CSV] 189765,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.1
+[BT_RTT] msg_id=111 rtt_ms=73.4
+[BT_RTT] msg_id=114 rtt_ms=91.5
+[BT_RTT] msg_id=113 rtt_ms=91.4
+[BT_RTT] msg_id=168 rtt_ms=92.2
+[BT_RTT] msg_id=110 rtt_ms=110.1
+[CSV] 190333,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.2
+[BT_RTT] msg_id=111 rtt_ms=109.7
+[BT_RTT] msg_id=168 rtt_ms=91.6
+[BT_RTT] msg_id=110 rtt_ms=91.6
+[CSV] 190751,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.9
+[BT_RTT] msg_id=111 rtt_ms=73.9
+[BT_RTT] msg_id=168 rtt_ms=91.3
+[BT_RTT] msg_id=110 rtt_ms=91.9
+[CSV] 191102,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.9
+[BT_RTT] msg_id=111 rtt_ms=91.3
+[BT_RTT] msg_id=168 rtt_ms=73.4
+[BT_RTT] msg_id=110 rtt_ms=91.2
+[CSV] 191467,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.2
+[BT_RTT] msg_id=111 rtt_ms=91.6
+[BT_RTT] msg_id=168 rtt_ms=72.9
+[BT_RTT] msg_id=110 rtt_ms=73.1
+[CSV] 191832,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.1
+[BT_RTT] msg_id=111 rtt_ms=109.7
+[BT_RTT] msg_id=168 rtt_ms=91.6
+[BT_RTT] msg_id=114 rtt_ms=109.6
+[BT_RTT] msg_id=113 rtt_ms=73.3
+[BT_RTT] msg_id=168 rtt_ms=109.2
+[BT_RTT] msg_id=110 rtt_ms=109.8
+[CSV] 192545,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.6
+[BT_RTT] msg_id=111 rtt_ms=91.6
+[BT_RTT] msg_id=168 rtt_ms=72.8
+[BT_RTT] msg_id=110 rtt_ms=91.6
+[CSV] 192926,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.4
+[BT_RTT] msg_id=111 rtt_ms=73.1
+[BT_RTT] msg_id=168 rtt_ms=73.5
+[BT_RTT] msg_id=110 rtt_ms=91.9
+[CSV] 193292,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.9
+[BT_RTT] msg_id=111 rtt_ms=91.9
+[BT_RTT] msg_id=168 rtt_ms=91.6
+[BT_RTT] msg_id=110 rtt_ms=91.4
+[CSV] 193678,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.2
+[BT_RTT] msg_id=111 rtt_ms=91.1
+[BT_RTT] msg_id=168 rtt_ms=91.2
+[BT_RTT] msg_id=110 rtt_ms=109.6
+[CSV] 194100,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.1
+[BT_RTT] msg_id=111 rtt_ms=109.9
+[BT_RTT] msg_id=168 rtt_ms=91.6
+[BT_RTT] msg_id=114 rtt_ms=91.6
+[BT_RTT] msg_id=113 rtt_ms=91.2
+[BT_RTT] msg_id=168 rtt_ms=74.1
+[BT_RTT] msg_id=110 rtt_ms=73.5
+[CSV] 194739,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.8
+[BT_RTT] msg_id=111 rtt_ms=91.5
+[BT_RTT] msg_id=168 rtt_ms=73.3
+[BT_RTT] msg_id=110 rtt_ms=91.5
+[CSV] 195086,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.2
+[BT_RTT] msg_id=111 rtt_ms=91.8
+[BT_RTT] msg_id=168 rtt_ms=54.9
+[BT_RTT] msg_id=110 rtt_ms=91.6
+[CSV] 195450,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.5
+[BT_RTT] msg_id=111 rtt_ms=73.2
+[BT_RTT] msg_id=168 rtt_ms=73.2
+[BT_RTT] msg_id=110 rtt_ms=109.6
+[CSV] 195816,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.1
+[BT_RTT] msg_id=111 rtt_ms=91.7
+[BT_RTT] msg_id=168 rtt_ms=109.8
+[BT_RTT] msg_id=110 rtt_ms=109.9
+[CSV] 196240,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.1
+[BT_RTT] msg_id=111 rtt_ms=91.1
+[BT_RTT] msg_id=168 rtt_ms=91.4
+[BT_RTT] msg_id=110 rtt_ms=91.2
+[CSV] 196641,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=114 rtt_ms=91.1
+[BT_RTT] msg_id=113 rtt_ms=73.1
+[BT_RTT] msg_id=168 rtt_ms=72.8
+[BT_RTT] msg_id=111 rtt_ms=73.3
+[BT_RTT] msg_id=168 rtt_ms=73.0
+[BT_RTT] msg_id=110 rtt_ms=91.3
+[CSV] 197149,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.1
+[BT_RTT] msg_id=111 rtt_ms=91.2
+[BT_RTT] msg_id=168 rtt_ms=91.0
+[BT_RTT] msg_id=110 rtt_ms=91.4
+[CSV] 197535,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.1
+[BT_RTT] msg_id=111 rtt_ms=91.5
+[BT_RTT] msg_id=168 rtt_ms=91.4
+[BT_RTT] msg_id=110 rtt_ms=128.4
+[CSV] 197953,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.6
+[BT_RTT] msg_id=111 rtt_ms=91.6
+[BT_RTT] msg_id=168 rtt_ms=72.9
+[BT_RTT] msg_id=110 rtt_ms=91.2
+[CSV] 198341,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=91.7
+[BT_RTT] msg_id=168 rtt_ms=91.5
+[BT_RTT] msg_id=110 rtt_ms=91.4
+[CSV] 198742,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.1
+[BT_RTT] msg_id=114 rtt_ms=91.5
+[BT_RTT] msg_id=113 rtt_ms=91.2
+[BT_RTT] msg_id=168 rtt_ms=91.0
+[BT_RTT] msg_id=111 rtt_ms=91.7
+[BT_RTT] msg_id=168 rtt_ms=91.2
+[BT_RTT] msg_id=110 rtt_ms=91.2
+[CSV] 199399,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.2
+[BT_RTT] msg_id=111 rtt_ms=91.2
+[BT_RTT] msg_id=168 rtt_ms=72.9
+[BT_RTT] msg_id=110 rtt_ms=91.6
+[CSV] 199783,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.6
+[BT_RTT] msg_id=111 rtt_ms=91.2
+[BT_RTT] msg_id=168 rtt_ms=54.7
+[BT_RTT] msg_id=110 rtt_ms=91.2
+[CSV] 200147,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.2
+[BT_RTT] msg_id=111 rtt_ms=91.5
+[BT_RTT] msg_id=168 rtt_ms=91.2
+[BT_RTT] msg_id=110 rtt_ms=72.9
+[CSV] 200527,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.1
+[BT_RTT] msg_id=111 rtt_ms=91.6
+[BT_RTT] msg_id=168 rtt_ms=73.1
+[BT_RTT] msg_id=110 rtt_ms=91.2
+[CSV] 200892,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.2
+[BT_RTT] msg_id=114 rtt_ms=91.6
+[BT_RTT] msg_id=113 rtt_ms=91.2
+[BT_RTT] msg_id=168 rtt_ms=73.1
+[BT_RTT] msg_id=111 rtt_ms=109.6
+[BT_RTT] msg_id=168 rtt_ms=91.1
+[BT_RTT] msg_id=110 rtt_ms=91.6
+[CSV] 201571,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=109.7
+[BT_RTT] msg_id=168 rtt_ms=73.2
+[BT_RTT] msg_id=110 rtt_ms=109.8
+[CSV] 201988,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.8
+[BT_RTT] msg_id=111 rtt_ms=91.7
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=110 rtt_ms=73.4
+[CSV] 202338,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=111 rtt_ms=91.2
+[BT_RTT] msg_id=168 rtt_ms=91.2
+[BT_RTT] msg_id=110 rtt_ms=91.2
+[CSV] 202703,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.3
+[BT_RTT] msg_id=111 rtt_ms=91.8
+[BT_RTT] msg_id=168 rtt_ms=91.2
+[BT_RTT] msg_id=110 rtt_ms=91.4
+[CSV] 203105,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=55.2
+[BT_RTT] msg_id=114 rtt_ms=128.1
+[BT_RTT] msg_id=113 rtt_ms=54.9
+[BT_RTT] msg_id=168 rtt_ms=91.5
+[BT_RTT] msg_id=111 rtt_ms=91.6
+[BT_RTT] msg_id=168 rtt_ms=54.6
+[BT_RTT] msg_id=110 rtt_ms=72.8
+[CSV] 203686,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.6
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=73.5
+[BT_RTT] msg_id=110 rtt_ms=72.7
+[CSV] 204051,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.0
+[BT_RTT] msg_id=111 rtt_ms=91.2
+[BT_RTT] msg_id=168 rtt_ms=54.7
+[BT_RTT] msg_id=110 rtt_ms=73.0
+[CSV] 204400,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=127.9
+[BT_RTT] msg_id=168 rtt_ms=91.2
+[BT_RTT] msg_id=110 rtt_ms=73.1
+[CSV] 204817,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.6
+[BT_RTT] msg_id=111 rtt_ms=91.0
+[BT_RTT] msg_id=168 rtt_ms=73.1
+[BT_RTT] msg_id=110 rtt_ms=91.2
+[CSV] 205182,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.9
+[BT_RTT] msg_id=111 rtt_ms=91.2
+[BT_RTT] msg_id=168 rtt_ms=73.1
+[BT_RTT] msg_id=114 rtt_ms=72.8
+[BT_RTT] msg_id=113 rtt_ms=91.2
+[BT_RTT] msg_id=168 rtt_ms=91.4
+[BT_RTT] msg_id=110 rtt_ms=91.2
+[CSV] 205822,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.5
+[BT_RTT] msg_id=111 rtt_ms=91.6
+[BT_RTT] msg_id=168 rtt_ms=91.9
+[BT_RTT] msg_id=110 rtt_ms=91.3
+[CSV] 206210,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.6
+[BT_RTT] msg_id=111 rtt_ms=91.1
+[BT_RTT] msg_id=168 rtt_ms=91.2
+[BT_RTT] msg_id=110 rtt_ms=91.4
+[CSV] 206574,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.7
+[BT_RTT] msg_id=111 rtt_ms=91.4
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=110 rtt_ms=109.8
+[CSV] 206954,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.9
+[BT_RTT] msg_id=111 rtt_ms=91.8
+[BT_RTT] msg_id=168 rtt_ms=91.2
+[BT_RTT] msg_id=110 rtt_ms=91.7
+[CSV] 207320,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.9
+[BT_RTT] msg_id=111 rtt_ms=73.1
+[BT_RTT] msg_id=168 rtt_ms=72.9
+[BT_RTT] msg_id=110 rtt_ms=91.1
+[CSV] 207648,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.0
+[BT_RTT] msg_id=114 rtt_ms=72.9
+[BT_RTT] msg_id=113 rtt_ms=73.1
+[BT_RTT] msg_id=168 rtt_ms=91.3
+[BT_RTT] msg_id=111 rtt_ms=91.3
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=110 rtt_ms=91.2
+[CSV] 208236,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.0
+[BT_RTT] msg_id=111 rtt_ms=91.3
+[BT_RTT] msg_id=168 rtt_ms=91.2
+[BT_RTT] msg_id=110 rtt_ms=91.6
+[CSV] 208637,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.1
+[BT_RTT] msg_id=111 rtt_ms=110.0
+[BT_RTT] msg_id=168 rtt_ms=73.1
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 209017,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.0
+[BT_RTT] msg_id=111 rtt_ms=91.6
+[BT_RTT] msg_id=168 rtt_ms=54.6
+[BT_RTT] msg_id=110 rtt_ms=91.6
+[CSV] 209383,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=111 rtt_ms=91.2
+[BT_RTT] msg_id=168 rtt_ms=73.3
+[BT_RTT] msg_id=110 rtt_ms=73.8
+[CSV] 209732,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=55.1
+[BT_RTT] msg_id=111 rtt_ms=92.1
+[BT_RTT] msg_id=168 rtt_ms=73.1
+[BT_RTT] msg_id=114 rtt_ms=92.0
+[BT_RTT] msg_id=113 rtt_ms=73.3
+[BT_RTT] msg_id=168 rtt_ms=73.7
+[BT_RTT] msg_id=110 rtt_ms=92.5
+[CSV] 210318,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.9
+[BT_RTT] msg_id=111 rtt_ms=92.0
+[BT_RTT] msg_id=168 rtt_ms=91.7
+[BT_RTT] msg_id=110 rtt_ms=73.9
+[CSV] 210670,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.6
+[BT_RTT] msg_id=111 rtt_ms=128.6
+[BT_RTT] msg_id=168 rtt_ms=110.3
+[BT_RTT] msg_id=110 rtt_ms=73.6
+[CSV] 211090,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.5
+[BT_RTT] msg_id=111 rtt_ms=73.7
+[BT_RTT] msg_id=168 rtt_ms=91.6
+[BT_RTT] msg_id=110 rtt_ms=73.5
+[CSV] 211442,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.3
+[BT_RTT] msg_id=111 rtt_ms=91.7
+[BT_RTT] msg_id=168 rtt_ms=91.9
+[BT_RTT] msg_id=110 rtt_ms=73.4
+[CSV] 211824,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.8
+[BT_RTT] msg_id=111 rtt_ms=92.0
+[BT_RTT] msg_id=168 rtt_ms=73.8
+[BT_RTT] msg_id=110 rtt_ms=92.0
+[CSV] 212193,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=114 rtt_ms=111.1
+[BT_RTT] msg_id=113 rtt_ms=92.6
+[BT_RTT] msg_id=168 rtt_ms=111.1
+[BT_RTT] msg_id=111 rtt_ms=91.9
+[BT_RTT] msg_id=168 rtt_ms=91.9
+[BT_RTT] msg_id=110 rtt_ms=92.0
+[CSV] 212819,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=110.3
+[BT_RTT] msg_id=111 rtt_ms=91.9
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=110 rtt_ms=92.4
+[CSV] 213208,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=55.0
+[BT_RTT] msg_id=111 rtt_ms=110.1
+[BT_RTT] msg_id=168 rtt_ms=73.4
+[BT_RTT] msg_id=110 rtt_ms=92.0
+[CSV] 213576,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.9
+[BT_RTT] msg_id=111 rtt_ms=92.0
+[BT_RTT] msg_id=168 rtt_ms=73.3
+[BT_RTT] msg_id=110 rtt_ms=91.3
+[CSV] 213921,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.1
+[BT_RTT] msg_id=111 rtt_ms=91.1
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=110 rtt_ms=91.2
+[CSV] 214307,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=73.1
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=114 rtt_ms=90.9
+[BT_RTT] msg_id=113 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=110 rtt_ms=109.1
+[CSV] 214869,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 215233,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 215578,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 215943,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=127.3
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 216377,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=111 rtt_ms=72.7
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=110 rtt_ms=72.7
+[CSV] 216684,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=114 rtt_ms=90.9
+[BT_RTT] msg_id=113 rtt_ms=91.2
+[BT_RTT] msg_id=168 rtt_ms=90.6
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 217320,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[MARKER] n=7 label="MP7" t=217501 encoder=4669 kf_pos=0.24687 display_pos=0.24687 fw_pos=0.24687 total_mm=5395.7 display_mm=1332.0 fw_mm=1332.0 spindle_kf=75.000 spindle_disp=63.750 swivel_kf=0.000 swivel_disp=0.000 compass_yaw=83.478
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 217704,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=110 rtt_ms=127.3
+[CSV] 218106,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=72.7
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=110 rtt_ms=109.1
+[CSV] 218484,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=72.7
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=110 rtt_ms=72.7
+[CSV] 218832,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=114 rtt_ms=90.9
+[BT_RTT] msg_id=113 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 219356,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 219739,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 220116,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=110 rtt_ms=72.7
+[CSV] 220428,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 220809,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=72.7
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 221151,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=114 rtt_ms=109.1
+[BT_RTT] msg_id=113 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=72.7
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=110 rtt_ms=109.1
+[CSV] 221830,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=109.1
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 222208,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 222570,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 222948,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 223334,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=114 rtt_ms=90.9
+[BT_RTT] msg_id=113 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=127.3
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 223911,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=109.1
+[BT_RTT] msg_id=111 rtt_ms=109.1
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 224334,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 224695,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=110 rtt_ms=109.1
+[CSV] 225074,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 225437,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=114 rtt_ms=109.1
+[BT_RTT] msg_id=113 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 226095,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=110 rtt_ms=72.7
+[CSV] 226458,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 226821,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=72.7
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 227203,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=109.1
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=110 rtt_ms=109.1
+[CSV] 227603,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=109.1
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=114 rtt_ms=90.9
+[BT_RTT] msg_id=113 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 228272,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 228657,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 229056,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=111 rtt_ms=127.3
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 229456,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=111 rtt_ms=109.1
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 229834,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=114 rtt_ms=72.7
+[BT_RTT] msg_id=113 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 230470,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=111 rtt_ms=90.7
+[BT_RTT] msg_id=168 rtt_ms=72.4
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 230833,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.6
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=72.3
+[BT_RTT] msg_id=110 rtt_ms=72.5
+[CSV] 231177,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=72.7
+[BT_RTT] msg_id=168 rtt_ms=54.2
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 231526,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=111 rtt_ms=109.1
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 231889,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=90.7
+[BT_RTT] msg_id=168 rtt_ms=90.8
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 232290,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=114 rtt_ms=90.9
+[BT_RTT] msg_id=113 rtt_ms=90.7
+[BT_RTT] msg_id=168 rtt_ms=90.7
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=54.4
+[BT_RTT] msg_id=110 rtt_ms=90.8
+[CSV] 232830,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.1
+[BT_RTT] msg_id=111 rtt_ms=154.5
+[BT_RTT] msg_id=168 rtt_ms=83.3
+[BT_RTT] msg_id=110 rtt_ms=90.4
+[CSV] 233306,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=109.0
+[BT_RTT] msg_id=168 rtt_ms=54.2
+[BT_RTT] msg_id=110 rtt_ms=72.7
+[CSV] 233668,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.6
+[BT_RTT] msg_id=111 rtt_ms=90.6
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=110 rtt_ms=90.7
+[CSV] 234066,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.4
+[BT_RTT] msg_id=111 rtt_ms=72.6
+[BT_RTT] msg_id=168 rtt_ms=72.6
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 234412,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=114 rtt_ms=90.9
+[BT_RTT] msg_id=113 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=72.2
+[BT_RTT] msg_id=111 rtt_ms=91.4
+[BT_RTT] msg_id=168 rtt_ms=89.9
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 235061,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.3
+[BT_RTT] msg_id=111 rtt_ms=90.8
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 235446,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=90.8
+[BT_RTT] msg_id=110 rtt_ms=90.5
+[CSV] 235844,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=111 rtt_ms=72.4
+[BT_RTT] msg_id=168 rtt_ms=90.7
+[BT_RTT] msg_id=110 rtt_ms=90.8
+[CSV] 236209,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=91.2
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 236610,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=114 rtt_ms=72.7
+[BT_RTT] msg_id=113 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=72.7
+[BT_RTT] msg_id=168 rtt_ms=109.1
+[BT_RTT] msg_id=110 rtt_ms=109.0
+[CSV] 237259,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.9
+[BT_RTT] msg_id=111 rtt_ms=90.7
+[BT_RTT] msg_id=168 rtt_ms=72.6
+[BT_RTT] msg_id=110 rtt_ms=90.7
+[CSV] 237622,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.8
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=72.3
+[BT_RTT] msg_id=110 rtt_ms=72.3
+[CSV] 237984,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.6
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=72.5
+[BT_RTT] msg_id=110 rtt_ms=73.1
+[CSV] 238347,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.0
+[BT_RTT] msg_id=111 rtt_ms=127.2
+[BT_RTT] msg_id=168 rtt_ms=90.7
+[BT_RTT] msg_id=110 rtt_ms=108.9
+[CSV] 238804,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=114 rtt_ms=109.1
+[BT_RTT] msg_id=113 rtt_ms=109.1
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=111 rtt_ms=90.6
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 239456,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 239841,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=111 rtt_ms=72.7
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=110 rtt_ms=72.7
+[CSV] 240203,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=111 rtt_ms=109.0
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 240582,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.4
+[BT_RTT] msg_id=111 rtt_ms=127.3
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=110 rtt_ms=109.1
+[CSV] 241039,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=114 rtt_ms=90.9
+[BT_RTT] msg_id=113 rtt_ms=90.4
+[BT_RTT] msg_id=168 rtt_ms=72.4
+[BT_RTT] msg_id=111 rtt_ms=108.7
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=110 rtt_ms=90.8
+[CSV] 241637,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.5
+[BT_RTT] msg_id=111 rtt_ms=90.5
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=110 rtt_ms=127.3
+[CSV] 242035,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.6
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=72.6
+[BT_RTT] msg_id=110 rtt_ms=108.7
+[CSV] 242413,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.5
+[BT_RTT] msg_id=111 rtt_ms=108.9
+[BT_RTT] msg_id=168 rtt_ms=90.7
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 242817,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.6
+[BT_RTT] msg_id=111 rtt_ms=72.7
+[BT_RTT] msg_id=168 rtt_ms=90.6
+[BT_RTT] msg_id=110 rtt_ms=90.9
+[CSV] 243194,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=90.8
+[BT_RTT] msg_id=114 rtt_ms=90.7
+[BT_RTT] msg_id=113 rtt_ms=72.7
+[BT_RTT] msg_id=168 rtt_ms=53.9
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=110 rtt_ms=90.8
+[CSV] 243815,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=54.5
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=90.8
+[BT_RTT] msg_id=110 rtt_ms=90.4
+[CSV] 244178,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.9
+[BT_RTT] msg_id=111 rtt_ms=108.9
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=110 rtt_ms=108.7
+[CSV] 244592,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.5
+[BT_RTT] msg_id=111 rtt_ms=90.8
+[BT_RTT] msg_id=168 rtt_ms=90.9
+[BT_RTT] msg_id=110 rtt_ms=109.1
+[CSV] 244992,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=111 rtt_ms=90.9
+[BT_RTT] msg_id=168 rtt_ms=109.1
+[BT_RTT] msg_id=110 rtt_ms=254.5
+[CSV] 245555,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=72.7
+[BT_RTT] msg_id=114 rtt_ms=90.9
+[BT_RTT] msg_id=113 rtt_ms=109.0
+[BT_RTT] msg_id=168 rtt_ms=126.7
+[BT_RTT] msg_id=111 rtt_ms=207.2
+[BT_RTT] msg_id=168 rtt_ms=182.5
+[BT_RTT] msg_id=110 rtt_ms=74.1
+[CSV] 246465,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=92.6
+[BT_RTT] msg_id=111 rtt_ms=129.6
+[BT_RTT] msg_id=168 rtt_ms=55.6
+[BT_RTT] msg_id=110 rtt_ms=166.7
+[CSV] 246942,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=183.8
+[BT_RTT] msg_id=111 rtt_ms=599.9
+[BT_RTT] msg_id=168 rtt_ms=127.3
+[BT_RTT] msg_id=113 rtt_ms=945.5
+[BT_RTT] msg_id=168 rtt_ms=986.4
+[BT_RTT] msg_id=110 rtt_ms=312.0
+[CSV] 251150,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=110.0
+[BT_RTT] msg_id=111 rtt_ms=458.3
+[BT_RTT] msg_id=168 rtt_ms=110.3
+[BT_RTT] msg_id=114 rtt_ms=220.1
+[BT_RTT] msg_id=113 rtt_ms=312.0
+[BT_RTT] msg_id=168 rtt_ms=129.6
+[BT_RTT] msg_id=110 rtt_ms=231.2
+[CSV] 252769,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=97.5
+[BT_RTT] msg_id=111 rtt_ms=99.9
+[BT_RTT] msg_id=168 rtt_ms=80.0
+[BT_RTT] msg_id=110 rtt_ms=220.0
+[CSV] 253297,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=168 rtt_ms=320.0
+[BT_RTT] msg_id=111 rtt_ms=528.8
+[BT_RTT] msg_id=168 rtt_ms=137.2
+[BT_RTT] msg_id=110 rtt_ms=352.9
+[CSV] 254676,4669,0.246867,0.000000,0.246867,0.246867
+[BT_RTT] msg_id=114 rtt_ms=254.9
+[BT_RTT] msg_id=113 rtt_ms=137.2
+[BT_RTT] msg_id=168 rtt_ms=117.6
+[BT_RTT] msg_id=111 rtt_ms=843.1
