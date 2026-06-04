@@ -1,0 +1,130 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1.6cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+
+\titlespacing*{\section}{0pt}{8pt}{2pt}
+\titlespacing*{\subsection}{0pt}{6pt}{1pt}
+\titleformat{\section}{\large\bfseries\color{black!85}}{\thesection.}{0.4em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{}{0em}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\footnotesize\itshape Testplan validatiecampagne — DeVi Comfort}
+\rhead{\footnotesize\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\newlist{cb}{itemize}{1}
+\setlist[cb]{label=$\square$,leftmargin=1.4em,itemsep=1pt,topsep=2pt}
+
+\newcommand{\btn}[1]{\textbf{[#1]}}
+\newcommand{\pass}[1]{\textit{Pass:} #1}
+
+\begin{document}
+
+\begin{center}
+{\Large\bfseries Testplan validatiecampagne — wat je precies meet}\\[2pt]
+{\small Knoppen (Live-tab, Validatie/Tests): \btn{Spatie}=MARK \quad \btn{B}=baseline \quad \btn{F}=frame-log \quad \btn{S}=summary \quad \btn{Kompas nul}=swivel-nulpunt}
+\end{center}
+
+\vspace{2pt}\hrule\vspace{4pt}
+
+\section{Eenmalig vooraf}
+\begin{cb}
+\item App (verse build) op de tablet; \btn{Kompas (swivel)}-label toont graden (geen ``geen sensor'').
+\item Instrumenten: meetlint (1\,mm), markers/tape, digitale waterpas, logboek/pen. Optioneel: 240\,fps-camera (lag).
+\item Eén vast carriage-referentiepunt + dunne pointer (voor de positietest).
+\item Rail-set bepaald: 3--5 rails, dekking van alle bochttypen (recht / vert.\ op / vert.\ neer / horizontaal).
+\end{cb}
+
+\section{Hoe vaak meten — lees dit eerst}
+\begin{itemize}[leftmargin=1.4em,itemsep=1pt,topsep=2pt]
+\item[$\rightarrow$] \textbf{T-TRAC (positie)} hangt af van de \textbf{railgeometrie} $\Rightarrow$ \textbf{op elke rail} herhalen.
+\item[$\rightarrow$] \textbf{T-SPIN \& T-SWIV (hoeken)} testen de stoel-mapping (rail-onafhankelijk) $\Rightarrow$ \textbf{één keer} volstaat (eventueel een 2e stoel ter controle), \emph{niet} op elke rail.
+\end{itemize}
+
+\section{Volgorde per traplift}
+\begin{enumerate}[leftmargin=1.6em,itemsep=1pt,topsep=2pt]
+\item Verbind app $\rightarrow$ lift (Bluetooth), \textbf{laad de rail} (anders geen gecalibreerde positie/telemetrie).
+\item \btn{Nieuw logfile}. Noteer rail-ID + configuratie in het logboek.
+\item Baseline $\rightarrow$ T-TRAC $\rightarrow$ (alleen 1e lift: T-SPIN, T-SWIV) $\rightarrow$ rit met frame-log $\rightarrow$ \btn{S}.
+\end{enumerate}
+
+\hrule\vspace{4pt}
+
+\section{Baseline (stationair) — 0-jitter check}
+\begin{cb}
+\item Chair stil. \btn{B} indrukken, $\geq$15\,s wachten, \btn{B} opnieuw.
+\end{cb}
+
+\section{T-TRAC — positie (per rail)}
+\begin{cb}
+\item Rijd in \textbf{jog/lage snelheid} B$\rightarrow$T; pointer exact op marker $\rightarrow$ \btn{Spatie}.
+\item Noteer: MP-nummer $\leftrightarrow$ marker-ID. Doe alle markers, dan \textbf{T$\rightarrow$B} terug (zelfde referentiepunt).
+\end{cb}
+\pass{$|\text{display} - \text{fysiek}| < 5$\,mm (rail $\leq$5\,m) / $<10$\,mm (langer), op elke marker, beide richtingen. \footnotesize(drempel: bevestigen)}
+
+\section{T-SPIN — zithoek / spindel (één keer, op een vlak railstuk)}
+\begin{cb}
+\item Waterpas op het zit-referentievlak. Zet spindel met fysieke knoppen op \textbf{0$^\circ$}, laat uitsettelen.
+\item Lees waterpas $\rightarrow$ \btn{Spatie}. Noteer MP-nummer $\leftrightarrow$ ``SPIN 0$^\circ$ op'' + waterpas-waarde.
+\item Herhaal \textbf{15, 30, 45, 60, 75$^\circ$} (oplopend), dan 75$\rightarrow$0 (aflopend). Eén MARK per stand.
+\end{cb}
+\pass{$|\text{waterpas} - \texttt{spindle\_kf}| < 1$--$2^\circ$ per stand. \footnotesize Vergelijk met \texttt{spindle\_kf} (lookup), \emph{niet} de gerenderde hoek (85/15-blend).}
+
+\section{T-SWIV — zitdraaiing / swivel (één keer, apart blok)}
+\textbf{Zitting horizontaal} (spindel 0$^\circ$), \textbf{tablet plat op de zitting}, lift op station.\\
+\textbf{Vooraf:} de swivel-encoder wijkt sowieso $\sim\!\pm3{,}5^\circ$ af van de fysieke hoek (bv.\ 60$^\circ$ software $\approx$ 58{,}5--61$^\circ$ echt) --- hardware-eigenschap, geen pipeline-fout. Toets op \emph{geen grove afwijking}, niet sub-graad.
+\begin{cb}
+\item \btn{Kompas nul}. Draai swivel met fysieke knoppen naar stand 1, laat uitsettelen $\rightarrow$ \btn{Spatie}.
+\item Noteer MP-nummer $\leftrightarrow$ ``SWIV stand 1''. Meerdere standen, beide draairichtingen.
+\item \textbf{Nul opnieuw vóór elke stand} en werk vlot (gyro-drift).
+\end{cb}
+\pass{$|\texttt{compass\_yaw} - \texttt{swivel\_kf}|$ binnen encoder-tolerantie $\sim\!\pm3{,}5^\circ$; grove mismatch ($>5^\circ$, bv.\ 50$^\circ$ bij 60$^\circ$ echt) = echte fout. \footnotesize Beide velden staan in de \texttt{[MARKER]}-regel.}
+
+\section{DV3 + DV1 — tijdens één rit (per rail)}
+\begin{cb}
+\item \btn{F} (frame-log AAN) $\rightarrow$ één volledige rustige rit B$\rightarrow$T $\rightarrow$ \btn{F} (UIT).
+\item RTT (\texttt{[BT\_RTT]}) wordt automatisch gelogd — niets extra.
+\end{cb}
+\pass{DV3 = 0 snelheidspieken $>5\times$ mediaan (geen staircase). \quad DV1 = RTT P95 $<150$\,ms, P99 $<250$\,ms. \footnotesize(drempels: bevestigen)}
+
+\section{Na afloop}
+\begin{cb}
+\item Logs ophalen: \texttt{adb pull /storage/emulated/0/Android/data/com.example.upstudio/files/validation\_logs/ \textasciitilde/logs/tablet/}
+\item Logboek inleveren naast de logs; analyse-script draaien (foutentabellen, DV3, RTT-percentielen, grafieken).
+\end{cb}
+
+\vspace{2pt}\hrule\vspace{4pt}
+
+\section*{Logboek (invullen)}
+\textbf{Rail-ID:} \underline{\hspace{3cm}} \quad lengte: \underline{\hspace{2cm}} mm \quad bochten: \underline{\hspace{4cm}}
+
+\vspace{4pt}
+\begin{tabular}{|c|c|c|p{3.2cm}|p{3.6cm}|}
+\hline
+\textbf{MP\#} & \textbf{Test} & \textbf{Stand/marker} & \textbf{Referentie (tape/waterpas/gyro)} & \textbf{Opmerking} \\
+\hline
+&&&& \\ \hline
+&&&& \\ \hline
+&&&& \\ \hline
+&&&& \\ \hline
+&&&& \\ \hline
+&&&& \\ \hline
+&&&& \\ \hline
+&&&& \\ \hline
+\end{tabular}
+
+\end{document}

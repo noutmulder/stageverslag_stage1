@@ -26,17 +26,20 @@ Tilt vooral Methoden + Resultaten (samen 28% gewicht). Alle edits geverifieerd t
 
 ---
 
-## Fase 1 — Meetontwerp herzien (vóór de lift in)
+## Fase 1 — Meetontwerp herzien (vóór de lift in) ✅ ONTWERP VASTGELEGD
 
-Bepaalt of de tweede meetronde raak is. Pas hierna de method-secties aan.
+Volledig uitgewerkt + pre-geregistreerd in **`fase1_meetontwerp.md`**. De method-secties van
+`main.tex` worden bewust pas in Fase 3 aangepast (samen met de nieuwe data), zodat het verslag
+intern consistent blijft. Open punten staan in §6 van het meetontwerp (drempels bevestigen,
+rail-set invullen, extra's kiezen, TestLogger-logging checken).
 
-- [ ] **1.1 DV1(b) kwantitatief + vooraf vastleggen.** RTT-**percentielgrens** (bv. P95 < X ms) i.p.v. alleen gemiddelde. _Raakt: Methoden (pre-registratie)._
-- [ ] **1.2 DV3(b) kwantitatief + vooraf vastleggen.** Frame-level renderpositie+tijd → meetbare smoothness (bv. max stap tussen frames). _Raakt: Methoden._
-- [ ] **1.3 Primaire foutmaat = display-vs-fysiek** (incl. configurator-bijdrage); display-vs-firmware-encoded als secundaire pipeline-isolatie. **Log beide.** _Raakt: Resultaten + DV2-meetdoel._
-- [ ] **1.4 Logging-checklist hard maken:** per run automatisch frame-level renderpositie+timestamp, RTT per round-trip, ruwe encoder, gefilterde positie, **inter-sample gap**, **snelheidsprofiel**. (Laatste twee nodig voor stap 3.3.)
-- [ ] **1.5 (Aanbevolen) externe hoekreferentie** (digitale gradenboog / laser) → compass-correctie niet langer self-referentieel.
-- [ ] **1.6 (Aanbevolen) high-speed video** physiek-vs-display → kwantitatieve zichtbare lag.
-- [ ] **1.7 (Aanbevolen) tweede waarnemer** scoort onafhankelijk pass/fail → ontkracht self-validation.
+- [x] **1.1 DV1(b) kwantitatief + vooraf vastgelegd.** RTT P95 < 150 ms ⚠️ / P99 < 250 ms ⚠️ per run; + lag uit high-speed video indien beschikbaar. _Raakt: Methoden (pre-registratie)._
+- [x] **1.2 DV3(b) kwantitatief + vooraf vastgelegd.** Frame-level: 99e pct per-frame-stap ≤ 2× mediaan ⚠️, geen monotone terugloop. _Raakt: Methoden._
+- [x] **1.3 Primaire foutmaat = display-vs-fysiek** (incl. configurator), display-vs-firmware secundair; per rail/segmenttype/richting. _Raakt: Resultaten + DV2-meetdoel._
+- [x] **1.4 Logging-checklist hard gemaakt** (§2 meetontwerp), incl. 🆕 frame-level renderpositie + inter-sample gap; **te checken in TestLogger vóór de campagne.**
+- [~] **1.5 Externe hoekreferentie** — opgenomen als aanbevolen extra; beslissen op beschikbaarheid (meetontwerp §4).
+- [~] **1.6 High-speed video** — opgenomen als aanbevolen extra; beslissen op beschikbaarheid (meetontwerp §4).
+- [~] **1.7 Tweede waarnemer** — opgenomen als aanbevolen extra; beslissen op beschikbaarheid (meetontwerp §4).
 
 ---
 

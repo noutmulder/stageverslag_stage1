@@ -1,0 +1,9 @@
+================================================================
+SAMENVATTING
+DV1 RTT: n=5833 mean=81 P95=104 P99=118 max=167 ms
+DV3 traction: bewegend   94%  pieken>5x=0 (0.00%)  jerk p99=0.0074
+DV3 spindle : bewegend   46%  pieken>5x=0 (0.00%)  jerk p99=3.5758
+DV3 swivel  : bewegend   29%  pieken>5x=1 (0.13%)  jerk p99=6.8400
+render: 2754 frames, frame-interval mediaan 17 ms (~59 fps)
+DV2 markers: (geen [MARKER] in deze log)
+================================================================
