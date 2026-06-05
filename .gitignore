@@ -1,0 +1,24 @@
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+missfont.log
+texput.log
+
+# ... maar NOOIT de bewaarde test-logs in validatie_logs/
+!validatie_logs/
+!validatie_logs/*.log
+!validatie_logs/**
+
+# Large reference material / redundant archives (kept locally, not in git)
+artikel_bestanden/
+artikel_bestanden.zip
+
+# Tooling
+.claude/
