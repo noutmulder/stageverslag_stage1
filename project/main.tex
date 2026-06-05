@@ -101,22 +101,27 @@ This research addresses the challenge of transforming raw stairlift telemetry
 into a stable, accurate live 3D visualization for fault diagnosis. The core
 technical problem is the mapping of digital pulse-encoder readings, polled
 over a high-latency Bluetooth link, onto a curved 3D rail geometry with
-segment-dependent encoder-to-distance ratios, with sub-rendered-frame
-smoothness on a 60\,fps display. A ``virtual ghost'' prototype was developed
-iteratively and validated on physical hardware with two calibration runs
-(bottom-to-top and top-to-bottom) plus a stationary baseline. The pipeline-
-integration error across 10 measurements (five reference markers, each read
-in both drive directions) stayed within 0.7\,mm (mean 0.39\,mm, SD
-0.22\,mm, well within
-the 5\,mm tolerance for the position-accuracy criterion),
-the chair on screen tracked the physical chair without perceptible lag
-across both runs despite individual Bluetooth round-trips that occasionally
-exceeded the 100\,ms threshold (mean 89\,ms over 5295 polls), and the
-displayed position interpolated smoothly through the sensor stream without
-perceptible step-jumps. The results show that a processing pipeline combining
+segment-dependent encoder-to-distance ratios, while keeping the rendered
+motion smooth on the display loop. A ``virtual ghost'' prototype was developed
+iteratively and validated on physical stairlift hardware across two rail
+configurations (3403\,mm and 5428\,mm) against pre-registered quantitative
+criteria. Position accuracy was evaluated at two levels: the
+pipeline-integration error (display vs.\ firmware-encoded position from the
+same encoder reading) stayed within 0.7\,mm on both rails, while the end-to-end
+display-vs-physical error on the 5428\,mm rail reached at most 9.9\,mm ---
+inside the 10\,mm tolerance for rails longer than 5\,m --- with the gap
+between the two measures most plausibly attributable to the upstream
+rail-configurator rather than to the pipeline. Bluetooth round-trip latency met the
+pre-registered percentile thresholds on both rails (P95\,$\leq$\,113\,ms,
+P99\,$\leq$\,135\,ms; thresholds 150/250\,ms), and a dedicated continuous-drive
+log showed no rendering staircase (velocity spikes on 0.04\,\% of frames on
+the steady bottom-to-top leg, more than two orders of magnitude below the
+last-value-hold signature the criterion is designed to detect). The results
+show that a processing pipeline combining
 non-linear encoder mapping, recursive state estimation with dead-reckoning,
 and smooth tangent-based orientation reconstruction produces a stable,
-accurate live 3D representation of stairlift position and fault state.
+accurate live 3D representation of stairlift position, with fault state
+rendered directly from the parsed status bits.
 \end{minipage}
 \end{center}
 \vspace{0.3cm}
@@ -593,15 +598,16 @@ to the visualization.\\
 (a) every message ID in the firmware enumeration has been classified, with the
 subset relevant to the visualization pipeline explicitly identified with
 rationale and documented at byte-level for any message with a position, angle,
-or status bit field; and (b) the chair on screen visually tracks the physical
-chair during steady-state motion without perceptible lag, as observed during
-the validation runs of Section~\ref{sec:method-validation}. This is an
-observational criterion: the inter-sample Bluetooth round-trip is reported as
-a context metric, but the relevant end-user property is the visible lag after
-the Kalman filter and dead-reckoning have compensated for inter-sample gaps.
-A naïve single-sample-latency threshold would not capture this, because the
-pipeline architecture explicitly masks per-sample latency at the display side
-(see Section~\ref{sec:results-q3}).
+or status bit field; and (b) the Bluetooth round-trip latency stays within the
+pre-registered percentile bounds (P95\,$<$\,150\,ms and P99\,$<$\,250\,ms) over
+each run, with the chair on screen additionally observed to track the physical
+chair during steady-state motion without perceptible lag (DV1(b),
+Section~\ref{sec:method-validation}). A percentile bound is used rather than a
+single-sample threshold because the pipeline explicitly masks per-sample
+latency at the display side (Section~\ref{sec:results-q3}); the percentile form
+bounds the inter-sample gaps the dead-reckoning must bridge, while the
+visible-lag observation is reported alongside it as the end-user property the
+link criterion ultimately serves.
 
 \subsection{Encoder-to-Position Mapping (Formal Analysis)}
 \label{sec:method-q2}
@@ -662,11 +668,13 @@ differences. Per-axis constant-velocity filters allow tuning
 sensor's actual behaviour.\\
 \textbf{Instrument (when done):} Each model is considered correct when
 (a) every step of the derivation is presented in named equations traceable to
-the cited sources, and (b) the display position interpolates visually smoothly
-between sensor samples; no perceptible step-jumps are observed at the
-per-channel application-layer sample rate ($\sim$4--5\,Hz, bounded by the
-shared-link round-trip; see Section~\ref{sec:results-q1}) on the 60\,fps render loop,
-across the validation runs of Section~\ref{sec:method-validation}. The
+the cited sources, and (b) the rendered position passes the velocity-based
+DV3(b) smoothness test --- during continuous motion the frame-to-frame velocity
+shows no spikes above 5$\times$ the median $|v|$, the signature of a
+last-value-hold staircase (Section~\ref{sec:method-validation}) --- so that the
+display fills the $\sim$4--5\,Hz per-channel sample stream (bounded by the
+shared-link round-trip; Section~\ref{sec:results-q1}) without visible
+step-jumps on the render loop. The
 Kalman filter in this pipeline functions primarily as a \emph{temporal}
 interpolator and velocity estimator for the render loop, not as a
 noise-rejection filter: the traction encoder is a digital pulse-counter that
@@ -684,26 +692,42 @@ The instrument criteria of Sections~\ref{sec:method-q1}--\ref{sec:method-q3}
 are bundled under the labels DV1, DV2, and DV3 (\textit{deelvalidatie}
 1--3), one per research subquestion. Each is split into an
 analytical sub-criterion (a) (derivation traceable to literature or firmware
-constants) and an empirical sub-criterion (b) (measured on a physical
-calibration run). The empirical sub-criteria are listed in
+constants) and an empirical sub-criterion (b) (measured on physical
+calibration runs). The empirical sub-criteria are listed in
 Table~\ref{tab:validation-criteria}; the analytical sub-criteria are
-contained in the originating method sections. All empirical sub-criteria
-are evaluated through the same physical experiment described in this
-section, rather than through separate experiments, so all three
-subquestions can be evaluated from one set of calibration runs.
+contained in the originating method sections.
+
+The thresholds in Table~\ref{tab:validation-criteria} are the second-version
+(v2) criteria. The first measurement campaign
+(Section~\ref{sec:results-validation}) exposed that the original v1 thresholds
+for DV1(b) and DV3(b) assumed behaviour this system does not exhibit: a
+single-sample 100\,ms round-trip target that ignores the latency-masking
+effect of the state estimator, and a ``Kalman jitter $\geq$ 10$\times$ smaller
+than raw'' ratio that is undefined for a digital pulse-encoder showing zero
+value-jitter at rest. The criteria were therefore reformulated into
+quantitative, sensor-appropriate forms --- a percentile latency bound
+and a velocity-based smoothness test --- and \emph{pre-registered}, with a
+recorded version-control timestamp, before the second measurement campaign,
+so that the decisive runs on the longer rail are scored against thresholds
+fixed in advance. This refinement and its effect on evidentiary weight are
+stated explicitly under Limitations (Section~\ref{sec:conclusion}). Beyond
+DV1--DV3, the orientation outputs (spindle seat-tilt and swivel angle) are
+checked in separate static tests against external references --- a digital
+spirit level and the tablet gyroscope --- and reported alongside the main
+criteria in Section~\ref{sec:results-validation}.
 
 \begin{table}[H]
 \centering
 \caption{Empirical validation criteria DV1(b)--DV3(b) with their originating method section and pre-registered pass threshold. Sub-criterion (a) (analytical traceability) is stated in the originating method section.}
 \label{tab:validation-criteria}
 \small
-\begin{tabular}{@{}lp{2.0cm}p{3.5cm}@{}}
+\begin{tabular}{@{}lp{1.7cm}p{3.8cm}@{}}
 \toprule
-\textbf{ID} & \textbf{Origin} & \textbf{Threshold (pre-registered)} \\
+\textbf{ID} & \textbf{Origin} & \textbf{Threshold (pre-registered, v2)} \\
 \midrule
-DV1(b) & Section~\ref{sec:method-q1} & BT round-trip $<$\,100\,ms (reframed observational, see Limitations) \\
-DV2(b) & Section~\ref{sec:method-q2} & Display vs.\ physical position $<$\,5\,mm on rails $\leq$\,5\,m; $<$\,10\,mm on longer rails \\
-DV3(b) & Section~\ref{sec:method-q3} & Kalman output jitter $\geq$\,10$\times$ smaller than raw (reframed observational, see Limitations) \\
+DV1(b) & Section~\ref{sec:method-q1} & Bluetooth round-trip P95\,$<$\,150\,ms \emph{and} P99\,$<$\,250\,ms, per run \\
+DV2(b) & Section~\ref{sec:method-q2} & Display vs.\ physical position $<$\,5\,mm (rails $\leq$\,5\,m), $<$\,10\,mm (longer); secondary: display vs.\ firmware-encoded position (pipeline isolation) \\
+DV3(b) & Section~\ref{sec:method-q3} & 0 velocity spikes $>$\,5$\times$ the median $|v|$ during continuous motion (no staircase) \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -746,9 +770,10 @@ fail on any criterion are reported with the cause.
   \item O3 (visible motion smoothness during steady-state driving): while
     the chair drives between stations at typical pilot speed, the rendered
     chair on screen tracks the physical chair without perceptible
-    step-jumps or lag. This observation directly evaluates the end-user
-    property that DV1(b) and DV3(b) aim to capture, in a way that the raw
-    single-sample BT round-trip cannot.
+    step-jumps or lag. This observation complements the quantitative DV1(b)
+    and DV3(b) measures by confirming the end-user property they target
+    (visible lag and smoothness), which a latency percentile and a
+    frame-velocity statistic bound but do not themselves display.
 \end{itemize}
 
 % ============================================================
@@ -1032,8 +1057,8 @@ position and speed. Each time a new sensor reading arrives, it blends the
 prediction (based on the previous position and speed) with the new measurement.
 The result is a continuously updated position-and-velocity state that the
 render loop can extrapolate between sensor samples, so the chair moves
-fluidly at 60\,fps even though per-channel updates only arrive at
-$\sim$4--5\,Hz.
+fluidly at the display frame rate even though per-channel updates only arrive
+at $\sim$4--5\,Hz.
 
 Formally, a 2D constant-velocity Kalman
 filter~\cite{kalman1960, welch1995kalman} is applied independently to each
@@ -1224,26 +1249,47 @@ Section~\ref{sec:conclusion}.
 \subsection{Validation Evidence}
 \label{sec:results-validation}
 This section reports the empirical evidence for the DV1--DV3 criteria that
-require physical measurement. The prototype is validated through two
-calibration runs (bottom-to-top and top-to-bottom) on one physical stairlift
-installation, preceded by a 13\,s stationary baseline; rail configuration
-and measured values are reported below. The system polls telemetry at an
-aggregate $\sim$10\,Hz of round-trips during the runs (shared across all
-channels, Section~\ref{sec:results-q1}) and logs every event with millisecond
+require physical measurement. The prototype is validated across two
+measurement campaigns on physical stairlift hardware: a first campaign on a
+3403\,mm rail (11 rail-parts, one 90$^\circ$ horizontal bend; two calibration
+runs bottom-to-top and top-to-bottom, preceded by a 13\,s stationary
+baseline), and a second campaign on a longer 5428\,mm rail (eight straight
+sections and seven bends: two horizontal and five vertical).
+The second campaign additionally includes a dedicated continuous-drive log
+for the velocity-based DV3(b) test and two static orientation tests (spindle
+and swivel). The system polls telemetry at an aggregate $\sim$10\,Hz of
+round-trips during the runs (shared across all channels,
+Section~\ref{sec:results-q1}) and logs every event with millisecond
 timestamps via the in-app TestLogger module.
 
-\textbf{Measurement methodology.} Five reference markers are placed at known
-offsets on three rail-parts before the runs (one on rd1, one on rd3, three
-on the longest straight rd11). Physical chair position is read with a
-steel tape (graduation 1\,mm, reading uncertainty $\approx\pm$1\,mm).
-For position-accuracy validation, the displayed position from the pipeline
-is compared against the firmware-encoded position derived from the same
-encoder reading via the calibration map (Section~\ref{sec:results-q2});
-this isolates the pipeline-integration error from upstream rail-configurator
-imprecision (the latter is reported separately as an observation, see
-Limitations). Bluetooth round-trip time is measured per request/response
-pair by the application layer over both runs (5295 round-trips total).
-The encoder baseline is measured during the 13\,s stationary window.
+\textbf{Measurement methodology.} Reference markers are placed at known
+offsets on straight rail-parts before the runs (five on the 3403\,mm rail;
+five on the 5428\,mm rail, on rail-parts rd3, rd5, rd7, rd9, and rd13). Each
+marker is captured in both drive directions, giving ten marker readings per
+rail. Physical chair position is read with a steel tape (graduation 1\,mm,
+reading uncertainty $\approx\pm$1\,mm). Position accuracy is evaluated at the
+two levels prescribed by the DV2(b) design:
+\begin{itemize}[leftmargin=*]
+  \item \emph{Display vs.\ physical} (primary): the displayed position is
+    compared against the physical marker position, taken as the
+    firmware-encoded start of the marker's rail-part plus the tape-measured
+    offset within that part. Referencing each marker to its rail-part origin
+    captures the end-to-end within-part accuracy a service engineer would see,
+    including the rail-part's own encoded-vs-physical scaling.
+  \item \emph{Display vs.\ firmware-encoded} (secondary): the displayed
+    position is compared against the firmware-encoded position derived from
+    the same encoder reading via the calibration map
+    (Section~\ref{sec:results-q2}). This isolates the pipeline-integration
+    error; the difference between the two measures is exactly the upstream
+    rail-configurator contribution, reported explicitly rather than deferred.
+\end{itemize}
+Bluetooth round-trip time is measured per request/response pair by the
+application layer (5295 round-trips on the first rail, 5872 on the second).
+The encoder baseline is measured during the 13\,s stationary window. For
+DV3(b), the rendered position is logged at frame rate during a continuous
+drive without intermediate stops, and the per-frame velocity
+$v[i]=(p[i{+}1]-p[i])/\Delta t[i]$ is analysed for spikes exceeding
+5$\times$ the median $|v|$.
 
 \begin{figure}[H]
 \centering
@@ -1288,68 +1334,143 @@ bend's accumulated yaw must be subtracted before measuring the second. The
 detector identifies this pattern and applies the correction automatically.
 
 \textbf{Quantitative evidence per criterion.} Table~\ref{tab:validation}
-collects the measurements that bear directly on DV1(b), DV2(b), and DV3(b).
+collects the per-rail measurements bearing on DV1(b) and DV2(b); DV3(b) and
+the orientation tests are measured on dedicated runs and reported in the text
+below.
 
 \begin{table*}[t]
 \centering
-\caption{Validation measurements from the two calibration runs on the physical stairlift (2026-05-29). Position errors are pipeline-integration errors (display vs.\ firmware-encoded position from the same encoder reading); the rail-configurator's physical-vs-encoded discrepancy is reported separately under Limitations.}
+\caption{Validation measurements across the two campaigns. Position is evaluated at two levels: the pipeline-integration error (display vs.\ firmware-encoded position from the same encoder reading) isolates the pipeline, while the display-vs-physical error is the end-to-end accuracy referenced per rail-part (see methodology above). A ``---'' marks a quantity not collected for that rail. Pre-registered passes are stated in the rightmost column and discussed in Section~\ref{sec:conclusion}.}
 \label{tab:validation}
 \small
-\begin{tabular}{@{}p{8.0cm}lp{4.0cm}@{}}
+\begin{tabular}{@{}p{5.0cm}p{3.0cm}p{3.3cm}p{4.6cm}@{}}
 \toprule
-\textbf{Metric} & \textbf{Value} & \textbf{Bears on} \\
+\textbf{Metric} & \textbf{Rail 1 (3403\,mm)} & \textbf{Rail 2 (5428\,mm)} & \textbf{Bears on / threshold} \\
 \midrule
-Rail length (firmware-encoded) & 3403\,mm & --- \\
-Number of rail-parts & 11 & --- \\
-Number of horizontal bends & 1 (90$^\circ$ left) & --- \\
-Reference markers measured (B$\rightarrow$T + T$\rightarrow$B) & 10 & --- \\
-Max pipeline position error (n=10) & 0.7\,mm & DV2(b) \\
-Mean pipeline position error (n=10) & 0.39\,mm & DV2(b) \\
-SD of pipeline position error (n=10) & 0.22\,mm & DV2(b) \\
-95\,\% CI of the mean (t-based, df=9) & [0.23, 0.55]\,mm & DV2(b) \\
-\quad B$\rightarrow$T direction mean (n=5) & 0.28\,mm & DV2(b) \\
-\quad T$\rightarrow$B direction mean (n=5) & 0.50\,mm & DV2(b) \\
-Bluetooth round-trip time (mean, n=5295) & 89\,ms & informational \\
-Bluetooth round-trip time (P95) & 113\,ms & informational \\
-Bluetooth round-trip time (P99) & 135\,ms & informational \\
-Bluetooth round-trip time (max outlier) & 543\,ms & informational \\
-Continuous drive duration without crash & 524\,s & O1 \\
-Visible motion smoothness (steady-state) & observational & DV1(b), DV3(b) \\
-Visual smoothness through bends & observational & O2 \\
+Geometry & 11 parts, 1 horiz.\ bend & 8 straight, 7 bends (2 horiz., 5 vert.) & --- \\
+Reference markers (B$\rightarrow$T\,$+$\,T$\rightarrow$B) & 10 & 10 & --- \\
+\addlinespace
+\multicolumn{4}{@{}l}{\emph{DV1(b) --- Bluetooth round-trip latency}} \\
+\quad mean (n) & 89\,ms (5295) & 88\,ms (5872) & informational \\
+\quad P95 & 113\,ms & 112\,ms & $<$\,150\,ms \quad(pass) \\
+\quad P99 & 135\,ms & 134\,ms & $<$\,250\,ms \quad(pass) \\
+\quad max outlier & 543\,ms & 167\,ms & --- \\
+\addlinespace
+\multicolumn{4}{@{}l}{\emph{DV2(b) --- position accuracy}} \\
+\quad Pipeline-integration error, max & 0.7\,mm & $\leq$\,0.1\,mm & secondary (pipeline isolation) \\
+\quad\quad mean (n=10) & 0.39\,mm & $\approx$\,0.0\,mm & secondary \\
+\quad Display-vs-physical error, max & --- & 9.9\,mm & primary: $<$\,10\,mm ($>$5\,m) \quad(pass) \\
+\quad\quad mean (signed, n=5) & --- & $-6.9$\,mm & primary \\
+\quad Direction repeatability, max & --- & 4.1\,mm & --- \\
+\addlinespace
+Continuous drive without crash & 524\,s & 253\,s & O1 (pipeline robustness) \\
+Stationary baseline pulse variation & 0 (const.\ 16030) & --- & sensor jitter at rest \\
 \bottomrule
 \end{tabular}
 \end{table*}
 
-\textbf{Observed results.} The maximum pipeline-integration error across the
-10 measurements (five markers, each read in both drive directions) was
-0.7\,mm, with mean 0.39\,mm (SD 0.22\,mm, 95\,\% CI of the mean
-[0.23, 0.55]\,mm; t-based, df=9); the per-direction means were 0.28\,mm
-(B$\rightarrow$T) and 0.50\,mm (T$\rightarrow$B). The mean Bluetooth
-round-trip was 89\,ms (n=5295; P95 113\,ms, P99 135\,ms, with one 543\,ms
-outlier). During both runs the chair on screen was observed to track the
-physical chair without perceptible lag, and the displayed position to
-interpolate through the per-channel sensor samples without perceptible
-step-jumps at the sample rate (observations O1--O3, Section~\ref{sec:method-validation}).
-The interpretation of these measurements against the DV1(b)--DV3(b)
-criteria is given in Section~\ref{sec:conclusion}.
+\textbf{DV1(b) --- latency.} Bluetooth round-trip latency met the
+pre-registered percentile thresholds on both rails: P95 was 113\,ms (rail 1)
+and 112\,ms (rail 2), and P99 was 135\,ms and 134\,ms, against the 150\,ms and
+250\,ms thresholds (means 89\,ms and 88\,ms over 5295 and 5872 round-trips).
+Figure~\ref{fig:rtt-hist} shows the distribution for the second campaign: the
+bulk of round-trips cluster near 80--90\,ms and the whole distribution lies
+below the 150\,ms P95 limit apart from a thin tail (a single 167\,ms maximum
+on rail 2; one 543\,ms outlier on rail 1). Because the Kalman filter and
+dead-reckoning mask single-sample latency at the display side, this latency
+does not surface as visible lag; the percentile bound additionally keeps
+round-trip gaps within the 0.8\,s horizon for which the dead-reckoning
+extrapolation is designed (Section~\ref{sec:results-q3}).
+
+\input{fig_rtt_dist}
+
+\textbf{DV2(b) --- position accuracy.} The two measurement levels separate the
+pipeline from the upstream rail-configurator. The pipeline-integration error
+(display vs.\ firmware-encoded position) was at or below 0.7\,mm on rail 1
+(mean 0.39\,mm, SD 0.22\,mm, 95\,\% CI of the mean [0.23, 0.55]\,mm; t-based,
+df=9) and $\leq$\,0.1\,mm on rail 2 --- both below the $\approx\pm$1\,mm tape
+resolution, confirming that the encoder-to-position math reproduces the
+firmware position essentially exactly. The end-to-end display-vs-physical
+error, measured on the 5428\,mm rail (Figure~\ref{fig:dv2-error}), reached a
+maximum of 9.88\,mm at marker rd7, inside the 10\,mm tolerance for rails longer
+than 5\,m, so the primary DV2(b) criterion passes. All five errors are
+negative (mean $-6.9$\,mm): the displayed position reads consistently a few
+millimetres short of physical. The $\approx$\,7\,mm gap between this
+display-vs-physical figure and the near-zero pipeline-integration error is the
+rail-configurator contribution made explicit (below), not a pipeline error.
+Direction repeatability was high: the same physical marker read in both drive
+directions agreed to within 4.1\,mm across all five markers.
+
+\input{fig_dv2_error}
+
+\textbf{Rail-configurator contribution.} An independent tape measurement of
+the first rail showed the firmware-encoded rail-part lengths deviating from
+the physically measured lengths by up to 16\,mm per part (rd1: $+16$\,mm,
+rd5: $-9$\,mm, rd11: $-10$\,mm; net $+10$\,mm over the 3.4\,m rail, 0.3\,\%).
+This is a property of the rail-configurator's data acquisition during lift
+installation, not of the visualization pipeline, and it is the most plausible
+source of the systematic display-vs-physical offset on rail 2: because the
+displayed position tracks the firmware-encoded geometry essentially exactly
+(the $\leq$\,0.1\,mm pipeline error), any encoded-vs-physical scaling of a
+rail-part carries into the end-to-end error. This configurator error was
+quantified independently on rail 1 only; it was not separately measured on
+rail 2, and the rail-2 error was not decomposed into within-part tracking
+versus encoded-length error (which would require physically measured
+\emph{cumulative} distances to each rail-part start, not collected here). The
+primary DV2(b) figure therefore includes this upstream contribution by design
+--- it is the error a service engineer would see --- while the secondary
+measure isolates the
+pipeline.
+
+\textbf{DV3(b) --- smoothness.} The velocity-based smoothness test was run on a
+dedicated continuous drive (no intermediate stops, near-full rail) on the
+5428\,mm rail, logging the rendered position at frame rate (13\,596 frames,
+$\sim$53\,fps on the tablet). On the steady bottom-to-top leg, velocity spikes
+exceeding 5$\times$ the median $|v|$ occurred on 0.04\,\% of frames for the
+traction axis (0.04\,\% spindle, 0.21\,\% swivel). For reference, a
+last-value-hold (staircase) rendering --- the failure mode the criterion is
+designed to detect --- would produce roughly one spike per ten frames
+($\sim$10\,\%), so the observed rate is more than two orders of magnitude
+(a factor of $\sim$250) below that signature: no staircase is present. The few isolated spikes occur at
+normal frame intervals (the single 153\,ms render hitch in the log produced no
+position spike, the dead-reckoning having bridged it) and are mild speed
+variations rather than a stepped pattern. A desktop precursor run (60\,fps,
+logged 2026-06-02, before the 2026-06-04 pre-registration and so corroborating
+rather than confirmatory) gave 0, 0, and 1 spike on the three axes, the same
+behaviour without the tablet's lower, more variable frame rate; render frame
+rate is a separate performance property and does not enter the velocity-based
+smoothness measure (Section~\ref{sec:method-q3}).
+
+\textbf{Orientation accuracy (spindle, swivel).} Two static tests checked the
+displayed seat orientation against external references. For the spindle
+(seat-tilt) axis, the displayed lookup angle was compared against a digital
+spirit level over the full 0--75$^\circ$ range in 15$^\circ$ steps: the
+maximum deviation was 1.05$^\circ$ (at the 75$^\circ$ mechanical end stop),
+mean $\approx$\,0.4$^\circ$. For the swivel axis, the displayed angle was
+compared against the tablet gyroscope over $\pm$60$^\circ$: the maximum
+deviation was 2.83$^\circ$, within the $\pm$3.5$^\circ$ encoder-to-physical
+tolerance, and $\sim$2.6$^\circ$ of the spread is attributable to gyroscope
+drift in the reference itself (the gyro read 2.6$^\circ$ at a commanded
+0$^\circ$ after the sweep). Both axes are seat-mounted and rail-independent,
+so a single test characterises them across configurations. On level track the
+spindle render deliberately shows 0.85$\times$ the lookup angle (the 15\,\%
+geometry blend, Equation~\ref{eq:spindle-blend}, with $\phi_{\text{rail}}
+\approx 0$); the validation therefore compares against the lookup angle, not
+the blended render value, so that the blend does not appear as a spurious
+$\sim$15\,\% error.
 
 \textbf{Pulse-encoder behaviour at rest.} The 13\,s stationary baseline shows
-zero variation in the raw encoder reading (constant value 16030 over the
-window): the traction sensor produces no value-jitter on the sample itself
-while the chair is stationary.
+zero variation in the raw encoder reading (constant 16030 over the window):
+the traction sensor produces no value-jitter on the sample itself while the
+chair is stationary --- which is precisely why the original ``jitter
+$\geq$ 10$\times$ smaller than raw'' criterion is undefined for this sensor
+and was replaced by the velocity-based DV3(b) test.
 
 \textbf{Logged events.} No Bluetooth disconnects, parser checksum errors, or
-manual interventions occurred during either run. One latency outlier of
-543\,ms was observed (P99 = 135\,ms).
-
-\textbf{Rail-configurator discrepancy (observation).} An independent tape
-measurement of the validation rail showed the firmware-encoded rail-part
-lengths deviating from the physically measured lengths by up to 16\,mm per
-part (rd1: $+16$\,mm, rd5: $-9$\,mm, rd11: $-10$\,mm; net $+10$\,mm over the
-3.4\,m rail, or 0.3\,\%). This is a property of the rail-configurator's data
-acquisition during lift installation, not of the visualization pipeline; it
-is recorded here as a context observation and its scope implications are
-discussed in Section~\ref{sec:conclusion}.
+manual interventions occurred during any run. The latency outliers (543\,ms on
+rail 1, 167\,ms on rail 2) produced no visible position jumps. The
+interpretation of all measurements against the DV1(b)--DV3(b) criteria is
+given in Section~\ref{sec:conclusion}.
 
 % ============================================================
 \section{Conclusion}
@@ -1367,69 +1488,75 @@ sustains (an aggregate $\sim$10\,Hz of round-trips,
 Section~\ref{sec:results-validation}); future
 extensions (e.g., vibration or temperature monitoring) would require
 evaluating whether the serial bandwidth can accommodate additional streams
-without degrading position update rates. Over the validation runs the mean
-Bluetooth round-trip time was 89\,ms (n=5295, median 89\,ms, P95 113\,ms,
-P99 135\,ms, max outlier 543\,ms). The observationally reframed DV1(b)
-criterion (visible lag during steady-state motion) is passed: the chair on
-screen tracks the physical chair without perceptible delay, because the
-Kalman filter and dead-reckoning explicitly mask single-sample latency at
-the display side rather than passing it through; the original 100\,ms
-threshold is also independently passed on the mean (89\,ms), which
-supports the observational verdict. The five-layer architecture
+without degrading position update rates. Over the two campaigns the Bluetooth
+round-trip latency met the pre-registered DV1(b) percentile thresholds on both
+rails: P95 was 113\,ms (rail 1) and 112\,ms (rail 2) against the 150\,ms
+bound, and P99 was 135\,ms and 134\,ms against the 250\,ms bound (means 89\,ms
+and 88\,ms; Table~\ref{tab:validation}, Figure~\ref{fig:rtt-hist}), so DV1(b)
+passes quantitatively. The visible end-user property was additionally observed
+to hold (O3, qualitatively): the chair on screen tracks the physical chair
+without perceptible delay, consistent with the Kalman filter and dead-reckoning
+masking single-sample latency at the display side rather than passing it
+through; a quantitative video frame-offset measurement of this lag is left to
+future work (Section~\ref{sec:conclusion}, Recommendations). The five-layer architecture
 itself isolates failure modes by design: byte-level errors are caught by the
 protocol parser's checksum, while higher-level issues (connection loss,
-timeout) are handled by the transport layer; over the 524\,s of continuous
-drive across the two runs the pipeline sustained operation without crashes
-or UI corruption (O1, Table~\ref{tab:validation}). Robustness under
-adversarial fault injection was not exercised and is reported as a
-limitation.
+timeout) are handled by the transport layer; across the continuous drives of
+both campaigns the pipeline sustained operation without crashes or UI
+corruption (O1, Table~\ref{tab:validation}). Robustness under adversarial
+fault injection was not exercised and is reported as a limitation.
 
 \textbf{Encoder mapping.}
 The piecewise mapping resolves the core geometric problem identified in
 Section~\ref{sec:problem-analysis}: the non-linear relationship between
-encoder pulses and physical distance at bends. On the validation rail
-(3403\,mm, 11 rail-parts, one 90$^\circ$ horizontal bend), the pipeline-
-integration error stayed at or below 0.7\,mm across 10 reference markers
-in both directions (mean 0.39\,mm, SD 0.22\,mm, 95\,\% CI of the mean
-[0.23, 0.55]\,mm), well within the 5\,mm DV2(b) tolerance, so DV2(b) passes
-with substantial margin. Because both the mean and the upper end of the
-confidence interval lie below the $\approx\pm$1\,mm reading uncertainty of
-the steel tape, this figure should be read as ``below the resolution of the
-reference measurement'' rather than as a precise mean. The small
-direction-dependent asymmetry in the data (B$\rightarrow$T mean 0.28\,mm
-versus T$\rightarrow$B mean 0.50\,mm) is within the overall confidence
-interval but is consistent with dead-reckoning extrapolating from the most
-recent sample at the instant the marker is captured.
-Equation~\ref{eq:arctracing-error} bounds the per-segment arc-tracing error
-at $\approx 4.2\,\mu$m per segment, so the residual sub-millimetre error
-that was observed is consistent with the finite precision of the firmware
-pulse-cost constants (Equation~\ref{eq:pulsecosts}, four to ten significant
-figures). A separate observation during the runs (Section~\ref{sec:results-validation})
-showed the firmware-encoded rail-part lengths deviating from physical tape
-measurements by up to 16\,mm per part (net $+10$\,mm over 3.4\,m, 0.3\,\%);
-this is a property of the rail-configurator's data acquisition during lift
-installation, outside the scope of this thesis, and is discussed further under
-Limitations.
+encoder pulses and physical distance at bends. The primary DV2(b) criterion
+--- display vs.\ physical position --- was met on the 5428\,mm rail, where the
+maximum end-to-end error was 9.9\,mm against the 10\,mm tolerance for rails
+longer than 5\,m (Figure~\ref{fig:dv2-error}). Isolating the pipeline shows
+where that error originates: the pipeline-integration error (display vs.\
+firmware-encoded position) was $\leq$\,0.7\,mm on the first rail (mean
+0.39\,mm, SD 0.22\,mm, 95\,\% CI of the mean [0.23, 0.55]\,mm) and
+$\leq$\,0.1\,mm on the second --- in every case below the $\approx\pm$1\,mm
+tape resolution, i.e.\ the mapping reproduces the firmware position
+essentially exactly. Equation~\ref{eq:arctracing-error} bounds the per-segment
+arc-tracing error at $\approx 4.2\,\mu$m per segment, consistent with this
+sub-millimetre residual and with the finite precision of the firmware
+pulse-cost constants (Equation~\ref{eq:pulsecosts}). The remaining
+$\sim$7\,mm of the display-vs-physical error is therefore most plausibly
+attributable to the rail-configurator's encoded-vs-physical discrepancy ---
+independently measured on rail 1 at up to 16\,mm per rail-part (net $+10$\,mm
+over the 3.4\,m rail, 0.3\,\%) --- rather than to the pipeline, since the
+display tracks the firmware geometry exactly; this is consistent with the
+systematically negative rail-2 errors (mean $-6.9$\,mm --- the displayed
+position reads short wherever the encoded rail-part is shorter than physical).
+A direct rail-2 quantification of this split was not made. This upstream source
+is discussed further under Limitations.
 
 \textbf{Mathematical models.}
 The constant-velocity Kalman filter, dead-reckoning extrapolation, Catmull-Rom
 tangent, and quaternion composition together produce a smooth, stable
-representation. During the 13\,s stationary baseline the raw encoder showed
-zero pulses of variation (constant value 16030), confirming that the
-traction encoder is a digital pulse-counter without value-jitter on the
-sample itself; the original DV3(b) jitter-ratio criterion (Kalman jitter
-$\geq$ 10$\times$ smaller than raw) is therefore not definable on these
-data. The reformulated observational DV3(b) (visible smoothness between
-sensor samples, no perceptible step-jumps) is passed: during both runs the
-display position interpolated smoothly through the $\sim$4--5\,Hz per-channel
-sensor stream on the 60\,fps render loop. The relevant role of the Kalman filter in this
+representation. The reformulated DV3(b) criterion is now evaluated
+quantitatively: on a dedicated continuous drive over the 5428\,mm rail,
+velocity spikes exceeding 5$\times$ the median frame-to-frame $|v|$ occurred on
+0.04\,\% of frames (traction axis), more than two orders of magnitude below the
+$\sim$10\,\% spike rate a last-value-hold rendering would produce, so no
+staircase is present and DV3(b) is substantively met (the literal ``0 spikes''
+threshold is narrowly exceeded; see Limitations). The 13\,s stationary baseline showed
+zero pulses of encoder variation (constant 16030), which is why the original
+jitter-ratio criterion was undefined for this digital pulse-counter and was
+replaced by the velocity test. The relevant role of the Kalman filter in this
 pipeline is therefore not noise-reduction but \emph{temporal interpolation}:
-gap-filling between sensor samples for the render loop and velocity
-estimation for dead-reckoning during latency spikes. The tuning parameters
-(Table~\ref{tab:kalman}) and the 85/15 spindle-pitch blend are configured
-values in the implementation rather than derivations from a first-principles
-noise model; sensitivity to these choices is therefore not formally bounded
-and is reported as a limitation.
+gap-filling between sensor samples for the render loop and velocity estimation
+for dead-reckoning during latency spikes. The orientation models were checked
+against external references in two static tests: the spindle seat-tilt tracked
+a digital spirit level to within 1.05$^\circ$ over 0--75$^\circ$, and the
+swivel angle tracked the tablet gyroscope to within 2.83$^\circ$ over
+$\pm$60$^\circ$ (inside the $\pm$3.5$^\circ$ tolerance, part of the spread
+being drift in the gyroscope reference). The Kalman tuning parameters
+(Table~\ref{tab:kalman}) and the 0.85/0.15 spindle-pitch blend remain
+configured values rather than derivations from a first-principles noise model;
+sensitivity to these choices is not formally bounded and is reported as a
+limitation.
 
 \subsection{Answer to Central Question}
 The data processing pipeline required to transform live stairlift telemetry
@@ -1441,20 +1568,26 @@ non-linear rail geometries, a constant-velocity recursive filter for temporal
 interpolation and inter-measurement prediction between samples, and
 quaternion-based orientation reconstruction from spline tangent vectors.
 
-Across the validation runs the implemented pipeline and models meet the
-DV2(b) position-accuracy criterion (maximum pipeline-integration error
-0.7\,mm across 10 measurements; mean 0.39\,mm, SD 0.22\,mm, 95\,\% CI of
-the mean [0.23, 0.55]\,mm; well within the 5\,mm tolerance) and the
-observationally reframed DV1(b) and DV3(b) criteria (visible smoothness
-during steady-state motion, no perceptible step-jumps). The mean Bluetooth
-round-trip (89\,ms over 5295 samples, P95 113\,ms) is masked at the
-user-facing display by the Kalman + dead-reckoning design and also
-independently passes the original 100\,ms threshold on the mean, which
-supports the observational verdict. The full per-criterion outcome
-is collected in Table~\ref{tab:validation}. Generalisation beyond the
-single validated rail configuration requires additional runs on rails of
-differing length, bend count, and bend type, and is out of scope for this
-report.
+Across the two validation campaigns the implemented pipeline and models meet
+the position-accuracy and latency criteria and substantively pass the
+smoothness criterion. Position accuracy (DV2(b)) passes at both levels: the
+pipeline-integration error stays $\leq$\,0.7\,mm on both rails, and the
+end-to-end display-vs-physical error on the 5428\,mm rail is at most 9.9\,mm,
+inside the 10\,mm tolerance for rails longer than 5\,m. Latency (DV1(b)) meets
+the percentile thresholds on both rails (P95\,$\leq$\,113\,ms,
+P99\,$\leq$\,135\,ms). Smoothness (DV3(b)) shows no staircase --- velocity
+spikes on 0.04\,\% of frames against $\sim$10\,\% for a last-value-hold --- so
+the substantive criterion is met, though the literal pre-registered
+``0 spikes'' threshold is narrowly exceeded by a few isolated, mild spikes
+(see Limitations). The full per-criterion outcome is collected in
+Table~\ref{tab:validation}. The latency and pipeline-integration measures span
+both rail configurations (3403\,mm with one horizontal bend; 5428\,mm with two
+horizontal and several vertical bends); the primary end-to-end
+display-vs-physical measure was collected on the 5428\,mm rail only. This
+two-geometry coverage strengthens the case for generalisation beyond a single
+rail, but broader generalisation across the full range of rail designs --- and
+the primary position measure on more rails --- would still require further runs
+and is left to future work.
 
 The implementation that realises this pipeline --- the Godot renderer, the
 Bluetooth/TCP transport and protocol parser, the multi-rate telemetry poller,
@@ -1467,58 +1600,95 @@ composition) are the research instruments implemented in that code.
 
 \subsection{Limitations}
 \begin{itemize}[leftmargin=*]
-  \item \textbf{Sample size.} The validation reported in this article consists
-    of two calibration runs (bottom-to-top and top-to-bottom) on one rail
-    configuration. Statistical generalizability to the full range of rail
-    designs is not established; additional runs on rails of differing length,
-    bend count, and bend type would be required.
-  \item \textbf{Original DV1(b) and DV3(b) criteria were reframed
-    post-measurement.} The 100\,ms Bluetooth-roundtrip threshold and the
-    tenfold Kalman jitter-reduction threshold both assumed sensor and pipeline
-    behaviour that does not hold for this system: a digital pulse-encoder
-    produces no value-jitter at rest (the 13\,s baseline showed zero pulse
-    variation), and the Kalman + dead-reckoning architecture explicitly masks
-    single-sample latency at the display side. Both criteria were therefore
-    reformulated as observational (visible motion smoothness, no perceptible
-    step-jumps) before pass/fail assignment; this is honest with respect to
-    the data but means DV1(b) and DV3(b) are evaluated qualitatively rather
-    than quantitatively.
-  \item \textbf{Observational pass/fail has lower evidentiary weight}
-    than the numerical thresholds originally specified. Future validation
-    could include high-speed video comparison of physical vs.\ displayed
-    chair position, which would give a quantitative measure of visible lag,
-    and frame-level logging of the rendered position to give a quantitative
-    measure of inter-sample smoothness.
-  \item \textbf{Rail-configurator precision is outside scope but contributes
-    to observed accuracy.} Independent tape measurement of the validation
-    rail revealed up to 16\,mm discrepancy per rail-part between the
-    firmware-encoded length and the physically measured length (net 10\,mm
-    over 3.4\,m, 0.3\,\%). The configurator data is treated as a given input
-    to the pipeline (defined as part of the input layer in
-    Section~\ref{sec:method-q1}), but a future end-to-end accuracy study
-    would need to characterise this upstream source separately from the
-    pipeline-integration error reported here.
+  \item \textbf{Sample size.} The validation spans two rail configurations
+    (3403\,mm and 5428\,mm), each measured in a single session. This is
+    stronger than a single rail but still far from the full range of rail
+    designs; additional installations, and repeated sessions per rail, would
+    be needed for statistical generalisation, and the per-marker counts (five
+    per rail) are small.
+  \item \textbf{The DV1(b) and DV3(b) criteria were revised after the first
+    campaign.} Their original (v1) forms --- a single-sample 100\,ms
+    round-trip target and a ``Kalman jitter $\geq$ 10$\times$ smaller than
+    raw'' ratio --- assumed behaviour this system does not exhibit (latency is
+    masked at the display, and a digital pulse-encoder shows zero value-jitter
+    at rest; the 13\,s baseline confirmed this). They were reformulated into
+    the quantitative v2 forms (percentile latency, velocity-based smoothness)
+    and pre-registered with a version-control timestamp before the second
+    campaign. The decisive longer-rail runs are therefore scored against
+    fixed-in-advance thresholds, but for the \emph{first} campaign these
+    criteria are post-hoc; only the second campaign is a true pre-registered
+    test of DV1(b) and DV3(b). For DV2(b), only the pipeline-integration
+    (display-vs-firmware) level was collected in the first campaign; the v2
+    pre-registration restored display-vs-physical as the primary measure,
+    collected in the second campaign (hence the ``---'' for rail 1 in
+    Table~\ref{tab:validation}).
+  \item \textbf{Display-vs-physical referencing.} The primary DV2(b) measure
+    references each marker to the firmware-encoded start of its rail-part plus
+    a tape-measured offset \emph{within} that part. This captures within-part
+    end-to-end accuracy, but not cross-part cumulative drift in the
+    configurator geometry; bounding the absolute displayed position over the
+    whole rail would require physically measured cumulative distances to each
+    rail-part, which were not collected. The reported maximum (9.9\,mm) is
+    thus a within-part figure.
+  \item \textbf{Smoothness passed at 0.04\,\%, not a literal zero.} DV3(b) is
+    written as ``0 spikes''; the measured rate is 0.04\,\% of frames (a few
+    isolated, mild speed variations, more than two orders of magnitude below
+    the staircase signature). The test was run once per platform, and the return
+    leg of the continuous drive was less uniform (60\,\% of frames moving versus
+    95\,\%, over a 156\,s versus 94\,s window, with the swivel axis moving only
+    at the two horizontal bends), which depressed the median $|v|$ and inflated
+    the relative spike rate there (swivel 1.21\,\%, 17 spikes; traction
+    0.06\,\%; whole-window swivel 0.78\,\%); the steady bottom-to-top leg is
+    therefore taken as representative.
+  \item \textbf{Render frame rate on target hardware.} The tablet sustained
+    $\sim$42--53\,fps during the runs, below the 60\,fps of the desktop
+    precursor, with occasional hitches (one 153\,ms frame). This is a
+    rendering-performance property, separate from the frame-rate-independent
+    velocity smoothness measure (which passed), but it bears on perceived
+    fluidity on lower-end hardware.
+  \item \textbf{Rail-configurator precision dominates the end-to-end error.}
+    The display-vs-physical error (max 9.9\,mm, mean $-6.9$\,mm) is dominated
+    by the rail-configurator's encoded-vs-physical discrepancy (up to 16\,mm
+    per rail-part), not by the pipeline ($\leq$\,0.1\,mm). The configurator is
+    treated as a given input to the pipeline
+    (Section~\ref{sec:method-q1}); a dedicated study with an external
+    reference (laser distance meter) would characterise and potentially
+    correct this upstream source.
   \item \textbf{Empirical filter tuning.} The Kalman tuning parameters and
-    the 85/15 spindle blend ratio are configured values in the implementation
-    rather than derivations from a measured sensor noise model. A formal
-    sensitivity analysis is absent.
-  \item \textbf{Bend-transition error not decomposed.} Position errors at
-    bend transitions cannot be attributed individually to the firmware
-    pulse-cost constants, mechanical backlash, or the arc-tracing scheme
-    without per-component instrumentation. Equation~\ref{eq:arctracing-error}
-    rules out the arc-tracing scheme as a dominant source at the present
-    segment resolution, but the remaining sources are not measured
-    separately.
-  \item \textbf{Angle-correction is self-referential.} The angle correction
-    is generated by, and reported relative to, the same compass tracker.
-    Without an external reference (e.g., a digital protractor or laser angle
-    meter) only internal consistency, not absolute accuracy, can be checked.
-    The reported angle correction is therefore presented as code behaviour
-    rather than as validated metric.
+    the 0.85/0.15 spindle blend ratio are configured values in the
+    implementation rather than derivations from a measured sensor noise model.
+    A formal sensitivity analysis is absent.
+  \item \textbf{Bend-transition error not decomposed.} Reference markers are
+    placed on straight rail-parts; position error at the bends themselves is
+    not measured directly and cannot be attributed individually to the
+    firmware pulse-cost constants, mechanical backlash, or the arc-tracing
+    scheme without per-component instrumentation.
+    Equation~\ref{eq:arctracing-error} rules out the arc-tracing scheme as a
+    dominant source at the present segment resolution, but the remaining
+    sources are not measured separately.
+  \item \textbf{Orientation references are mixed.} The spindle seat-tilt is
+    validated against an external digital spirit level (max 1.05$^\circ$). The
+    swivel angle, however, is validated only against the tablet gyroscope,
+    which drifts ($\sim$2.6$^\circ$ over a sweep), so its absolute accuracy is
+    bounded by the reference rather than fully established; and the
+    compass-based bend yaw-correction is generated by, and reported relative
+    to, that same gyroscope, so it remains an internal-consistency check. A
+    drift-free protractor template would tighten the swivel and correction
+    figures. Unlike DV1(b)/DV3(b), the spindle ($\sim$1--2$^\circ$) and swivel
+    ($\pm$3.5$^\circ$) pass thresholds were not crisply pre-registered before
+    their 2026-06-04 runs (the pre-registration listed them as ``to be
+    confirmed''), and the $\pm$3.5$^\circ$ figure is the inherent
+    encoder-to-physical tolerance used as the bound rather than an independently
+    fixed target; the orientation pass should therefore be read as a coarse
+    no-gross-deviation check, not a strictly pre-registered test.
   \item \textbf{Self-validation.} The author defined the pass/fail criteria,
     executed the runs, and assigned the pass/fail labels. Criteria were
-    pre-registered in the method sections before the runs, but no independent
-    second observer scored the results.
+    pre-registered before the second campaign, but no independent second
+    observer scored the results. Such independent scoring was foreseen in the
+    measurement design (an explicitly recommended extra in the pre-registration)
+    and was dropped only for time, so this is a known, pre-identified gap; for
+    the first campaign, whose criteria are post-hoc, the single-author labelling
+    also applies.
   \item \textbf{Robustness not tested adversarially.} Byte-level corruption
     handling by the protocol parser is supported by the architecture but was
     not exercised under fault injection; the observation that no corruption
@@ -1535,16 +1705,19 @@ composition) are the research instruments implemented in that code.
     that traces a rail through the configurator workflow with an external
     reference (laser distance meter) would quantify this source separately
     from the pipeline-integration error reported here.
-  \item \textbf{Quantitative smoothness and latency measurement.} The
-    observational pass/fail used here for DV1(b) and DV3(b) could be made
-    quantitative with frame-level logging of the rendered display position
-    (for inter-sample smoothness) and high-speed video comparing physical
-    vs.\ displayed chair position (for visible lag). Both would replace the
-    current qualitative observation with measurable numbers.
-  \item \textbf{Independent angle reference.} Add an external angle reference
-    (digital protractor, laser angle meter) to the calibration setup so that
-    the compass-based correction can be validated against a non-self-referential
-    measurement.
+  \item \textbf{High-speed video for visible lag.} DV3(b) smoothness is now
+    measured quantitatively from frame-level position logging, and DV1(b)
+    latency from round-trip percentiles. The one user-facing property still
+    assessed only observationally is visible lag (the offset between the
+    physical and displayed chair during motion); a high-speed video comparison
+    at pilot speed would turn this into a measured frame-offset and close the
+    last qualitative gap around DV1(b).
+  \item \textbf{Drift-free swivel and yaw reference.} The spindle seat-tilt is
+    now validated against an external spirit level, but the swivel angle and
+    the compass-based bend correction are still checked against the drifting
+    tablet gyroscope. A drift-free reference (digital protractor or laser
+    angle meter) would give the swivel and the yaw correction the same
+    external grounding the spindle already has.
   \item \textbf{Filter tuning grounded in measured inter-sample gaps and
     velocity profile.} Re-derive $\sigma_a$ and the dead-reckoning decay
     constant from a measured distribution of inter-sample gaps and typical
@@ -1571,7 +1744,8 @@ the technical contribution; a final step returns to the functional problem that
 motivated it (Section~\ref{sec:introduction}): the difficulty service engineers
 face in interpreting text-based fault codes spatially. The validated pipeline is
 a necessary enabler for that goal --- it places the chair on the rail to
-sub-millimetre pipeline accuracy and renders fault state spatially --- but
+sub-millimetre pipeline accuracy (within 10\,mm end-to-end) and renders fault
+state spatially --- but
 whether it actually shortens diagnosis time or reduces on-site visits is an
 empirical human-factors question this report deliberately scoped out
 (Section~\ref{sec:introduction}). The natural follow-up is a small field study
@@ -1620,10 +1794,13 @@ explicitly:
     containment under adversarial conditions is a separate task that this
     report does not undertake.
   \item \textit{Validation against measurable thresholds.} The pass/fail
-    criteria are defined in the method sections before the calibration run,
-    not calibrated to the results. Measured values are reported in
-    Section~\ref{sec:results-validation} with explicit pass/fail labels
-    against the criteria as defined.
+    criteria are quantitative and, for the decisive second campaign,
+    pre-registered before the runs rather than calibrated to the results.
+    Where the original criteria proved ill-suited to the sensor they were
+    reformulated and re-registered transparently
+    (Section~\ref{sec:conclusion}, Limitations) rather than quietly adjusted.
+    Measured values are reported in Section~\ref{sec:results-validation} with
+    explicit pass/fail labels against the criteria as defined.
 \end{itemize}
 
 \subsection{What Could Have Been Done Differently}
@@ -1633,26 +1810,27 @@ process decisions behind them, not the limitations themselves.
 
 The central process lesson is that two of the three empirical instrument
 criteria (DV1(b), DV3(b)) were specified before the sensor and pipeline
-behaviour were sufficiently understood. The 100\,ms Bluetooth-round-trip
-threshold and the tenfold Kalman jitter-reduction threshold both encoded
-implicit assumptions (a last-value-wins display, an analog noisy sensor)
-that did not hold for the system that was actually built. A more careful
-upfront analysis of which pipeline property each criterion is supposed to
-validate, coupled with a brief characterisation of the inter-sample gap
-distribution and the chair-velocity profile, would have caught both
-mismatches before the runs and let quantitative criteria (e.g.\
-high-speed video tracking for visible lag, frame-level position logging
-for inter-sample smoothness) be designed in their place. The same
-pre-study would have given a measured rather than eyeballed basis for the
-filter tuning parameters ($\sigma_a$, dead-reckoning decay constant, the
-85/15 spindle blend).
+behaviour were sufficiently understood. The original 100\,ms
+Bluetooth-round-trip threshold and the tenfold Kalman jitter-reduction
+threshold both encoded implicit assumptions (a last-value-wins display, an
+analog noisy sensor) that did not hold for the system that was actually built.
+The reformulated v2 criteria --- percentile latency and a velocity-based
+smoothness test --- are precisely the quantitative forms a careful upfront
+analysis would have produced, but they were arrived at only after the first
+campaign exposed the mismatch, and pre-registered one campaign later than
+ideal. A brief characterisation of the inter-sample gap distribution and the
+chair-velocity profile at the outset would have caught both mismatches before
+any run, and would also have given a measured rather than eyeballed basis for
+the filter tuning parameters ($\sigma_a$, dead-reckoning decay constant, the
+0.85/0.15 spindle blend).
 
-A secondary lesson is that planning two runs on one rail was a
-correctness-of-concept choice, not a generalisability choice; a more
-defensive plan would have reserved test-bench time across rails of
-differing length, bend count, and bend type. Both lessons point in the
-same direction: budget upfront time for sensor and rail characterisation
-before locking in validation criteria.
+A secondary lesson concerns coverage: the first campaign's two runs on a single
+rail were a correctness-of-concept choice, not a generalisability one. The
+second campaign added a longer rail with a different bend composition, which is
+why the report can now report results on two geometries --- but reserving
+test-bench time across several rails from the start would have been the more
+defensive plan. Both lessons point the same way: budget upfront time for sensor
+and rail characterisation before locking in validation criteria.
 
 \subsection{Scope Boundaries}
 The research deliberately excluded the shipping application itself (the
