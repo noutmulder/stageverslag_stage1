@@ -944,18 +944,23 @@ per millimeter than straight sections, the conversion must account for the shape
 of every preceding segment. This section derives that conversion step by step.
 
 \subsubsection{Rail Geometry Construction}
-The lift controller stores the rail as a sequence of typed blocks: straight
-sections, vertical bends (up/down), and horizontal bends (left/right), each
-measured via incremental encoders~\cite{bolton2019mechatronics}. Each block
-specifies a type and an amount. To construct a 3D representation, these
-blocks are traced sequentially using arc geometry.
-Figure~\ref{fig:rail-segments} shows the three segment types and their
-arc-tracing geometry.
+Physically, the rail is assembled from only two part types: straight sections
+and a single bend piece. That same bend piece is installed in one of four
+orientations, so from a straight section the rail can turn upward, downward,
+left or right using identical hardware. The lift controller stores the rail
+as a sequence of typed blocks, each specifying a type, an orientation and
+an amount, measured via incremental encoders~\cite{bolton2019mechatronics}.
+For the arc-tracing geometry the four bend orientations reduce to two cases:
+vertical bends (up/down) change the pitch, and horizontal bends (left/right)
+change the yaw. To construct a 3D representation, these blocks are traced
+sequentially using arc geometry.
+Figure~\ref{fig:rail-segments} shows the straight section and the bend piece,
+together with the pitch/yaw orientations and their arc-tracing geometry.
 
 \begin{figure}[H]
 \centering
-\fbox{\parbox{0.85\columnwidth}{\centering\vspace{2cm}\textit{PLACEHOLDER: rail\_segment\_types.png}\vspace{2cm}}}
-\caption{The three rail segment types: straight (left), vertical bend (center), and horizontal bend (right), with their respective arc-tracing geometry and encoder pulse costs.}
+\includegraphics[width=0.85\columnwidth]{images/raildelen.png}
+\caption{The two physical rail part types: a straight section (left) and a single bend piece (right). The same bend piece is installed in four orientations (up/down/left/right), reducing for arc-tracing to a pitch change (vertical bend) or a yaw change (horizontal bend). Because the traction wheel follows a fixed side of the rail, the inner- versus outer-radius arc length, and thus the encoder pulse cost, differs per orientation.}
 \label{fig:rail-segments}
 \end{figure}
 
@@ -1002,8 +1007,9 @@ which is geometric rather than
 arithmetic~\cite{shoemake1985quaternion,diebel2006attitude}.
 
 \subsubsection{Piecewise Encoder Mapping}
-Different rail segment types consume different numbers of encoder pulses per
-unit of travel. The firmware defines the following constants:
+The straight section and the three bend orientations consume different numbers
+of encoder pulses per unit of travel. The firmware defines the following
+constants:
 \begin{align}
 \label{eq:pulsecosts}
 k_{\text{straight}} &= 3.361352398 \text{\,pulses/mm} \nonumber\\
@@ -1012,6 +1018,14 @@ k_{\text{down}} &= 50.45333 \text{\,pulses/segment} \\
 k_{\text{horiz}} &= 44.0 \text{\,pulses/segment} \nonumber\\
 E_{\text{start}} &= 100 \text{\,pulses (initial offset)} \nonumber
 \end{align}
+
+The three bend constants differ even though the bend piece is physically
+identical: the traction wheel runs along a fixed side of the rail rather than
+its centerline, so for the same $5^\circ$ arc it traverses the shorter inner
+radius or the longer outer radius depending on the bend's orientation. An
+upward bend places the wheel on the inner (shorter) arc and a downward bend on
+the outer (longer) arc, with the horizontal case in between, hence
+$k_{\text{up}} < k_{\text{horiz}} < k_{\text{down}}$.
 
 A piecewise linear mapping is constructed by computing, at each segment
 boundary, both the cumulative encoder value and the cumulative 3D Euclidean
@@ -1293,8 +1307,20 @@ $v[i]=(p[i{+}1]-p[i])/\Delta t[i]$ is analysed for spikes exceeding
 
 \begin{figure}[H]
 \centering
-\fbox{\parbox{0.85\columnwidth}{\centering\vspace{2cm}\textit{PLACEHOLDER: calibration\_run.png}\vspace{2cm}}}
-\caption{The calibration run in progress: the ghost chair tracks the physical lift position while compass-based angle corrections are applied at horizontal bends.}
+\begin{subfigure}{\columnwidth}
+\centering
+\includegraphics[width=0.92\columnwidth]{images/cal_run_screenshot.png}
+\caption{The 3D visualisation during the run: the ghost chair tracks the lift along the rail.}
+\label{fig:calibration-run-view}
+\end{subfigure}
+\\[4pt]
+\begin{subfigure}{\columnwidth}
+\centering
+\includegraphics[width=0.5\columnwidth]{images/cal_run_zoom.png}
+\caption{The calibration-run panel exposing the live telemetry polled each tick.}
+\label{fig:calibration-run-panel}
+\end{subfigure}
+\caption{A calibration run. (a) The ghost chair tracks the physical lift position along the 3D rail. (b) The control panel exposes the live telemetry polled each tick (traction-encoder count, spindle angle) together with the gyroscope-integrated compass heading used to compute the angle correction at horizontal bends (Equation~\ref{eq:anglecorrection}).}
 \label{fig:calibration-run}
 \end{figure}
 
