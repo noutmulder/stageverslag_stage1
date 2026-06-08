@@ -1,0 +1,99 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1.4cm]{geometry}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{titlesec}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+\titlespacing*{\section}{0pt}{8pt}{3pt}
+\titleformat{\section}{\large\bfseries}{}{0em}{}
+
+\newcommand{\fld}[1]{\underline{\hspace{#1}}}
+\newcommand{\degr}{\textsuperscript{$\circ$}}
+
+\begin{document}
+
+\begin{center}
+{\Large\bfseries Meetblad — tractie-run op nieuwe rail (T-TRAC)}\\[2pt]
+{\small Vul dit per traplift in. Knoppen: [Spatie]=MARK \quad [F]=frame-log aan/uit \quad [B]=baseline}
+\end{center}
+\vspace{2pt}\hrule\vspace{4pt}
+
+\textbf{Datum:} \fld{2.2cm} \quad \textbf{Lift-ID:} \fld{2.4cm} \quad \textbf{Rail-ID:} \fld{2.4cm} \\[5pt]
+\textbf{Logfile:} \fld{5cm}
+
+\section{Rail-overzicht}
+\begin{tabular}{@{}ll@{\hspace{1.5cm}}ll@{}}
+Totale raillengte (firmware): & \fld{3cm} mm & Aantal raildelen: & \fld{2cm} \\[6pt]
+Totale raillengte (fysiek gemeten): & \fld{3cm} mm & Aantal bochten: & \fld{2cm} \\[6pt]
+\multicolumn{4}{@{}l}{Bochten — V-op: \fld{1.2cm}\, V-neer: \fld{1.2cm}\, H-links: \fld{1.2cm}\, H-rechts: \fld{1.2cm}} \\
+\end{tabular}
+
+\section{Raildelen}
+{\footnotesize Type: \textbf{recht} (lengte in mm) \;|\; \textbf{V-op}/\textbf{V-neer} (verticale bocht, aantal segmenten $\times\,5^\circ$) \;|\; \textbf{H-links}/\textbf{H-rechts} (horizontale bocht).}
+
+\renewcommand{\arraystretch}{1.9}
+\begin{tabular}{|c|p{3.0cm}|p{3.6cm}|p{2.6cm}|p{4.2cm}|}
+\hline
+\textbf{\#} & \textbf{Type} & \textbf{Firmware-waarde\newline (mm of \#segm.)} & \textbf{Fysiek gemeten (mm)} & \textbf{Opmerking} \\
+\hline
+1 & & & & \\ \hline
+2 & & & & \\ \hline
+3 & & & & \\ \hline
+4 & & & & \\ \hline
+5 & & & & \\ \hline
+6 & & & & \\ \hline
+7 & & & & \\ \hline
+8 & & & & \\ \hline
+9 & & & & \\ \hline
+10 & & & & \\ \hline
+11 & & & & \\ \hline
+12 & & & & \\ \hline
+13 & & & & \\ \hline
+14 & & & & \\ \hline
+\end{tabular}
+
+\newpage
+
+\section{Markers (referentiepunten)}
+{\footnotesize Per marker: het raildeel waarop hij zit, de offset binnen dat deel, en de cumulatieve afstand vanaf het onderstation (\textbf{d\_phys}). \textbf{Meet naar een dun streepje, niet de tape-rand.} MP-nummers lopen door (MP1, MP2, \ldots) — noteer welk MP-nummer bij welke marker hoort.}
+
+\renewcommand{\arraystretch}{1.9}
+\begin{tabular}{|c|c|p{2.6cm}|p{2.8cm}|p{2.2cm}|p{4.0cm}|}
+\hline
+\textbf{MP\#} & \textbf{Raildeel} & \textbf{Offset in deel (mm)} & \textbf{d\_phys cumulatief (mm)} & \textbf{Richting (op/neer)} & \textbf{Opmerking} \\
+\hline
+ & & & & & \\ \hline
+ & & & & & \\ \hline
+ & & & & & \\ \hline
+ & & & & & \\ \hline
+ & & & & & \\ \hline
+ & & & & & \\ \hline
+ & & & & & \\ \hline
+ & & & & & \\ \hline
+ & & & & & \\ \hline
+ & & & & & \\ \hline
+ & & & & & \\ \hline
+ & & & & & \\ \hline
+\end{tabular}
+
+\section{Test-volgorde (kort)}
+\begin{enumerate}[leftmargin=1.5em,itemsep=2pt,topsep=2pt]
+\item Verbind app $\rightarrow$ lift, \textbf{laad de rail}. Druk \textbf{Nieuw logfile}; noteer logfile-naam hierboven.
+\item \textbf{Baseline:} chair stil, [B] $\rightarrow$ $\geq$15\,s $\rightarrow$ [B].
+\item \textbf{Frame-log [F] AAN} (voor DV3-smoothness op deze rail).
+\item \textbf{B$\rightarrow$T:} rij in jog, stop bij elke marker, uitsettelen, dun streepje exact onder de pointer $\rightarrow$ [Spatie] (MARK). Noteer MP\# $\leftrightarrow$ marker.
+\item \textbf{T$\rightarrow$B:} idem terug langs dezelfde markers.
+\item \textbf{Frame-log [F] UIT.} Druk [S] (summary).
+\item Achteraf: \texttt{adb pull} de log $\rightarrow$ analyse-script.
+\end{enumerate}
+
+{\footnotesize \textbf{Let op:} rail $>5$\,m $\Rightarrow$ accuratesse-drempel \textbf{10\,mm} (anders 5\,mm). \quad Gebruik een \textbf{dun streepje} als marker-referentie, niet de brede tape ($\sim$15\,mm onzekerheid).}
+
+\end{document}
