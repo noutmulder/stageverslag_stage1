@@ -97,31 +97,32 @@
 \begin{minipage}{0.9\textwidth}
 \small
 \textbf{Abstract.}
-This research addresses the challenge of transforming raw stairlift telemetry
+This research addresses the challenge of turning raw stairlift telemetry
 into a stable, accurate live 3D visualization for fault diagnosis. The core
-technical problem is the mapping of digital pulse-encoder readings, polled
-over a high-latency Bluetooth link, onto a curved 3D rail geometry with
-segment-dependent encoder-to-distance ratios, while keeping the rendered
-motion smooth on the display loop. A ``virtual ghost'' prototype was developed
+technical problem is twofold. Pulse-encoder readings, polled over a
+high-latency Bluetooth link, must be mapped onto a curved 3D rail whose
+encoder-to-distance ratio varies from segment to segment. At the same time,
+the rendered motion must stay smooth on the display loop. A ``virtual ghost'' prototype was developed
 iteratively and validated on physical stairlift hardware across two rail
 configurations (3403\,mm and 5428\,mm) against pre-registered quantitative
-criteria. Position accuracy was evaluated at two levels: the
+criteria. Position accuracy was evaluated at two levels. The
 pipeline-integration error (display vs.\ firmware-encoded position from the
-same encoder reading) stayed within 0.7\,mm on both rails, while the end-to-end
-display-vs-physical error on the 5428\,mm rail reached at most 9.9\,mm
-(inside the 10\,mm tolerance for rails longer than 5\,m), with the gap
-between the two measures most plausibly attributable to the upstream
-rail-configurator rather than to the pipeline. Bluetooth round-trip latency met the
-pre-registered percentile thresholds on both rails (P95\,$\leq$\,113\,ms,
-P99\,$\leq$\,135\,ms; thresholds 150/250\,ms), and a dedicated continuous-drive
-log showed no rendering staircase (velocity spikes on 0.04\,\% of frames on
-the steady bottom-to-top leg, more than two orders of magnitude below the
-last-value-hold signature the criterion is designed to detect). The results
-show that a processing pipeline combining
-non-linear encoder mapping, recursive state estimation with dead-reckoning,
-and smooth tangent-based orientation reconstruction produces a stable,
-accurate live 3D representation of stairlift position, with fault state
-rendered directly from the parsed status bits.
+same encoder reading) stayed within 0.7\,mm on both rails. The end-to-end
+display-vs-physical error on the 5428\,mm rail reached at most 9.9\,mm,
+inside the 10\,mm tolerance for rails longer than 5\,m. The gap between the
+two measures is most plausibly due to the upstream rail-configurator rather
+than to the pipeline. Bluetooth round-trip latency met the
+pre-registered percentile thresholds on both rails (95th-percentile round-trip
+$\leq$\,113\,ms, 99th-percentile $\leq$\,135\,ms; thresholds 150/250\,ms), and a
+dedicated continuous-drive log showed no rendering staircase (the stepped
+motion that appears when each sample is held until the next arrives): velocity
+spikes occurred on only 0.04\,\% of frames on the steady bottom-to-top leg,
+more than two orders of magnitude below that staircase signature. The results
+show that one processing pipeline produces a stable, accurate live 3D
+representation of stairlift position: it combines non-linear encoder mapping,
+recursive state estimation with dead-reckoning (predicting position between
+samples), and smooth tangent-based orientation reconstruction. Fault state is rendered directly from the parsed
+status bits.
 \end{minipage}
 \end{center}
 \vspace{0.3cm}
@@ -171,12 +172,12 @@ configurations. Whether this spatial view in turn shortens diagnosis time or
 reduces on-site visits is the functional motivation for the work, examined as a
 human-factors question outside the present scope.
 
-The goal of this research is to determine which data processing and mathematical
-models are needed to transform live stairlift telemetry into a stable and
-accurate 3D visualization. Whether such a visualization ultimately accelerates
+The goal of this research is to determine which data-processing steps and
+mathematical models are needed to turn live stairlift telemetry into a stable,
+accurate 3D visualization. Whether such a visualization ultimately speeds up
 fault diagnosis compared to text-based error codes is a practical motivation
-for the work, but lies outside the scope of this report; the central research
-question is therefore restricted to what can be deductively established:
+for the work, but it lies outside the scope of this report. The central research
+question is therefore limited to what can be established deductively:
 
 \textit{What data processing pipeline and mathematical models are required to
 transform live stairlift telemetry into a stable, accurate 3D visualization?}
@@ -257,9 +258,9 @@ positions at a rate well below the display refresh, so the gap-filling
 problem (not noise rejection) is the dominant artifact source for this
 visualization.
 
-This frames the technical requirement precisely: the visualization needs a
+This pins down the technical requirement. The visualization needs a
 continuous position-and-velocity estimate that can be advanced at display
-frame rate from samples arriving several times less often, and that can
+frame rate, even though samples arrive several times less often, and that can
 bridge the interval when a sample is late or missing. The required property
 is therefore gap-filling and velocity estimation between samples, not noise
 rejection on the individual sample. Which class of estimator satisfies this
@@ -369,11 +370,11 @@ state estimation and prediction in a single framework, which makes it a
 natural fit when measurements arrive at a lower rate than the required
 output. The cost is higher computational complexity and the need to tune
 process and measurement noise parameters. For the stairlift application,
-the Kalman filter is selected because it is the only approach of the three
-that can both estimate a continuous velocity from the discrete pulse-counter
-stream and predict position between measurements, both of which are
-required to feed a 60\,fps display from a per-channel sensor stream that
-arrives several times more slowly than the display refresh, without visible
+the Kalman filter is selected because it is the only one of the three that can
+do both things at once: estimate a continuous velocity from the discrete
+pulse-counter stream, and predict position between measurements. Both are
+needed to feed a 60\,fps display from a per-channel sensor stream that arrives
+several times more slowly than the display refresh, without visible
 staircase-like jumps at the sample rate.
 
 \subsubsection{Spline Interpolation for Smooth Trajectories}
@@ -454,13 +455,13 @@ telemetry from a controller mounted on the moving chair to an off-board
 visualization host, which rules out a tethered link from the outset: a wired
 serial (UART/RS-232) or Ethernet connection would have to be dragged along the
 travelling carriage. A wireless link is therefore a hard requirement. The
-transport is, however, not a free design variable in this project but a property
-inherited from the deployed hardware: the lift controller carries an HC-series
-Bluetooth-to-serial module and has historically communicated with companion
-applications over that same Bluetooth-serial link. The pipeline consequently
+transport, however, is not a free design choice here; it is inherited from
+the deployed hardware. The lift controller carries an HC-series
+Bluetooth-to-serial module and has always communicated with companion
+applications over that Bluetooth-serial link. The pipeline therefore
 takes Bluetooth Classic with the Serial Port
-Profile~\cite{bluetoothsig2022spp} as a given input rather than selecting it
-against alternatives such as Wi-Fi, which would require an IP stack and network
+Profile~\cite{bluetoothsig2022spp} as a given, rather than choosing it
+over alternatives such as Wi-Fi, which would need an IP stack and network
 association the controller does not provide. A TCP transport is implemented
 behind the same interface, but only as a development and test-bench substitute
 when no physical lift is connected. The round-trip latency this inherited link
@@ -476,10 +477,10 @@ requirement rather than a weighted preference: (C1) configurability for custom
 shaders, (C2) cross-platform export to desktop and Android~12+ from a single
 source tree, (C3) a licence compatible with closed-source commercial
 deployment, and (C4) native glTF binary import to match DeVi Comfort's CAD
-pipeline~\cite{khronos2021gltf}. Because these are constraints to be satisfied
-rather than trade-offs to be balanced, the selection is a feasibility screen
-(does an engine meet every constraint?) rather than a weighted multi-criteria
-trade-off; a partial match on a mandatory constraint counts as a failure.
+pipeline~\cite{khronos2021gltf}. Because these are constraints to satisfy
+rather than trade-offs to balance, the selection is a feasibility screen
+(does an engine meet every constraint?) and not a weighted multi-criteria
+comparison. A partial match on a mandatory constraint counts as a failure.
 Table~\ref{tab:engine-mca} screens four candidates against them.
 
 \begin{table}[H]
@@ -598,15 +599,15 @@ to the visualization.\\
 (a) every message ID in the firmware enumeration has been classified, with the
 subset relevant to the visualization pipeline explicitly identified with
 rationale and documented at byte-level for any message with a position, angle,
-or status bit field; and (b) the Bluetooth round-trip latency stays within the
-pre-registered percentile bounds (P95\,$<$\,150\,ms and P99\,$<$\,250\,ms) over
-each run, with the chair on screen additionally observed to track the physical
-chair during steady-state motion without perceptible lag (DV1(b),
-Section~\ref{sec:method-validation}). A percentile bound is used rather than a
-single-sample threshold because the pipeline explicitly masks per-sample
-latency at the display side (Section~\ref{sec:results-q3}); the percentile form
-bounds the inter-sample gaps the dead-reckoning must bridge, while the
-visible-lag observation is reported alongside it as the end-user property the
+or status bit field; and (b) on each run the Bluetooth round-trip latency keeps
+its 95th percentile (P95) below 150\,ms and its 99th percentile (P99) below
+250\,ms, with the chair on screen additionally observed to track the physical
+chair during steady-state motion without perceptible lag (criterion DV1(b); the
+DV1--DV3 validation criteria are defined in Section~\ref{sec:method-validation}). A percentile bound is used instead of a
+single-sample threshold because the pipeline deliberately masks per-sample
+latency at the display side (Section~\ref{sec:results-q3}). The percentile form
+bounds the inter-sample gaps that the dead-reckoning must bridge. The
+visible-lag observation is reported alongside it, as the end-user property the
 link criterion ultimately serves.
 
 \subsection{Encoder-to-Position Mapping (Formal Analysis)}
@@ -705,8 +706,8 @@ single-sample 100\,ms round-trip target that ignores the latency-masking
 effect of the state estimator, and a ``Kalman jitter $\geq$ 10$\times$ smaller
 than raw'' ratio that is undefined for a digital pulse-encoder showing zero
 value-jitter at rest. The criteria were therefore reformulated into
-quantitative, sensor-appropriate forms (a percentile latency bound
-and a velocity-based smoothness test) and \emph{pre-registered}, with a
+quantitative, sensor-appropriate forms: a percentile latency bound
+and a velocity-based smoothness test. These were \emph{pre-registered} with a
 recorded version-control timestamp, before the second measurement campaign,
 so that the decisive runs on the longer rail are scored against thresholds
 fixed in advance. This refinement and its effect on evidentiary weight are
@@ -812,10 +813,10 @@ input for the 3D visualization. They are polled in an alternating pattern to
 share the single serial Bluetooth link: the fast loop is scheduled to tick at
 $\sim$20\,Hz and alternates between traction and spindle requests on successive
 ticks, while the swivel coroutine polls on the same link at 50\,ms intervals.
-The achievable rate is bounded by the application-layer round-trip time, which
-was measured at mean 89\,ms over the validation runs
-(Section~\ref{sec:results-validation}): because each request and its response
-must complete before the next request is issued on the shared link, the
+The achievable rate is bounded by the application-layer round-trip time,
+measured at mean 89\,ms over the validation runs
+(Section~\ref{sec:results-validation}). Each request and its response
+must complete before the next request goes out on the shared link, so the
 \emph{aggregate} round-trip throughput is $\sim$10\,Hz (5295 round-trips over
 the 524\,s of driving), not the nominal 20\,Hz. That aggregate is divided over
 the traction, spindle, swivel and status channels, so the per-channel traction
@@ -925,7 +926,8 @@ computed from MSG\,168 as:
 The final stage of the pipeline is the 3D renderer, whose output is shown in
 Figure~\ref{fig:ghost-chair}. The renderer composes the chair model, a
 generated stair geometry, and rail annotations from the filtered telemetry; the
-detailed visual design of these elements is part of the beroepsproduct rather
+detailed visual design of these elements is part of the \emph{beroepsproduct}
+(the professional deliverable, in the HBO-TI sense) rather
 than a research outcome of this article.
 
 \begin{figure*}[t]
@@ -1511,20 +1513,20 @@ link does not need to carry the full telemetry stream. By targeting only
 these six messages with a multi-rate polling strategy, the pipeline keeps the
 position-relevant channels polled at the highest rate the shared serial link
 sustains (an aggregate $\sim$10\,Hz of round-trips,
-Section~\ref{sec:results-validation}); future
-extensions (e.g., vibration or temperature monitoring) would require
-evaluating whether the serial bandwidth can accommodate additional streams
+Section~\ref{sec:results-validation}). Future
+extensions (e.g., vibration or temperature monitoring) would first require
+checking whether the serial bandwidth can accommodate the extra streams
 without degrading position update rates. Over the two campaigns the Bluetooth
 round-trip latency met the pre-registered DV1(b) percentile thresholds on both
 rails: P95 was 113\,ms (rail 1) and 112\,ms (rail 2) against the 150\,ms
 bound, and P99 was 135\,ms and 134\,ms against the 250\,ms bound (means 89\,ms
 and 88\,ms; Table~\ref{tab:validation}, Figure~\ref{fig:rtt-hist}), so DV1(b)
-passes quantitatively. The visible end-user property was additionally observed
+passes quantitatively. The visible end-user property was also observed
 to hold (O3, qualitatively): the chair on screen tracks the physical chair
-without perceptible delay, consistent with the Kalman filter and dead-reckoning
-masking single-sample latency at the display side rather than passing it
-through; a quantitative video frame-offset measurement of this lag is left to
-future work (Section~\ref{sec:conclusion}, Recommendations). The five-layer architecture
+without perceptible delay. This is consistent with the Kalman filter and
+dead-reckoning masking single-sample latency at the display side rather than
+passing it through. A quantitative video frame-offset measurement of this lag
+is left to future work (Section~\ref{sec:conclusion}, Recommendations). The five-layer architecture
 itself isolates failure modes by design: byte-level errors are caught by the
 protocol parser's checksum, while higher-level issues (connection loss,
 timeout) are handled by the transport layer; across the continuous drives of
@@ -1548,11 +1550,11 @@ essentially exactly. Equation~\ref{eq:arctracing-error} bounds the per-segment
 arc-tracing error at $\approx 4.2\,\mu$m per segment, consistent with this
 sub-millimetre residual and with the finite precision of the firmware
 pulse-cost constants (Equation~\ref{eq:pulsecosts}). The remaining
-$\sim$7\,mm of the display-vs-physical error is therefore most plausibly
-attributable to the rail-configurator's encoded-vs-physical discrepancy,
-independently measured on rail 1 at up to 16\,mm per rail-part (net $+10$\,mm
-over the 3.4\,m rail, 0.3\,\%), rather than to the pipeline, since the
-display tracks the firmware geometry exactly; this is consistent with the
+$\sim$7\,mm of the display-vs-physical error is therefore most plausibly due
+to the rail-configurator's encoded-vs-physical discrepancy rather than to the
+pipeline, since the display tracks the firmware geometry exactly. This
+discrepancy was independently measured on rail 1 at up to 16\,mm per rail-part
+(net $+10$\,mm over the 3.4\,m rail, 0.3\,\%). It is consistent with the
 systematically negative rail-2 errors (mean $-6.9$\,mm: the displayed
 position reads short wherever the encoded rail-part is shorter than physical).
 A direct rail-2 quantification of this split was not made. This upstream source
@@ -1562,11 +1564,11 @@ is discussed further under Limitations.
 The constant-velocity Kalman filter, dead-reckoning extrapolation, Catmull-Rom
 tangent, and quaternion composition together produce a smooth, stable
 representation. The reformulated DV3(b) criterion is now evaluated
-quantitatively: on a dedicated continuous drive over the 5428\,mm rail,
+quantitatively. On a dedicated continuous drive over the 5428\,mm rail,
 velocity spikes exceeding 5$\times$ the median frame-to-frame $|v|$ occurred on
-0.04\,\% of frames (traction axis), more than two orders of magnitude below the
-$\sim$10\,\% spike rate a last-value-hold rendering would produce, so no
-staircase is present and DV3(b) is substantively met (the literal ``0 spikes''
+0.04\,\% of frames (traction axis). That is more than two orders of magnitude
+below the $\sim$10\,\% spike rate a last-value-hold rendering would produce, so
+no staircase is present and DV3(b) is substantively met (the literal ``0 spikes''
 threshold is narrowly exceeded; see Limitations). The 13\,s stationary baseline showed
 zero pulses of encoder variation (constant 16030), which is why the original
 jitter-ratio criterion was undefined for this digital pulse-counter and was
@@ -1705,7 +1707,7 @@ composition) are the research instruments implemented in that code.
     their 2026-06-04 runs (the pre-registration listed them as ``to be
     confirmed''), and the $\pm$3.5$^\circ$ figure is the inherent
     encoder-to-physical tolerance used as the bound rather than an independently
-    fixed target; the orientation pass should therefore be read as a coarse
+    fixed target. The orientation pass should therefore be read as a coarse
     no-gross-deviation check, not a strictly pre-registered test.
   \item \textbf{Self-validation.} The author defined the pass/fail criteria,
     executed the runs, and assigned the pass/fail labels. Criteria were
@@ -1853,15 +1855,15 @@ the filter tuning parameters ($\sigma_a$, dead-reckoning decay constant, the
 A secondary lesson concerns coverage: the first campaign's two runs on a single
 rail were a correctness-of-concept choice, not a generalisability one. The
 second campaign added a longer rail with a different bend composition, which is
-why the report can now report results on two geometries, but reserving
+why the report can now cover two geometries, but reserving
 test-bench time across several rails from the start would have been the more
 defensive plan. Both lessons point the same way: budget upfront time for sensor
 and rail characterisation before locking in validation criteria.
 
 \subsection{Scope Boundaries}
 The research deliberately excluded the shipping application itself (the
-\textit{beroepsproduct}, or professional deliverable in the HBO-TI sense)
-from the scope of the research questions. Source code is referenced where it
+\textit{beroepsproduct}, defined above) from the scope of the research
+questions. Source code is referenced where it
 implements a research instrument, but the application as a whole is a
 professional deliverable for the stakeholder, not a research product
 (\textit{onderzoeksproduct}). This separation was maintained throughout the
