@@ -34,7 +34,7 @@
 % --- percentile + threshold lines ---
 \draw[blue,thick] (4.816,0) -- (4.816,4.20); \node[blue,font=\scriptsize,rotate=90,anchor=south] at (4.656,2.31) {P95 112\,ms};
 \draw[red,thick] (6.285,0) -- (6.285,4.20); \node[red,font=\scriptsize,rotate=90,anchor=south] at (6.125,2.31) {P99 134\,ms};
-\draw[densely dashed] (7.333,0) -- (7.333,4.20); \node[font=\scriptsize,rotate=90,anchor=south] at (7.173,1.47) {limit 150\,ms};
+\draw[densely dashed] (7.333,0) -- (7.333,4.20); \node[font=\scriptsize,rotate=90,anchor=south] at (7.173,1.47) {limiet 150\,ms};
 % --- x ticks ---
 \draw (0.000,0) -- (0.000,-0.07); \node[below,font=\scriptsize] at (0.000,-0.07) {40};
 \draw (1.333,0) -- (1.333,-0.07); \node[below,font=\scriptsize] at (1.333,-0.07) {60};
@@ -50,10 +50,10 @@
 \draw (-0.07,2.034) -- (0,2.034); \node[left,font=\scriptsize] at (-0.07,2.034) {1000};
 \draw (-0.07,3.051) -- (0,3.051); \node[left,font=\scriptsize] at (-0.07,3.051) {1500};
 \draw (-0.07,4.068) -- (0,4.068); \node[left,font=\scriptsize] at (-0.07,4.068) {2000};
-\node[font=\small] at (4.00,-0.55) {Bluetooth round-trip time (ms)};
-\node[font=\small,rotate=90] at (-0.95,2.10) {Round-trips (count)};
+\node[font=\small] at (4.00,-0.55) {Bluetooth round-trip-tijd (ms)};
+\node[font=\small,rotate=90] at (-0.95,2.10) {Round-trips (aantal)};
 \end{tikzpicture}%
 }
-\caption{Distribution of Bluetooth round-trip times over campaign 2 (n=5872, 10\,ms bins). The pre-registered DV1(b) thresholds are P95 $<$ 150\,ms and P99 $<$ 250\,ms; the measured P95 (112\,ms) and P99 (134\,ms) both clear them with margin, and the full distribution lies below the 150\,ms limit except for a thin tail (max 167\,ms).}
+\caption{Verdeling van de Bluetooth round-trip-tijden over campagne 2 (n=5872, bins van 10\,ms). De vooraf geregistreerde DV1(b)-drempels zijn P95 $<$ 150\,ms en P99 $<$ 250\,ms; de gemeten P95 (112\,ms) en P99 (134\,ms) halen die beide met marge, en de volledige verdeling ligt onder de 150\,ms-limiet op een dunne staart na (max 167\,ms).}
 \label{fig:rtt-hist}
 \end{figure}

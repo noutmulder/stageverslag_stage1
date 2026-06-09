@@ -8,10 +8,10 @@
 % --- threshold / reference lines ---
 \fill[green!9] (0,0.657) rectangle (7.40,4.600);  % within-limit (acceptable) zone
 \draw[red,thick] (0,0.657) -- (7.40,0.657);
-\node[red,font=\scriptsize,below right] at (0.05,0.657) {$-10$\,mm pre-registered limit ($>$5\,m rail)};
+\node[red,font=\scriptsize,below right] at (0.05,0.657) {$-10$\,mm vooraf geregistreerde limiet ($>$5\,m rail)};
 \draw[densely dotted] (0,3.943) -- (7.40,3.943);
 \draw[blue,densely dashed] (0,1.681) -- (7.40,1.681);
-\node[blue,font=\scriptsize,below right] at (4.7,1.681) {mean $-6.9$\,mm};
+\node[blue,font=\scriptsize,below right] at (4.7,1.681) {gemiddelde $-6.9$\,mm};
 % --- y ticks ---
 \draw (-0.07,0.657) -- (0,0.657); \node[left,font=\scriptsize] at (-0.07,0.657) {$-10$};
 \draw (-0.07,1.314) -- (0,1.314); \node[left,font=\scriptsize] at (-0.07,1.314) {$-8$};
@@ -38,10 +38,10 @@
 \node[font=\scriptsize,above=2pt] at (4.063,2.267) {rd9};
 \fill (5.835,1.925) circle (2.4pt);
 \node[font=\scriptsize,above=2pt] at (5.835,1.925) {rd13};
-\node[font=\small] at (3.70,-0.85) {Position along rail $d_{\mathrm{phys}}$ (mm)};
-\node[font=\small,rotate=90] at (-0.95,2.30) {Display minus physical (mm)};
+\node[font=\small] at (3.70,-0.85) {Positie langs rail $d_{\mathrm{phys}}$ (mm)};
+\node[font=\small,rotate=90] at (-0.95,2.30) {Display minus fysiek (mm)};
 \end{tikzpicture}%
 }
-\caption{Display-vs-physical position error at each reference marker on the 5428\,mm validation rail (campaign 2). Each marker is referenced to the firmware-encoded start of its rail-part plus a tape-measured offset within that part (Section~\ref{sec:results-validation}). All five errors fall inside the pre-registered $-10$\,mm tolerance for rails longer than 5\,m; the consistently negative sign (mean $-6.9$\,mm) reflects the rail-configurator's encoded-vs-physical contribution, isolated from the near-zero pipeline-integration error (Table~\ref{tab:validation}).}
+\caption{Display-vs-fysiek positiefout bij elke referentiemarker op de 5428\,mm-validatierail (campagne 2). Elke marker is gerefereerd aan het firmware-encoded begin van zijn rail-part plus een met meetlint gemeten offset binnen dat part (Sectie~\ref{sec:results-validation}). Alle vijf fouten vallen binnen de vooraf geregistreerde $-10$\,mm-tolerantie voor rails langer dan 5\,m; het consistent negatieve teken (gemiddelde $-6.9$\,mm) weerspiegelt de encoded-vs-fysieke bijdrage van de rail-configurator, geïsoleerd van de bijna-nul pipeline-integratiefout (Tabel~\ref{tab:validation}).}
 \label{fig:dv2-error}
 \end{figure}
