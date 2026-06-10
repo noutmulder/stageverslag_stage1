@@ -99,8 +99,9 @@
 \begin{minipage}{0.9\textwidth}
 \small
 \textbf{Samenvatting.}
-Dit onderzoek zet ruwe traplift-telemetrie om in een stabiele, nauwkeurige
-live 3D-visualisatie als basis voor storingsdiagnose. Het technische
+Dit onderzoek beschrijft de ontwikkeling en validatie van een pipeline die
+ruwe traplift-telemetrie omzet in een stabiele, nauwkeurige live
+3D-visualisatie als basis voor storingsdiagnose. Het technische
 kernprobleem is tweeledig. Pulse-encoder-metingen komen binnen over een
 Bluetooth-verbinding met hoge latency en moeten worden afgebeeld op een gebogen
 3D-rail waarvan de encoder-tot-afstandsverhouding per segment verschilt.
@@ -112,9 +113,10 @@ en tegen vooraf geregistreerde kwantitatieve criteria; de resultaten gelden
 binnen deze twee geteste configuraties. De positienauwkeurigheid is op twee
 niveaus geëvalueerd. De pipeline-integratiefout bleef op beide rails binnen
 0.7\,mm. De end-to-end fout tussen display en fysieke positie op de
-5428\,mm-rail bedroeg maximaal 9.9\,mm, binnen de 10\,mm-tolerantie voor rails
-langer dan 5\,m; dit verschil is het meest waarschijnlijk toe te schrijven aan
-de bovenliggende rail-configurator, niet aan de pipeline. De Bluetooth
+5428\,mm-rail bedroeg maximaal 9.9\,mm. Dat blijft binnen de
+10\,mm-tolerantie voor rails langer dan 5\,m. Dit verschil is het meest
+waarschijnlijk toe te schrijven aan de bovenliggende rail-configurator, niet
+aan de pipeline. De Bluetooth
 round-trip-latency voldeed op beide rails aan de drempels (95e-percentiel
 $\leq$\,113\,ms, 99e-percentiel $\leq$\,135\,ms; drempels 150/250\,ms). Een log
 van een continue rit liet geen rendering-staircase (getrapte beweging) zien:
@@ -147,8 +149,9 @@ Tijdens aandrijving produceren embedded controllers continu telemetrie:
 traction-encoder-pulsen, spindle-encoder-waarden, swivel-hoeken en
 systeemstatusbits, inclusief foutcodes. Voor service, onderhoud en
 doorontwikkeling moeten engineers snel de actuele toestand van een traplift
-kunnen begrijpen: of de rail in de software klopt, waar de stoel zich op de rail bevindt, of hij correct
-beweegt, en welke afwijkingen of storingen er zijn opgetreden.
+kunnen begrijpen. Daarbij gaat het om de vraag of de rail in de software klopt,
+waar de stoel zich op de rail bevindt, of de stoel correct beweegt en welke
+afwijkingen of storingen zijn opgetreden.
 
 Op dit moment wordt storingsinformatie van de controller gepresenteerd als
 tekstuele foutcodes en numerieke statuswaarden. Hoewel technisch correct,
@@ -1622,9 +1625,8 @@ De latency- en pipeline-integratiematen beslaan beide rail-configuraties
 verticale bochten); de primaire end-to-end display-vs-fysiek maat is alleen op
 de 5428\,mm-rail verzameld. Deze twee-geometrie-dekking versterkt het pleidooi
 voor generalisatie voorbij één enkele rail. Bredere generalisatie over het
-volledige scala aan rail-ontwerpen --- en de primaire positiemaat op meer
-rails --- vereist echter nog verdere runs en wordt overgelaten aan toekomstig
-werk.
+volledige scala aan rail-ontwerpen (en de primaire positiemaat op meer rails)
+vereist echter nog verdere runs en wordt overgelaten aan toekomstig werk.
 
 De implementatie die deze pipeline realiseert (de Godot renderer, het
 Bluetooth/TCP-transport en de protocol parser, de multi-rate telemetry poller,
@@ -1747,11 +1749,11 @@ geïmplementeerd.
     studie die een rail door de configurator-workflow traceert met een externe
     referentie (laserafstandsmeter) zou deze bron apart van de hier
     gerapporteerde pipeline-integratiefout kwantificeren.
-  \item \textbf{High-speed video voor zichtbare lag.} DV3(b)-smoothness wordt nu
-    kwantitatief gemeten uit positie-logging op frame-niveau, en DV1(b)-latency
-    uit round-trip-percentielen. De enige gebruikersgerichte eigenschap die nog
-    alleen observationeel wordt beoordeeld is zichtbare lag (de offset tussen de
-    fysieke en weergegeven stoel tijdens beweging); een
+  \item \textbf{High-speed video voor zichtbare lag.} Met DV3(b)-smoothness nu
+    gemeten uit positie-logging op frame-niveau en DV1(b)-latency uit
+    round-trip-percentielen, blijft zichtbare lag (de offset tussen de fysieke
+    en weergegeven stoel tijdens beweging) de enige gebruikersgerichte
+    eigenschap die nog alleen observationeel wordt beoordeeld; een
     high-speed-video-vergelijking op pilot-snelheid zou dit omzetten in een
     gemeten frame-offset en de laatste kwalitatieve leemte rond DV1(b) dichten.
   \item \textbf{Driftvrije swivel- en yaw-referentie.} De spindle-zittinghoek
