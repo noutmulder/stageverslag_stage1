@@ -139,15 +139,15 @@ storingstoestand wordt rechtstreeks uit de geparste statusbits weergegeven.
 \label{sec:introduction}
 
 DeVi Comfort ontwerpt en produceert trapliftsystemen en ontwikkelt de
-bijbehorende besturingssoftware in eigen huis. Een traplift bestaat uit een
-stoel die over een op maat gebogen rail rijdt die aan een trap is gemonteerd.
+bijbehorende besturingssoftware in eigen huis. Een DeVi traplift bestaat uit een
+stoel die over een rail rijdt die met een modulair railontwerp aan een trap is gemonteerd.
 De stoel wordt aangedreven door een traction-motor, terwijl een spindle-motor
 de zittinghoek instelt en een swivel-motor de zitting bij overlooppunten draait.
-Tijdens bedrijf produceren embedded controllers continu telemetrie:
+Tijdens aandrijving produceren embedded controllers continu telemetrie:
 traction-encoder-pulsen, spindle-encoder-waarden, swivel-hoeken en
 systeemstatusbits, inclusief foutcodes. Voor service, onderhoud en
 doorontwikkeling moeten engineers snel de actuele toestand van een traplift
-kunnen begrijpen: waar de stoel zich op de rail bevindt, of hij correct
+kunnen begrijpen: of de rail in de software klopt, waar de stoel zich op de rail bevindt, of hij correct
 beweegt, en welke afwijkingen of storingen er zijn opgetreden.
 
 Op dit moment wordt storingsinformatie van de controller gepresenteerd als
@@ -157,33 +157,18 @@ een positieafwijking aangeeft, vertelt niet waar op de rail de afwijking
 optrad, in welke richting, of hoe groot het verschil is.
 
 De onderliggende technische uitdaging is tweeledig. De ruwe telemetriedata
-(encoder-pulstellingen, spindle-waarden, swivel-hoeken) moet worden afgebeeld
+(tractie-encoderwaarden, spindle-waarden, swivel-waarden) moet worden afgebeeld
 op een driedimensionale rail-geometrie. Deze rail bevat rechte secties,
 verticale bochten en horizontale bochten, die elk een ander aantal
 encoder-pulsen per millimeter verplaatsing verbruiken. Daarnaast komen de
 sensormetingen op onregelmatige intervallen binnen over een draadloze seriële
-verbinding met ruis, latency en incidenteel packet loss. De visualisatie moet
+verbinding met ruis, latency en soms packet loss. De visualisatie moet
 de kloof overbruggen tussen deze asynchrone metingen en een continue, vloeiende
 ruimtelijke weergave die met de display-framerate ververst.
 
-Een live 3D-visualisatie van trapliftpositie en -beweging adresseert deze kloof
-rechtstreeks: ze maakt de ruimtelijke toestand van de stoel (positie op de rail,
-beweging door bochten en zittinghoek) expliciet waar de huidige
-tekst-en-code-uitvoer die impliciet laat. Dit geeft service-engineers in één
-oogopslag inzicht in waar de stoel staat en hoe hij is georiënteerd, en geeft
-het ontwikkelteam een directe manier om firmware-gedrag te verifiëren tijdens
-het testen en in bedrijf stellen van nieuwe rail-configuraties. Of deze
-ruimtelijke weergave op haar beurt de diagnosetijd verkort of bezoeken ter
-plaatse vermindert, is de functionele motivatie voor het werk, onderzocht als
-een human-factors-vraag buiten de huidige scope.
+Een live 3D-visualisatie van trapliftpositie en -beweging vult een belangrijke kloof: het maakt de ruimtelijke toestand van de stoel (positie op de rail, beweging door bochten en zittinghoek) expliciet, iets wat de huidige tekst- en code-uitvoer slechts impliciet toont. Hierdoor krijgen service-engineers in één oogopslag inzicht in de stoelpositie en oriëntatie, terwijl het ontwikkelteam firmwaregedrag direct kan verifiëren tijdens testen en bij het inbedrijfstellen van nieuwe railconfiguraties. Of deze visualisatie de diagnosetijd verkort of het aantal bezoeken vermindert, wordt niet onderzocht; dit valt buiten de scope van dit onderzoek.
 
-Het doel van dit onderzoek is te bepalen welke data-processing-stappen en
-wiskundige modellen nodig zijn om live traplift-telemetrie om te zetten in een
-stabiele, nauwkeurige 3D-visualisatie. Of zo'n visualisatie uiteindelijk de
-storingsdiagnose versnelt ten opzichte van tekstuele foutcodes, is een
-praktische motivatie voor het werk, maar valt buiten de scope van dit verslag.
-De centrale onderzoeksvraag is daarom beperkt tot wat deductief kan worden
-vastgesteld:
+Het doel is vast te stellen welke data-processing-stappen en wiskundige modellen nodig zijn om live traplift-telemetrie om te zetten in een stabiele en nauwkeurige 3D-weergave. Het praktische effect van zo'n visualisatie op storingsdiagnose blijft buiten beschouwing. De centrale onderzoeksvraag richt zich daarom uitsluitend op wat deductief kan worden vastgesteld:
 
 \textit{Welke data-processing-pipeline en wiskundige modellen zijn vereist om
 live traplift-telemetrie om te zetten in een stabiele, nauwkeurige
@@ -242,7 +227,7 @@ bocht volgt.
 
 Dit betekent dat een enkele scalaire encoder-meting niet kan worden omgezet naar
 een 3D-positie zonder een model van de volledige rail-topologie. De mapping moet
-rekening houden met de cumulatieve pulskost van elk voorafgaand segment,
+rekening houden met de totale pulskosten van elk voorafgaand segment,
 waardoor het een stuksgewijze niet-lineaire functie is in plaats van een
 eenvoudige lineaire schaling. Zonder zo'n model stapelen positiefouten zich op
 bij elke bochtovergang, evenredig groeiend met het aantal bochten in de rail.
@@ -256,25 +241,23 @@ hangt af van de link-layer-latency plus de responstijd van de controller en is
 gemeten in de validatieruns van Sectie~\ref{sec:results-validation}.
 De visualisatie moet echter renderen op 60\,fps (16.7\,ms per frame).
 
-Dit creëert een temporele mismatch: nieuwe sensordata komt vele render-frames
-uit elkaar binnen, en frames tussen metingen moeten worden gevuld met voorspelde
-waarden. Als de meest recente meting simpelweg constant wordt gehouden tot de
-volgende binnenkomt, vertoont de display zichtbare getrapte sprongen op de
-sensor-sample-rate. De traction-encoder van de traplift is een digitale
-incrementele pulse-counter~\cite{merry2010encoder}: hij produceert geen
-per-sample kwantisatieruis op een stilstaande stoel, maar levert wel gesamplede
-posities op een snelheid ruim onder de display-refresh, zodat het
-gap-filling-probleem (niet ruisonderdrukking) de dominante bron van artefacten
-is voor deze visualisatie.
+Er ontstaat een tijdelijke mismatch doordat nieuwe sensordata 
+veel trager binnenkomt dan de display-framerate, waardoor frames tussen 
+metingen moeten worden gevuld met voorspelde waarden. Wordt de laatste meting 
+simpelweg constant gehouden tot de volgende arriveert, dan ontstaan zichtbare 
+getrapte sprongen op het scherm. De traplift-traction-encoder is een digitale 
+incrementele pulse-counter~\cite{merry2010encoder}: hij geeft geen kwantisatieruis 
+per sample bij een stilstaande stoel, maar levert wel gesamplede posities op een 
+snelheid ruim onder de display-framerate. Hierdoor is het invullen van ontbrekende 
+data (gap-filling), en niet ruisonderdrukking, de belangrijkste bron van artefacten.
 
-Dit legt de technische eis precies vast. De visualisatie heeft een continue
-positie-en-snelheidsschatting nodig die op display-framerate kan worden
-voortgezet, ook al komen samples enkele keren minder vaak binnen, en die het
-interval kan overbruggen wanneer een sample te laat is of ontbreekt. De vereiste
-eigenschap is dus gap-filling en snelheidsschatting tussen samples, niet
-ruisonderdrukking op het individuele sample. Welke klasse schatter aan deze eis
-voldoet, en tegen welke kosten, is een oplossingsvraag die in het overzicht van
-eerder werk wordt behandeld (Sectie~\ref{sec:prior-work}).
+De technische eis voor de visualisatie is daarom een continue schatting van
+positie en snelheid die op display-framerate kan worden weergegeven, ook als
+sensordata minder vaak arriveert of samples te laat komen. Het gaat om
+gap-filling en snelheidsschatting tussen samples; ruisonderdrukking op
+individuele metingen is minder relevant. Welke klasse schatter aan deze eis
+voldoet en tegen welke kosten, wordt besproken in het overzicht van eerder werk
+(Sectie~\ref{sec:prior-work}).
 
 \subsubsection{Multi-as-oriëntatie uit onafhankelijke sensoren}
 De trapliftstoel heeft vier onafhankelijke rotatie-vrijheidsgraden: yaw
@@ -333,12 +316,12 @@ geen enkele gesloten-vorm inverse de hele rail dekt; de aanpak is alleen per
 segment bruikbaar, niet rail-breed.
 
 Een \textbf{voorberekende stuksgewijze kalibratiekaart} tabelleert, bij elke
-segmentgrens, de cumulatieve encoder-telling tegen de cumulatieve Euclidische
+segmentgrens, de opgetelde encoder-telling tegen de opgetelde Euclidische
 afstand en interpoleert binnen een segment, waardoor elke per-frame-query wordt
 teruggebracht tot een binary search over een statische
 tabel~\cite{bolton2019mechatronics}. Ze verwerkt willekeurige pulskosten per
 segment, amortiseert de padintegratie tot eenmaal per rail, en degradeert
-gracieus (stuksgewijs lineair) tussen grenzen. Haar nadeel is dat de volledige
+soepel (stuksgewijs lineair) tussen grenzen. Haar nadeel is dat de volledige
 rail-topologie vooraf bekend moet zijn, wat het geval is, aangezien de
 controller de rail opslaat als getypeerde blokken. Deze richting wordt
 geselecteerd en afgeleid in Sectie~\ref{sec:results-q2}.
@@ -370,7 +353,7 @@ accelerometerdata wordt gecombineerd met snelle, ruizige gyroscoopdata om de
 oriëntatie te schatten. Complementary filters zijn rekenkundig licht en vereisen
 geen statistisch model van de ruis. Ze hebben daarom de voorkeur in
 kostengevoelige of high-rate embedded systemen met meerdere complementaire
-sensoren. Ze veronderstellen echter dat er twee sensorbronnen met complementaire
+sensoren. Ze gaan er echter van uit dat er twee sensorbronnen met complementaire
 frequentie-inhoud beschikbaar zijn, wat bij de traplift niet het geval is: de
 traction-encoder is de enige directe positiesensor, en zijn ruis is niet op
 frequentie te scheiden van zijn signaal.
@@ -413,18 +396,16 @@ toepassing is dat de curve \emph{niet} door de controlepunten loopt, zodat ze
 niet overeenkomt met de fysieke rail-geometrie: de ghost chair zou een
 afgevlakte benadering van de rail volgen in plaats van de rail zelf.
 
-\textbf{Catmull-Rom-splines} interpoleren door elk controlepunt en bieden
-$C^1$-continuïteit in die punten~\cite{catmullrom1974}. Ze zijn de natuurlijke
-keuze wanneer de controlepunten vaste fysieke waypoints zijn (zoals bij de rail)
-en het hoofddoel een vloeiende tangent voor oriëntatie is. Ze worden in dit werk
-specifiek geselecteerd als de \emph{tangent}-bron voor de stoeloriëntatie; de
-\emph{positie} van de stoel langs elk segment wordt berekend met lineaire
-interpolatie tussen aangrenzende rail-controlepunten, wat de
-op-de-rail-constraint triviaal behoudt omdat zowel lineaire als
-Catmull-Rom-curves door de controlepunten lopen. Het gecombineerde schema
-(lineaire positie, Catmull-Rom-tangent) geeft een vloeiende stoeloriëntatie
-zonder de off-rail-uitwijkingen die een volledige Catmull-Rom-positiecurve
-tussen schaars bemonsterde punten zou veroorzaken.
+\textbf{Catmull-Rom-splines} lopen precies door de controlepunten en 
+hebben een vloeiende kromming ($C^1$-continuïteit) in die punten~\cite{catmullrom1974}. 
+Ze zijn handig wanneer de controlepunten vaste fysieke waypoints zijn, zoals bij een  
+rail, en het belangrijkste doel is een vloeiende richting voor de stoel. In dit werk 
+worden ze gebruikt om de richting van de stoel te bepalen. De positie van de stoel 
+op elk railsegment wordt lineair berekend tussen twee aangrenzende controlepunten. 
+Zo blijft de stoel altijd op de rail, omdat zowel lineaire als Catmull-Rom-curves 
+precies door de controlepunten gaan. Het resultaat is een vloeiende oriëntatie van 
+de stoel zonder dat hij van de rail afwijkt, wat zou gebeuren als een volledige 
+Catmull-Rom-curve voor de positie werd gebruikt met weinig meetpunten.
 
 \subsubsection{Rotatierepresentatie}
 Drie representaties van 3D-rotatie zijn algemeen in gebruik: Euler-hoeken,
@@ -527,7 +508,7 @@ compass tracker (Sectie~\ref{sec:results-validation}).
 Vóór dit onderzoek bestond er bij DeVi Comfort geen ruimtelijke visualisatie van
 traplift-telemetrie; de storingsuitvoer is beschreven in
 Sectie~\ref{sec:introduction}. De IPC-infrastructuur (Inter-Process
-Communication) die de configurator-applicatie met de liftcontroller verbindt,
+Communication) die de configurator-applicatie (andere app) met de liftcontroller verbindt,
 was beperkt tot het uploaden en downloaden van rails, zodat de input-laag van de
 voorgestelde pipeline (live telemetrie-polling) geen bestaande implementatie had
 om op voort te bouwen.
