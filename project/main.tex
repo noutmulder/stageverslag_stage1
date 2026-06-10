@@ -85,7 +85,7 @@
 \hrule
 \vspace{0.5cm}
 \begin{center}
-{\Large\bfseries ONTWIKKELING VAN EEN LIVE 3D-TELEMETRIEVISUALISATIE\\VOOR STORINGSDIAGNOSE VAN TRAPLIFTEN\par}
+{\Large\bfseries ONTWIKKELING VAN EEN LIVE 3D-TELEMETRIEVISUALISATIE\\ALS BASIS VOOR STORINGSDIAGNOSE VAN TRAPLIFTEN\par}
 \vspace{0.3cm}
 {\normalsize Nout Mulder\par}
 \vspace{0.1cm}
@@ -99,34 +99,34 @@
 \begin{minipage}{0.9\textwidth}
 \small
 \textbf{Samenvatting.}
-Dit onderzoek behandelt de uitdaging om ruwe traplift-telemetrie om te zetten
-in een stabiele, nauwkeurige live 3D-visualisatie voor storingsdiagnose. Het
-technische kernprobleem is tweeledig. Pulse-encoder-metingen, opgehaald over
-een Bluetooth-verbinding met hoge latency, moeten worden afgebeeld op een
-gebogen 3D-rail waarvan de encoder-tot-afstandsverhouding per segment
-verschilt. Tegelijk moet de weergegeven beweging vloeiend blijven op de
-display-loop. Een ``virtual ghost''-prototype is iteratief ontwikkeld
-en gevalideerd op fysieke traplifthardware over twee rail-configuraties
-(3403\,mm en 5428\,mm), tegen vooraf geregistreerde kwantitatieve
-criteria. De positienauwkeurigheid is op twee niveaus geëvalueerd. De
-pipeline-integratiefout (display versus firmware-encoded positie uit dezelfde
-encoder-meting) bleef op beide rails binnen 0.7\,mm. De end-to-end fout
-tussen display en fysieke positie op de 5428\,mm-rail bedroeg maximaal 9.9\,mm,
-binnen de 10\,mm-tolerantie voor rails langer dan 5\,m. Het verschil tussen de
-twee maten is het meest waarschijnlijk toe te schrijven aan de bovenliggende
-rail-configurator en niet aan de pipeline. De Bluetooth round-trip-latency
-voldeed op beide rails aan de vooraf geregistreerde percentieldrempels
-(95e-percentiel round-trip $\leq$\,113\,ms, 99e-percentiel $\leq$\,135\,ms;
-drempels 150/250\,ms), en een speciale log van een continue rit liet geen
-rendering-staircase zien (de getrapte beweging die ontstaat wanneer elke meting
-wordt vastgehouden tot de volgende binnenkomt): snelheidspieken traden op bij
-slechts 0.04\,\% van de frames op het stabiele traject van onder naar boven,
-meer dan twee ordes van grootte onder die staircase-signatuur. De resultaten
-tonen aan dat één processing-pipeline een stabiele, nauwkeurige live 3D-weergave
-van de trapliftpositie oplevert: ze combineert niet-lineaire encoder-mapping,
-recursieve toestandsschatting met dead-reckoning (positie voorspellen tussen
-metingen), en vloeiende tangent-gebaseerde oriëntatiereconstructie. De
-storingstoestand wordt rechtstreeks uit de geparste statusbits weergegeven.
+Dit onderzoek zet ruwe traplift-telemetrie om in een stabiele, nauwkeurige
+live 3D-visualisatie als basis voor storingsdiagnose. Het technische
+kernprobleem is tweeledig. Pulse-encoder-metingen komen binnen over een
+Bluetooth-verbinding met hoge latency en moeten worden afgebeeld op een gebogen
+3D-rail waarvan de encoder-tot-afstandsverhouding per segment verschilt.
+Tegelijk moet de weergegeven beweging vloeiend blijven op de display-loop.
+
+Een ``virtual ghost''-prototype is iteratief ontwikkeld en gevalideerd op
+fysieke traplifthardware, over twee rail-configuraties (3403\,mm en 5428\,mm)
+en tegen vooraf geregistreerde kwantitatieve criteria; de resultaten gelden
+binnen deze twee geteste configuraties. De positienauwkeurigheid is op twee
+niveaus geëvalueerd. De pipeline-integratiefout bleef op beide rails binnen
+0.7\,mm. De end-to-end fout tussen display en fysieke positie op de
+5428\,mm-rail bedroeg maximaal 9.9\,mm, binnen de 10\,mm-tolerantie voor rails
+langer dan 5\,m; dit verschil is het meest waarschijnlijk toe te schrijven aan
+de bovenliggende rail-configurator, niet aan de pipeline. De Bluetooth
+round-trip-latency voldeed op beide rails aan de drempels (95e-percentiel
+$\leq$\,113\,ms, 99e-percentiel $\leq$\,135\,ms; drempels 150/250\,ms). Een log
+van een continue rit liet geen rendering-staircase (getrapte beweging) zien:
+snelheidspieken traden op bij slechts 0.04\,\% van de frames, ruim twee ordes
+onder de staircase-signatuur.
+
+Binnen de geteste configuraties levert één processing-pipeline dus een stabiele,
+nauwkeurige live 3D-weergave van de trapliftpositie op. Ze combineert
+niet-lineaire encoder-mapping, recursieve toestandsschatting met dead-reckoning
+(positie voorspellen tussen metingen) en vloeiende tangent-gebaseerde
+oriëntatiereconstructie. De storingstoestand wordt rechtstreeks uit de geparste
+statusbits weergegeven.
 \end{minipage}
 \end{center}
 \vspace{0.3cm}
@@ -1610,19 +1610,21 @@ niveaus: de pipeline-integratiefout blijft $\leq$\,0.7\,mm op beide rails, en de
 end-to-end display-vs-fysiek fout op de 5428\,mm-rail is maximaal 9.9\,mm,
 binnen de 10\,mm-tolerantie voor rails langer dan 5\,m. De latency (DV1(b))
 voldoet aan de percentieldrempels op beide rails (P95\,$\leq$\,113\,ms,
-P99\,$\leq$\,135\,ms). De smoothness (DV3(b)) toont geen staircase
-(snelheidspieken bij 0.04\,\% van de frames tegen $\sim$10\,\% voor een
-last-value-hold), zodat het substantiële criterium wordt gehaald, hoewel de
-letterlijke vooraf geregistreerde ``0 pieken''-drempel nipt wordt overschreden
-door enkele geïsoleerde, milde pieken (zie Beperkingen). De volledige uitkomst
-per criterium staat in Tabel~\ref{tab:validation}. De latency- en
-pipeline-integratiematen beslaan beide rail-configuraties (3403\,mm met één
-horizontale bocht; 5428\,mm met twee horizontale en meerdere verticale bochten);
-de primaire end-to-end display-vs-fysiek maat is alleen op de 5428\,mm-rail
-verzameld. Deze twee-geometrie-dekking versterkt het pleidooi voor generalisatie
-voorbij één enkele rail, maar bredere generalisatie over het volledige scala aan
-rail-ontwerpen (en de primaire positiemaat op meer rails) zou nog verdere runs
-vereisen en wordt overgelaten aan toekomstig werk.
+P99\,$\leq$\,135\,ms). De smoothness (DV3(b)) toont geen staircase:
+snelheidspieken bij 0.04\,\% van de frames, tegen $\sim$10\,\% voor een
+last-value-hold. De letterlijke vooraf geregistreerde ``0 pieken''-drempel wordt
+daarbij nipt overschreden door enkele milde pieken; dit is uitgewerkt in
+Beperkingen. De volledige uitkomst per criterium staat in
+Tabel~\ref{tab:validation}.
+
+De latency- en pipeline-integratiematen beslaan beide rail-configuraties
+(3403\,mm met één horizontale bocht; 5428\,mm met twee horizontale en meerdere
+verticale bochten); de primaire end-to-end display-vs-fysiek maat is alleen op
+de 5428\,mm-rail verzameld. Deze twee-geometrie-dekking versterkt het pleidooi
+voor generalisatie voorbij één enkele rail. Bredere generalisatie over het
+volledige scala aan rail-ontwerpen --- en de primaire positiemaat op meer
+rails --- vereist echter nog verdere runs en wordt overgelaten aan toekomstig
+werk.
 
 De implementatie die deze pipeline realiseert (de Godot renderer, het
 Bluetooth/TCP-transport en de protocol parser, de multi-rate telemetry poller,
