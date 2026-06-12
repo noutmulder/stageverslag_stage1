@@ -720,7 +720,7 @@ Tabel~\ref{tab:validation-criteria}; de analytische subcriteria staan in de
 bijbehorende methodesecties.
 
 De drempels in Tabel~\ref{tab:validation-criteria} zijn de
-tweede-versie-criteria (v2). De eerste meetcampagne
+tweede-versie-criteria (v2). De eerste meetronde
 (Sectie~\ref{sec:results-validation}) bracht aan het licht dat de
 oorspronkelijke v1-drempels voor DV1(b) en DV3(b) gedrag veronderstelden dat dit
 systeem niet vertoont: een enkel-sample 100\,ms-round-trip-doel dat het
@@ -730,7 +730,7 @@ digitale pulse-encoder die in rust geen value-jitter toont. De criteria zijn
 daarom geherformuleerd tot kwantitatieve, sensor-passende vormen: een
 percentiel-latency-grens en een snelheidsgebaseerde smoothness-test. Deze zijn
 \emph{vooraf geregistreerd} met een vastgelegde version-control-timestamp, vóór
-de tweede meetcampagne, zodat de beslissende runs op de langere rail worden
+de tweede meetronde, zodat de beslissende runs op de langere rail worden
 beoordeeld tegen vooraf vastgelegde drempels. Deze verfijning en haar effect op
 de bewijskracht worden expliciet vermeld onder Beperkingen
 (Sectie~\ref{sec:conclusion}). Naast DV1--DV3 worden de oriëntatie-uitvoeren
@@ -1292,14 +1292,14 @@ Sectie~\ref{sec:conclusion}.
 \subsection{Validatiebewijs}
 \label{sec:results-validation}
 Deze sectie rapporteert het empirische bewijs voor de DV1--DV3-criteria die
-fysieke meting vereisen. Het prototype is gevalideerd over twee meetcampagnes op
-fysieke traplifthardware: een eerste campagne op een 3403\,mm-rail (11
+fysieke meting vereisen. Het prototype is gevalideerd over twee meetrondes op
+fysieke traplifthardware: een eerste meetronde op een 3403\,mm-rail (11
 rail-parts, één 90$^\circ$ horizontale bocht; twee kalibratieruns van onder naar
 boven en van boven naar onder, voorafgegaan door een stationaire baseline van
-13\,s), en een tweede campagne op een langere 5428\,mm-rail (acht rechte secties
+13\,s), en een tweede meetronde op een langere 5428\,mm-rail (acht rechte secties
 en zeven bochten: twee horizontale en vijf verticale). Foto's van beide
 testopstellingen staan in Bijlage~\ref{app:opstellingen}.
-De tweede campagne omvat aanvullend een speciale continue-rit-log voor de
+De tweede meetronde omvat aanvullend een speciale continue-rit-log voor de
 snelheidsgebaseerde DV3(b)-test en twee statische oriëntatietests (spindle en
 swivel). Het systeem pollt telemetrie op een geaggregeerde $\sim$10\,Hz aan
 round-trips tijdens de runs (gedeeld over alle kanalen,
@@ -1314,7 +1314,7 @@ beide rijrichtingen vastgelegd, wat tien marker-metingen per rail geeft. De
 fysieke stoelpositie wordt afgelezen met een stalen meetlint (schaalverdeling
 1\,mm, afleesonzekerheid $\approx\pm$1\,mm). De markerplaatsing en de
 offset-meting zijn gefotografeerd in Bijlage~\ref{app:opstellingen}; de tijdens
-de campagnes ingevulde meetbladen staan in Bijlage~\ref{app:meetbladen}. De positienauwkeurigheid wordt
+de meetrondes ingevulde meetbladen staan in Bijlage~\ref{app:meetbladen}. De positienauwkeurigheid wordt
 geëvalueerd op de twee niveaus die het DV2(b)-ontwerp voorschrijft:
 \begin{itemize}[leftmargin=*]
   \item \emph{Display vs.\ fysiek} (primair): de weergegeven positie wordt
@@ -1401,7 +1401,7 @@ gerapporteerd.
 
 \begin{table*}[t]
 \centering
-\caption{Validatiemetingen over de twee campagnes. De positie wordt op twee niveaus geëvalueerd: de pipeline-integratiefout (display vs.\ firmware-encoded positie uit dezelfde encoder-meting) isoleert de pipeline, terwijl de display-vs-fysiek fout de end-to-end nauwkeurigheid is, gerefereerd per rail-part (zie methodologie hierboven). Een ``n/a'' markeert een grootheid die voor die rail niet is verzameld. Vooraf geregistreerde passes staan in de meest rechtse kolom en worden besproken in Sectie~\ref{sec:conclusion}.}
+\caption{Validatiemetingen over de twee meetrondes. De positie wordt op twee niveaus geëvalueerd: de pipeline-integratiefout (display vs.\ firmware-encoded positie uit dezelfde encoder-meting) isoleert de pipeline, terwijl de display-vs-fysiek fout de end-to-end nauwkeurigheid is, gerefereerd per rail-part (zie methodologie hierboven). Een ``n/a'' markeert een grootheid die voor die rail niet is verzameld. Vooraf geregistreerde passes staan in de meest rechtse kolom en worden besproken in Sectie~\ref{sec:conclusion}.}
 \label{tab:validation}
 \small
 \begin{tabular}{@{}p{5.0cm}p{3.0cm}p{3.3cm}p{4.6cm}@{}}
@@ -1434,7 +1434,7 @@ Stationaire baseline puls-variatie & 0 (const.\ 16030) & n/a & sensor-jitter in 
 aan de vooraf geregistreerde percentieldrempels: P95 was 113\,ms (rail 1) en
 112\,ms (rail 2), en P99 was 135\,ms en 134\,ms, tegen de drempels van 150\,ms
 en 250\,ms (gemiddelden 89\,ms en 88\,ms over 5295 en 5872 round-trips).
-Figuur~\ref{fig:rtt-hist} toont de verdeling voor de tweede campagne: het gros
+Figuur~\ref{fig:rtt-hist} toont de verdeling voor de tweede meetronde: het gros
 van de round-trips clustert rond 80--90\,ms en de hele verdeling ligt onder de
 150\,ms-P95-grens, op een dunne staart na (één maximum van 167\,ms op rail 2;
 één uitschieter van 543\,ms op rail 1). Omdat het Kalman filter en
@@ -1549,7 +1549,7 @@ gedeelde seriële verbinding volhoudt (een geaggregeerde $\sim$10\,Hz aan
 round-trips, Sectie~\ref{sec:results-validation}). Toekomstige uitbreidingen
 (bijv. trillings- of temperatuurmonitoring) zouden eerst vereisen te controleren
 of de seriële bandbreedte de extra streams kan accommoderen zonder de
-positie-update-rates te degraderen. Over de twee campagnes voldeed de Bluetooth
+positie-update-rates te degraderen. Over de twee meetrondes voldeed de Bluetooth
 round-trip-latency op beide rails aan de vooraf geregistreerde
 DV1(b)-percentieldrempels: P95 was 113\,ms (rail 1) en 112\,ms (rail 2) tegen de
 150\,ms-grens, en P99 was 135\,ms en 134\,ms tegen de 250\,ms-grens (gemiddelden
@@ -1563,7 +1563,7 @@ deze lag wordt overgelaten aan toekomstig werk (Sectie~\ref{sec:conclusion},
 Aanbevelingen). De vijflaagse architectuur isoleert zelf faalmodi per ontwerp:
 byte-level-fouten worden opgevangen door de checksum van de protocol parser,
 terwijl problemen op hoger niveau (verbindingsverlies, timeout) door de
-transport-laag worden afgehandeld; over de continue ritten van beide campagnes
+transport-laag worden afgehandeld; over de continue ritten van beide meetrondes
 hield de pipeline de werking vol zonder crashes of UI-corruptie (O1,
 Tabel~\ref{tab:validation}). Robuustheid onder adversariële fault-injection is
 niet beproefd en wordt als beperking gerapporteerd.
@@ -1630,7 +1630,7 @@ niet-lineaire rail-geometrieën, een constant-velocity recursief filter voor
 temporele interpolatie en voorspelling tussen metingen, en quaternion-gebaseerde
 oriëntatiereconstructie uit spline-tangentvectoren.
 
-Over de twee validatiecampagnes voldoen de geïmplementeerde pipeline en modellen
+Over de twee meetrondes voldoen de geïmplementeerde pipeline en modellen
 aan de positienauwkeurigheids- en latency-criteria en slagen ze substantieel
 voor het smoothness-criterium. De positienauwkeurigheid (DV2(b)) slaagt op beide
 niveaus: de pipeline-integratiefout blijft $\leq$\,0.7\,mm op beide rails, en de
@@ -1670,7 +1670,7 @@ geïmplementeerd.
     aanvullende installaties, en herhaalde sessies per rail, zouden nodig zijn
     voor statistische generalisatie, en de aantallen per marker (vijf per rail)
     zijn klein.
-  \item \textbf{De DV1(b)- en DV3(b)-criteria zijn na de eerste campagne
+  \item \textbf{De DV1(b)- en DV3(b)-criteria zijn na de eerste meetronde
     herzien.} Hun oorspronkelijke (v1) vormen (een enkel-sample
     100\,ms-round-trip-doel en een ``Kalman-jitter $\geq$ 10$\times$ kleiner dan
     ruw''-verhouding) veronderstelden gedrag dat dit systeem niet vertoont
@@ -1678,14 +1678,14 @@ geïmplementeerd.
     toont in rust nul value-jitter; de baseline van 13\,s bevestigde dit). Ze
     zijn geherformuleerd tot de kwantitatieve v2-vormen (percentiel-latency,
     snelheidsgebaseerde smoothness) en vooraf geregistreerd met een
-    version-control-timestamp vóór de tweede campagne. De beslissende
+    version-control-timestamp vóór de tweede meetronde. De beslissende
     langere-rail-runs worden daarom beoordeeld tegen vooraf vastgelegde drempels,
-    maar voor de \emph{eerste} campagne zijn deze criteria post-hoc; alleen de
-    tweede campagne is een echte vooraf geregistreerde test van DV1(b) en
-    DV3(b). Voor DV2(b) is in de eerste campagne alleen het
+    maar voor de \emph{eerste} meetronde zijn deze criteria post-hoc; alleen de
+    tweede meetronde is een echte vooraf geregistreerde test van DV1(b) en
+    DV3(b). Voor DV2(b) is in de eerste meetronde alleen het
     pipeline-integratieniveau (display-vs-firmware) verzameld; de
     v2-pre-registratie herstelde display-vs-fysiek als de primaire maat,
-    verzameld in de tweede campagne (vandaar de ``n/a'' voor rail 1 in
+    verzameld in de tweede meetronde (vandaar de ``n/a'' voor rail 1 in
     Tabel~\ref{tab:validation}).
   \item \textbf{Display-vs-fysiek-referentie.} De primaire DV2(b)-maat refereert
     elke marker aan het firmware-encoded begin van zijn rail-part plus een met
@@ -1751,11 +1751,11 @@ geïmplementeerd.
     test.
   \item \textbf{Zelf-validatie.} De auteur definieerde de pass/fail-criteria,
     voerde de runs uit, en kende de pass/fail-labels toe. De criteria zijn vóór
-    de tweede campagne vooraf geregistreerd, maar geen onafhankelijke tweede
+    de tweede meetronde vooraf geregistreerd, maar geen onafhankelijke tweede
     waarnemer scoorde de resultaten. Zo'n onafhankelijke scoring was voorzien in
     het meetontwerp (een expliciet aanbevolen extra in de pre-registratie) en is
     alleen wegens tijd geschrapt, dus dit is een bekende, vooraf
-    geïdentificeerde leemte; voor de eerste campagne, waarvan de criteria
+    geïdentificeerde leemte; voor de eerste meetronde, waarvan de criteria
     post-hoc zijn, geldt de single-author-labeling ook.
   \item \textbf{Robuustheid niet adversarieel getest.} De afhandeling van
     byte-level-corruptie door de protocol parser wordt door de architectuur
@@ -1863,7 +1863,7 @@ drie engineering-competenties expliciet:
     containment mogelijk maakt. Het aantonen van containment onder adversariële
     omstandigheden is een afzonderlijke taak die dit verslag niet onderneemt.
   \item \textit{Validatie tegen meetbare drempels.} De pass/fail-criteria zijn
-    kwantitatief en, voor de beslissende tweede campagne, vooraf geregistreerd
+    kwantitatief en, voor de beslissende tweede meetronde, vooraf geregistreerd
     vóór de runs in plaats van gekalibreerd op de resultaten. Waar de
     oorspronkelijke criteria ongeschikt bleken voor de sensor, zijn ze
     transparant geherformuleerd en opnieuw geregistreerd
@@ -1887,17 +1887,17 @@ last-value-wins-display, een analoge ruizige sensor) die niet opgingen voor het
 systeem dat daadwerkelijk is gebouwd. De geherformuleerde v2-criteria
 (percentiel-latency en een snelheidsgebaseerde smoothness-test) zijn precies de
 kwantitatieve vormen die een zorgvuldige analyse vooraf zou hebben opgeleverd,
-maar ze zijn pas bereikt nadat de eerste campagne de mismatch blootlegde, en één
-campagne later dan ideaal vooraf geregistreerd. Een korte karakterisering van de
+maar ze zijn pas bereikt nadat de eerste meetronde de mismatch blootlegde, en één
+meetronde later dan ideaal vooraf geregistreerd. Een korte karakterisering van de
 verdeling van tussen-sample-gaten en het stoel-snelheidsprofiel aan het begin
 zou beide mismatches vóór elke run hebben opgevangen, en zou ook een gemeten in
 plaats van op het oog geschatte basis hebben gegeven voor de
 filter-tuning-parameters ($\sigma_a$, dead-reckoning-vervalconstante, de
 0.85/0.15-spindle-blend).
 
-Een secundaire les betreft dekking: de twee runs van de eerste campagne op één
+Een secundaire les betreft dekking: de twee runs van de eerste meetronde op één
 enkele rail waren een keuze voor correctness-of-concept, niet voor
-generaliseerbaarheid. De tweede campagne voegde een langere rail met een andere
+generaliseerbaarheid. De tweede meetronde voegde een langere rail met een andere
 bochtsamenstelling toe, en daarom kan het verslag nu twee geometrieën dekken,
 maar test-bench-tijd over meerdere rails vanaf het begin reserveren zou het
 defensievere plan zijn geweest. Beide lessen wijzen dezelfde kant op: reserveer
@@ -1929,7 +1929,7 @@ afdwaalt naar een applicatie-showcase.
 \section*{Bijlagen}
 De bijlagen documenteren hoe de validatiemetingen van
 Sectie~\ref{sec:results-validation} fysiek zijn uitgevoerd: de meetopstellingen
-van de twee campagnes (Bijlage~\ref{app:opstellingen}), de tijdens de campagnes
+van de twee meetrondes (Bijlage~\ref{app:opstellingen}), de tijdens de meetrondes
 ingevulde meetbladen (Bijlage~\ref{app:meetbladen}) en representatieve
 fragmenten uit de bewaarde sessielogs (Bijlage~\ref{app:logs}). Ze bevatten
 geen nieuwe resultaten; alle kwantitatieve uitkomsten staan in de hoofdtekst.
@@ -1942,7 +1942,7 @@ archief dat bij dit verslag hoort (Sectie~\ref{sec:conclusion}).
 
 \subsection{De twee validatierails}
 Figuur~\ref{fig:app-rails} toont de twee fysieke testopstellingen waarop de
-meetcampagnes zijn uitgevoerd. Beide zijn volledige trapliftinstallaties op
+meetrondes zijn uitgevoerd. Beide zijn volledige trapliftinstallaties op
 interne testtrappen, aangestuurd door dezelfde liftcontroller-hardware als bij
 klantinstallaties; de visualisatie draait op de Android-tablet die via de
 HC-06-module met de controller is verbonden (Sectie~\ref{sec:results-q1}).
@@ -1952,18 +1952,18 @@ HC-06-module met de controller is verbonden (Sectie~\ref{sec:results-q1}).
 \begin{subfigure}{0.48\textwidth}
 \centering
 \includegraphics[width=\linewidth,height=8.5cm,keepaspectratio]{images/Meetopstellingen/testrail_1.jpeg}
-\caption{Campagne 1: de 3403\,mm-rail (11 rail-parts, één horizontale
+\caption{Meetronde 1: de 3403\,mm-rail (11 rail-parts, één horizontale
 90$^\circ$-bocht), met de stoel bij het onderstation.}
 \label{fig:app-rail1}
 \end{subfigure}\hfill
 \begin{subfigure}{0.48\textwidth}
 \centering
 \includegraphics[width=\linewidth,height=8.5cm,keepaspectratio]{images/Meetopstellingen/testrail_2.jpeg}
-\caption{Campagne 2: de 5428\,mm-rail (acht rechte secties, zeven bochten:
+\caption{Meetronde 2: de 5428\,mm-rail (acht rechte secties, zeven bochten:
 twee horizontale en vijf verticale), met verhoogd bovenstation.}
 \label{fig:app-rail2}
 \end{subfigure}
-\caption{De twee validatierails waarop de meetcampagnes van
+\caption{De twee validatierails waarop de meetrondes van
 Sectie~\ref{sec:results-validation} zijn uitgevoerd.}
 \label{fig:app-rails}
 \end{figure}
@@ -2012,7 +2012,7 @@ meetlint (1\,mm-schaalverdeling) gemeten.}
 \centering
 \includegraphics[width=\linewidth,height=6.2cm,keepaspectratio]{images/Meetopstellingen/markers_testrail_1.jpeg}
 \caption{Referentiemarkers (dunne strookjes) op de rail van de eerste
-campagne, gezien langs het bovenste rail-part.}
+meetronde, gezien langs het bovenste rail-part.}
 \label{fig:app-marker-rail1}
 \end{subfigure}
 \caption{De markerprocedure voor de display-vs-fysiek-meting (DV2(b)).}
@@ -2073,18 +2073,18 @@ waterpas op de zitting als referentie (Sectie~\ref{sec:results-validation}).}
 
 \section{Ingevulde meetbladen}
 \label{app:meetbladen}
-De markerdefinities en de rail-decompositie zijn tijdens de campagnes
+De markerdefinities en de rail-decompositie zijn tijdens de meetrondes
 vastgelegd op gestandaardiseerde meetbladen, zodat elke meting herleidbaar is
 tot een rail-part, een offset en een rijrichting.
 Figuur~\ref{fig:app-meetblad-markers} en
 Figuur~\ref{fig:app-meetblad-raildelen} tonen de ingevulde bladen van de
-tweede campagne (5428\,mm-rail); zij definiëren de meetpunten waarop
+tweede meetronde (5428\,mm-rail); zij definiëren de meetpunten waarop
 Tabel~\ref{tab:validation} en Figuur~\ref{fig:dv2-error} zijn gebaseerd.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.66\textwidth]{images/Meetopstellingen/marker_punten.png}
-\caption{Het ingevulde markerblad van de 5428\,mm-campagne: per marker (MP\#)
+\caption{Het ingevulde markerblad van de tweede meetronde (5428\,mm-rail): per marker (MP\#)
 het rail-part waarop hij zit, de met meetlint gemeten offset binnen dat part en
 de rijrichting. De vijf gebruikte markers staan op rail-parts rd3, rd5, rd7,
 rd9 en rd13; een zesde kandidaat-punt op rd15 is op het blad genoteerd maar
@@ -2113,7 +2113,7 @@ Sectie~\ref{sec:results-validation}.}
 Alle validatieruns zijn gelogd met de in-app TestLogger-module; elke regel
 draagt een milliseconde-timestamp ten opzichte van de applicatiestart. Deze
 bijlage toont per gebruikt event-type een kort, representatief fragment,
-letterlijk overgenomen uit de bewaarde sessielogs van de tweede campagne;
+letterlijk overgenomen uit de bewaarde sessielogs van de tweede meetronde;
 weggelaten regels of velden zijn gemarkeerd met ``...''. De fragmenten illustreren hoe de
 in de hoofdtekst gerapporteerde grootheden uit de logs zijn berekend.
 
