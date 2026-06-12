@@ -6,13 +6,11 @@
 \usepackage{mathpazo}
 \usepackage[scaled=0.95]{helvet}
 \usepackage{courier}
-% TODO: zodra texlive-lang-european is geïnstalleerd
-% (sudo apt install texlive-lang-european), vervang de regel hieronder door:
-%   \usepackage[dutch]{babel}
-%   \AtBeginDocument{\shorthandoff{"}}
-% Dat geeft Nederlandse afbreekpatronen (nu breekt LaTeX op Engelse
-% patronen af, bv. "waarschi-jnlijk") en Nederlandse caption-labels.
-\usepackage[english]{babel}
+% Nederlandse afbreekpatronen en caption-labels; de "-shorthand uit
+% zodat het teken " geen actieve betekenis krijgt (de logfragmenten
+% in Bijlage C bevatten letterlijke ").
+\usepackage[dutch]{babel}
+\AtBeginDocument{\shorthandoff{"}}
 
 % ---------- Page layout ----------
 \usepackage[a4paper, margin=0.5in, columnsep=0.25in]{geometry}
