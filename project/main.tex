@@ -1278,20 +1278,24 @@ fysieke traplifthardware: een eerste campagne op een 3403\,mm-rail (11
 rail-parts, één 90$^\circ$ horizontale bocht; twee kalibratieruns van onder naar
 boven en van boven naar onder, voorafgegaan door een stationaire baseline van
 13\,s), en een tweede campagne op een langere 5428\,mm-rail (acht rechte secties
-en zeven bochten: twee horizontale en vijf verticale).
+en zeven bochten: twee horizontale en vijf verticale). Foto's van beide
+testopstellingen staan in Bijlage~\ref{app:opstellingen}.
 De tweede campagne omvat aanvullend een speciale continue-rit-log voor de
 snelheidsgebaseerde DV3(b)-test en twee statische oriëntatietests (spindle en
 swivel). Het systeem pollt telemetrie op een geaggregeerde $\sim$10\,Hz aan
 round-trips tijdens de runs (gedeeld over alle kanalen,
 Sectie~\ref{sec:results-q1}) en logt elke gebeurtenis met milliseconde-timestamps
-via de in-app TestLogger-module.
+via de in-app TestLogger-module; representatieve logfragmenten per event-type
+staan in Bijlage~\ref{app:logs}.
 
 \textbf{Meetmethodologie.} Referentiemarkers worden vóór de runs op bekende
 offsets op rechte rail-parts geplaatst (vijf op de 3403\,mm-rail; vijf op de
 5428\,mm-rail, op rail-parts rd3, rd5, rd7, rd9 en rd13). Elke marker wordt in
 beide rijrichtingen vastgelegd, wat tien marker-metingen per rail geeft. De
 fysieke stoelpositie wordt afgelezen met een stalen meetlint (schaalverdeling
-1\,mm, afleesonzekerheid $\approx\pm$1\,mm). De positienauwkeurigheid wordt
+1\,mm, afleesonzekerheid $\approx\pm$1\,mm). De markerplaatsing en de
+offset-meting zijn gefotografeerd in Bijlage~\ref{app:opstellingen}; de tijdens
+de campagnes ingevulde meetbladen staan in Bijlage~\ref{app:meetbladen}. De positienauwkeurigheid wordt
 geëvalueerd op de twee niveaus die het DV2(b)-ontwerp voorschrijft:
 \begin{itemize}[leftmargin=*]
   \item \emph{Display vs.\ fysiek} (primair): de weergegeven positie wordt
@@ -1484,7 +1488,8 @@ de spindle-as (zittinghoek) is de weergegeven lookup-hoek vergeleken met een
 digitale waterpas over het volledige bereik 0--75$^\circ$ in stappen van
 15$^\circ$: de maximale afwijking was 1.05$^\circ$ (bij de mechanische eindstop
 van 75$^\circ$), gemiddeld $\approx$\,0.4$^\circ$. Voor de swivel-as is de
-weergegeven hoek vergeleken met de tablet-gyroscoop over $\pm$60$^\circ$: de
+weergegeven hoek vergeleken met de tablet-gyroscoop over $\pm$60$^\circ$
+(meetopstelling: Bijlage~\ref{app:opstellingen}): de
 maximale afwijking was 2.83$^\circ$, binnen de encoder-naar-fysiek-tolerantie
 van $\pm$3.5$^\circ$, en $\sim$2.6$^\circ$ van de spreiding is toe te schrijven
 aan gyroscoop-drift in de referentie zelf (de gyro las 2.6$^\circ$ bij een
@@ -1894,6 +1899,319 @@ afdwaalt naar een applicatie-showcase.
 \newpage
 \bibliographystyle{ieeetr}
 \bibliography{bibliography}
+
+% ============================================================
+% Bijlagen: één kolom, na de referenties. De hoofdtekst verwijst
+% hiernaar; de bijlagen bevatten zelf geen nieuwe resultaten.
+\clearpage
+\onecolumn
+\appendix
+
+\section*{Bijlagen}
+De bijlagen documenteren hoe de validatiemetingen van
+Sectie~\ref{sec:results-validation} fysiek zijn uitgevoerd: de meetopstellingen
+van de twee campagnes (Bijlage~\ref{app:opstellingen}), de tijdens de campagnes
+ingevulde meetbladen (Bijlage~\ref{app:meetbladen}) en representatieve
+fragmenten uit de bewaarde sessielogs (Bijlage~\ref{app:logs}). Ze bevatten
+geen nieuwe resultaten; alle kwantitatieve uitkomsten staan in de hoofdtekst.
+De volledige logbestanden worden, samen met de broncode, geleverd in het
+archief dat bij dit verslag hoort (Sectie~\ref{sec:conclusion}).
+
+% ------------------------------------------------------------
+\section{Meetopstellingen}
+\label{app:opstellingen}
+
+\subsection{De twee validatierails}
+Figuur~\ref{fig:app-rails} toont de twee fysieke testopstellingen waarop de
+meetcampagnes zijn uitgevoerd. Beide zijn volledige trapliftinstallaties op
+interne testtrappen, aangestuurd door dezelfde liftcontroller-hardware als bij
+klantinstallaties; de visualisatie draait op de Android-tablet die via de
+HC-06-module met de controller is verbonden (Sectie~\ref{sec:results-q1}).
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.48\textwidth}
+\centering
+\includegraphics[height=8.5cm,keepaspectratio]{images/Meetopstellingen/testrail_1.jpeg}
+\caption{Campagne 1: de 3403\,mm-rail (11 rail-parts, één horizontale
+90$^\circ$-bocht), met de stoel bij het onderstation.}
+\label{fig:app-rail1}
+\end{subfigure}\hfill
+\begin{subfigure}{0.48\textwidth}
+\centering
+\includegraphics[height=8.5cm,keepaspectratio]{images/Meetopstellingen/testrail_2.jpeg}
+\caption{Campagne 2: de 5428\,mm-rail (acht rechte secties, zeven bochten:
+twee horizontale en vijf verticale), met verhoogd bovenstation.}
+\label{fig:app-rail2}
+\end{subfigure}
+\caption{De twee validatierails waarop de meetcampagnes van
+Sectie~\ref{sec:results-validation} zijn uitgevoerd.}
+\label{fig:app-rails}
+\end{figure}
+
+\subsection{Referentiemarkers en offset-meting (DV2(b))}
+\label{app:opstelling-markers}
+De primaire display-vs-fysiek-meting gebruikt referentiemarkers op rechte
+rail-parts. Elke marker is een dun strookje met een penstreep als afleesrand;
+een dunne streep is gekozen in plaats van brede tape, omdat een tapebreedte van
+$\sim$15\,mm een afleesonzekerheid van dezelfde orde zou toevoegen aan een
+meting met een 10\,mm-tolerantie. De offset van de marker binnen zijn rail-part
+wordt met het stalen meetlint gemeten (Figuur~\ref{fig:app-marker-tape}); dit
+levert de fysieke referentiepositie $d_{\text{phys}}$ op (rail-part-begin plus
+offset, Sectie~\ref{sec:results-validation}). Tijdens de run wordt de lift bij
+elke marker uitgesetteld en wordt met de MARK-functie van de test-UI een
+\texttt{[MARKER]}-event vastgelegd dat de weergegeven en firmware-encoded
+positie op dat moment logt (Bijlage~\ref{app:logs}).
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.32\textwidth}
+\centering
+\includegraphics[height=5.6cm,keepaspectratio]{images/Meetopstellingen/marker_test_marker.jpeg}
+\caption{Een referentiemarker: dun strookje met penstreep op een recht
+rail-part, direct vóór een bochtingang (segmentlamellen rechts).}
+\label{fig:app-marker-strip}
+\end{subfigure}\hfill
+\begin{subfigure}{0.32\textwidth}
+\centering
+\includegraphics[height=5.6cm,keepaspectratio]{images/Meetopstellingen/marker_test_marker_offset_measurement.jpeg}
+\caption{De offset van de marker binnen het rail-part wordt met een stalen
+meetlint (1\,mm-schaalverdeling) gemeten.}
+\label{fig:app-marker-tape}
+\end{subfigure}\hfill
+\begin{subfigure}{0.32\textwidth}
+\centering
+\includegraphics[height=5.6cm,keepaspectratio]{images/Meetopstellingen/marker_test_marker_with_lift.jpeg}
+\caption{De wagen uitgesetteld op de marker; op dit moment wordt het
+\texttt{[MARKER]}-event vastgelegd.}
+\label{fig:app-marker-lift}
+\end{subfigure}
+\\[6pt]
+\begin{subfigure}{0.48\textwidth}
+\centering
+\includegraphics[height=6.2cm,keepaspectratio]{images/Meetopstellingen/markers_testrail_1.jpeg}
+\caption{Referentiemarkers (dunne strookjes) op de rail van de eerste
+campagne, gezien langs het bovenste rail-part.}
+\label{fig:app-marker-rail1}
+\end{subfigure}
+\caption{De markerprocedure voor de display-vs-fysiek-meting (DV2(b)).}
+\label{fig:app-markers}
+\end{figure}
+
+\subsection{Statische swivel-test (T-SWIV)}
+\label{app:opstelling-swivel}
+De statische swivel-test (Sectie~\ref{sec:results-validation},
+oriëntatienauwkeurigheid) gebruikt de gyroscoop van de tablet zelf als externe
+referentie. De tablet ligt plat op de horizontale zitting
+(spindle-hoek 0$^\circ$), zodat de gyroscoop-yaw-as samenvalt met de
+swivel-rotatie-as. De gyro-integratie wordt aan het begin van de sweep genuld
+(knop ``Kompas nul'' op het testpaneel), waarna de zitting in stappen over het
+$\pm$60$^\circ$-bereik wordt gedraaid en bij elke stap een
+\texttt{[MARKER]}-event wordt vastgelegd met zowel de encoder-gebaseerde
+swivel-hoek als de gyroscoop-uitlezing (\texttt{compass\_yaw},
+Bijlage~\ref{app:logs}). Figuur~\ref{fig:app-swivel} toont de opstelling en de
+gyro-uitlezing bij twee punten van de sweep.
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.27\textwidth}
+\centering
+\includegraphics[height=6.4cm,keepaspectratio,angle=-90]{images/Meetopstellingen/testrail_2_swivel_test_wide_0_deg.jpeg}
+\caption{Opstelling bij 0$^\circ$: tablet plat op de horizontale zitting.}
+\label{fig:app-swivel-w0}
+\end{subfigure}\hfill
+\begin{subfigure}{0.27\textwidth}
+\centering
+\includegraphics[height=6.4cm,keepaspectratio]{images/Meetopstellingen/testrail_2_swivel_test_wide_60_deg.jpeg}
+\caption{Zitting naar $\sim$60$^\circ$ gedraaid, tablet draait mee.}
+\label{fig:app-swivel-w60}
+\end{subfigure}\hfill
+\begin{subfigure}{0.21\textwidth}
+\centering
+\includegraphics[height=6.4cm,keepaspectratio]{images/Meetopstellingen/testrail_2_swivel_test_close_0_deg.jpeg}
+\caption{Gyro-uitlezing na nulling: ``Kompas (swivel): $-$0.0$^\circ$''.}
+\label{fig:app-swivel-c0}
+\end{subfigure}\hfill
+\begin{subfigure}{0.18\textwidth}
+\centering
+\includegraphics[height=6.4cm,keepaspectratio]{images/Meetopstellingen/testrail_2_swivel_test_close_60_deg.jpeg}
+\caption{Uitlezing bij $\sim$60$^\circ$: ``58.8$^\circ$'' (momentopname tijdens de sweep).}
+\label{fig:app-swivel-c60}
+\end{subfigure}
+\caption{De statische swivel-test: tablet-gyroscoop als referentie voor de
+weergegeven swivel-hoek. De spindle-test verliep analoog, maar met een digitale
+waterpas op de zitting als referentie (Sectie~\ref{sec:results-validation}).}
+\label{fig:app-swivel}
+\end{figure}
+
+% ------------------------------------------------------------
+\section{Ingevulde meetbladen}
+\label{app:meetbladen}
+De markerdefinities en de rail-decompositie zijn tijdens de campagnes
+vastgelegd op gestandaardiseerde meetbladen, zodat elke meting herleidbaar is
+tot een rail-part, een offset en een rijrichting.
+Figuur~\ref{fig:app-meetblad-markers} en
+Figuur~\ref{fig:app-meetblad-raildelen} tonen de ingevulde bladen van de
+tweede campagne (5428\,mm-rail); zij definiëren de meetpunten waarop
+Tabel~\ref{tab:validation} en Figuur~\ref{fig:dv2-error} zijn gebaseerd.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.72\textwidth]{images/Meetopstellingen/marker_punten.png}
+\caption{Het ingevulde markerblad van de 5428\,mm-campagne: per marker (MP\#)
+het rail-part waarop hij zit, de met meetlint gemeten offset binnen dat part en
+de rijrichting. De vijf gebruikte markers staan op rail-parts rd3, rd5, rd7,
+rd9 en rd13; een zesde kandidaat-punt op rd15 is op het blad genoteerd maar
+niet in de uiteindelijke meting gebruikt. Elke marker is in beide
+rijrichtingen vastgelegd, wat de tien marker-metingen van
+Tabel~\ref{tab:validation} geeft.}
+\label{fig:app-meetblad-markers}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\textwidth]{images/Meetopstellingen/meetblad_raildeel_fysieke_metingen.png}
+\caption{Het ingevulde T-TRAC-meetblad met de rail-decompositie van de
+5428\,mm-rail: per rail-part het type (recht, verticale bocht omhoog/omlaag,
+horizontale bocht) en de genoteerde omvang (lengte in mm voor rechte parts,
+aantal 5$^\circ$-segmenten voor bochten). De vijftien parts (acht recht, zeven
+bochten) komen overeen met de geometrie beschreven in
+Sectie~\ref{sec:results-validation}.}
+\label{fig:app-meetblad-raildelen}
+\end{figure}
+
+% ------------------------------------------------------------
+\section{Logfragmenten uit de validatieruns}
+\label{app:logs}
+
+Alle validatieruns zijn gelogd met de in-app TestLogger-module; elke regel
+draagt een milliseconde-timestamp ten opzichte van de applicatiestart. Deze
+bijlage toont per gebruikt event-type een kort, representatief fragment,
+letterlijk overgenomen uit de bewaarde sessielogs van de tweede campagne;
+weggelaten regels of velden zijn gemarkeerd met ``...''. De fragmenten illustreren hoe de
+in de hoofdtekst gerapporteerde grootheden uit de logs zijn berekend.
+
+\lstset{
+  basicstyle=\ttfamily\scriptsize,
+  breaklines=true,
+  postbreak=\mbox{\textcolor{gray}{$\hookrightarrow$}\space},
+  frame=single,
+  framerule=0.3pt,
+  columns=fullflexible,
+  keepspaces=true,
+  upquote=true,
+  aboveskip=4pt,
+  belowskip=10pt
+}
+
+\subsection{Sessieheader en Bluetooth-round-trips (DV1(b))}
+Elke sessielog begint met een header; daarna logt de poller per
+request/response-paar een \texttt{[BT\_RTT]}-regel. Het veld \texttt{msg\_id}
+is het gepollde berichttype uit Tabel~\ref{tab:telemetry} (110 traction, 111
+spindle, 168 swivel via AppToBus, 114/113 status); \texttt{rtt\_ms} is de
+round-trip-tijd op applicatieniveau. De DV1(b)-percentielen in
+Tabel~\ref{tab:validation} zijn berekend over alle \texttt{[BT\_RTT]}-regels
+van een run (5872 op de 5428\,mm-rail).
+
+\begin{lstlisting}
+# UP-Studio validatie-sessie log
+# datetime: 2026-06-05T13:02:19
+# platform: Android
+# session_start_ms: 107779
+[VALIDATION] session_reset t=107780
+[BT_RTT] msg_id=111 rtt_ms=81.1
+[BT_RTT] msg_id=168 rtt_ms=80.1
+[BT_RTT] msg_id=110 rtt_ms=80.6
+[CSV] 107960,462,0.019843,0.000000,0.019843,0.019843
+[BT_RTT] msg_id=168 rtt_ms=53.8
+[BT_RTT] msg_id=111 rtt_ms=80.5
+...
+[BT_RTT] msg_id=114 rtt_ms=81.7
+[BT_RTT] msg_id=113 rtt_ms=81.5
+\end{lstlisting}
+
+\subsection{Telemetrie-samples (\texttt{[CSV]})}
+Bij elke verwerkte traction-meting logt de state estimator een
+\texttt{[CSV]}-regel met zes velden: timestamp (ms), ruwe encoder-telling,
+Kalman-positie, Kalman-snelheid, display-positie en de encoder-meting door
+dezelfde stuksgewijze mapping (\texttt{meas}); alle posities zijn
+genormaliseerd over de raillengte ($t \in [0,1]$,
+Sectie~\ref{sec:results-q2}). Het fragment hieronder is genomen tijdens het
+rijden: de encoder telt op, de Kalman-snelheid is $\approx$0.005\,s$^{-1}$
+(genormaliseerd) en de display-positie volgt tussen de vorige schatting en de
+nieuwste meting in. De tussen-sample-gaten van $\sim$400--700\,ms zijn de
+per-kanaal-aankomstrate van Sectie~\ref{sec:results-q1} die de render-loop met
+dead-reckoning overbrugt.
+
+\begin{lstlisting}
+[CSV] 150011,3049,0.156764,0.005205,0.158435,0.158961
+[CSV] 150396,3088,0.158961,0.004683,0.160137,0.160823
+[CSV] 150784,3127,0.160823,0.004873,0.162044,0.162685
+[CSV] 151169,3165,0.162685,0.004780,0.163873,0.164500
+[CSV] 151890,3235,0.164500,0.004695,0.167239,0.167842
+\end{lstlisting}
+
+\subsection{Marker-events (DV2(b))}
+Bij elke uitgesettelde marker legt de MARK-functie één regel vast met de
+volledige toestand. De twee regels hieronder zijn hetzelfde fysieke punt (de
+marker op rd7) in beide rijrichtingen. Drie observaties uit
+Sectie~\ref{sec:results-validation} zijn er direct in terug te zien:
+\texttt{display\_mm} en \texttt{fw\_mm} zijn identiek op 0.1\,mm (de
+pipeline-integratiefout, secundaire DV2(b)-maat); het verschil met de fysieke
+referentie $d_{\text{phys}} = 1841.9$\,mm (meetlint, Bijlage~\ref{app:meetbladen})
+is $-9.88$\,mm, de maximale end-to-end fout uit Figuur~\ref{fig:dv2-error}; en
+het verschil tussen beide richtingen (1832.0 vs.\ 1836.1\,mm) is de
+4.1\,mm-richtingsherhaalbaarheid uit Tabel~\ref{tab:validation}.
+
+\begin{lstlisting}
+[MARKER] n=3 label="MP3" t=201981 encoder=6349 kf_pos=0.33746 display_pos=0.33746 fw_pos=0.33746 total_mm=5428.7 display_mm=1832.0 fw_mm=1832.0 spindle_kf=2.800 spindle_disp=2.389 swivel_kf=0.000 swivel_disp=0.000 compass_yaw=-94.532
+[MARKER] n=8 label="MP8" t=491041 encoder=6363 kf_pos=0.33823 display_pos=0.33823 fw_pos=0.33823 total_mm=5428.7 display_mm=1836.1 fw_mm=1836.1 spindle_kf=3.400 spindle_disp=2.900 swivel_kf=-0.000 swivel_disp=-0.000 compass_yaw=-113.625
+\end{lstlisting}
+
+\subsection{Frame-log voor de smoothness-test (DV3(b))}
+Voor DV3(b) logt de renderer tijdens de continue rit elke frame de weergegeven
+positie (13\,596 \texttt{[FRAME]}-regels op de 5428\,mm-rail). De per-frame-snelheid
+$v[i]=(p[i{+}1]-p[i])/\Delta t[i]$ uit Sectie~\ref{sec:results-validation} wordt
+rechtstreeks op deze regels berekend. Het fragment toont vloeiende increments
+van $\approx$0.0004 per frame op $\sim$17--22\,ms-intervallen, zonder de
+stap-sprongen van een last-value-hold.
+
+\begin{lstlisting}
+[FRAME_LOG] START t=31006
+...
+[FRAME] t=87248 display_pos=0.596716 display_spindle=40.0843 display_swivel=-60.0000
+[FRAME] t=87265 display_pos=0.597143 display_spindle=40.0842 display_swivel=-60.0000
+[FRAME] t=87286 display_pos=0.597577 display_spindle=40.0842 display_swivel=-60.0000
+[FRAME] t=87302 display_pos=0.598002 display_spindle=40.0842 display_swivel=-60.0000
+[FRAME] t=87324 display_pos=0.598438 display_spindle=40.0842 display_swivel=-60.0000
+\end{lstlisting}
+
+\subsection{Statische oriëntatietests (spindle en swivel)}
+De statische tests gebruiken dezelfde \texttt{[MARKER]}-events; de positievelden
+zijn daarbij constant (de lift staat stil) en de hoekvelden dragen de meting.
+In het spindle-fragment is de geometrie-blend van
+Vergelijking~\ref{eq:spindle-blend} direct zichtbaar:
+$\texttt{spindle\_disp} = 0.85 \times \texttt{spindle\_kf}$
+($63.750 = 0.85 \times 75.000$), wat bevestigt waarom de validatie de
+waterpas vergelijkt met de lookup-hoek \texttt{spindle\_kf} en niet met de
+gerenderde hoek.
+
+\begin{lstlisting}
+[MARKER] n=1 label="MP1" t=61623 encoder=4669 ... spindle_kf=0.000 spindle_disp=0.000 swivel_kf=0.000 swivel_disp=0.000 compass_yaw=109.829
+[MARKER] n=7 label="MP7" t=217501 encoder=4669 ... spindle_kf=75.000 spindle_disp=63.750 swivel_kf=0.000 swivel_disp=0.000 compass_yaw=83.478
+\end{lstlisting}
+
+In het swivel-fragment draagt \texttt{compass\_yaw} de gyroscoop-referentie
+(Bijlage~\ref{app:opstellingen}). De tekenconventie van gyroscoop en encoder is
+tegengesteld (60.0 vs.\ $-$57.5; oriëntatie-afhankelijk), zodat absolute
+waarden worden vergeleken. Bij terugkeer naar 0$^\circ$ (tweede regel) leest de
+gyro 2.59$^\circ$: de opgebouwde drift die in
+Sectie~\ref{sec:results-validation} aan de referentie zelf wordt toegeschreven.
+
+\begin{lstlisting}
+[MARKER] n=2 label="MP2" t=491120 encoder=3605 ... spindle_kf=0.000 spindle_disp=0.002 swivel_kf=60.001 swivel_disp=59.964 compass_yaw=-57.463
+[MARKER] n=5 label="MP5" t=542272 encoder=3605 ... spindle_kf=0.000 spindle_disp=0.002 swivel_kf=0.001 swivel_disp=-0.006 compass_yaw=2.590
+\end{lstlisting}
 
 \label{LastPage}
 
