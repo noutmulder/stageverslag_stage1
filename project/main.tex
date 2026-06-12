@@ -73,13 +73,29 @@
 \author{Nout Mulder}
 \date{2026}
 
+% ---------- Titelpagina-logo's ----------
+% Als macro gedefinieerd: binnen \twocolumn[...] zou de "]" van
+% [c] / [height=...] het optionele argument voortijdig afsluiten.
+\newcommand{\titlelogos}{%
+  \noindent
+  \begin{minipage}[c]{0.5\textwidth}
+    \includegraphics[height=1.2cm]{images/logo's/logo_inholland.png}%
+  \end{minipage}%
+  \begin{minipage}[c]{0.5\textwidth}
+    \raggedleft
+    \includegraphics[height=1.7cm]{images/logo's/up-stairlift_payoff.png}%
+  \end{minipage}\par
+}
+
 % ---------- Document ----------
 \begin{document}
 
 % ---------- Journal-style Title Block (full width) ----------
 \twocolumn[
-\thispagestyle{fancy}
-\vspace*{0.3cm}
+\thispagestyle{empty}% titelpagina: logo's i.p.v. lopende koptekst
+\vspace*{-0.2cm}
+\titlelogos
+\vspace{0.45cm}
 {\small\itshape Stageverslag DeVi Comfort. 2026; 1(1): 1--\pageref{LastPage}\par}
 \vspace{0.2cm}
 \hrule
@@ -1949,6 +1965,8 @@ Sectie~\ref{sec:results-validation} zijn uitgevoerd.}
 \label{fig:app-rails}
 \end{figure}
 
+\newpage
+
 \subsection{Referentiemarkers en offset-meting (DV2(b))}
 \label{app:opstelling-markers}
 De primaire display-vs-fysiek-meting gebruikt referentiemarkers op rechte
@@ -1997,6 +2015,8 @@ campagne, gezien langs het bovenste rail-part.}
 \caption{De markerprocedure voor de display-vs-fysiek-meting (DV2(b)).}
 \label{fig:app-markers}
 \end{figure}
+\newpage
+
 
 \subsection{Statische swivel-test (T-SWIV)}
 \label{app:opstelling-swivel}
@@ -2046,6 +2066,8 @@ waterpas op de zitting als referentie (Sectie~\ref{sec:results-validation}).}
 \end{figure}
 
 % ------------------------------------------------------------
+\newpage
+
 \section{Ingevulde meetbladen}
 \label{app:meetbladen}
 De markerdefinities en de rail-decompositie zijn tijdens de campagnes
