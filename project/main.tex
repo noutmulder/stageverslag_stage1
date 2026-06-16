@@ -694,8 +694,8 @@ positie doorstaat de snelheidsgebaseerde DV3(b)-smoothness-test: tijdens continu
 beweging vertoont de frame-tot-frame-snelheid geen pieken boven 5$\times$ de
 mediane $|v|$ (de signatuur van een last-value-hold-staircase,
 Sectie~\ref{sec:method-validation}). Zo vult de display de sample-stream van
-$\sim$4--5\,Hz per kanaal --- begrensd door de round-trip over de gedeelde
-verbinding (Sectie~\ref{sec:results-q1}) --- zonder zichtbare stap-sprongen.
+$\sim$4--5\,Hz per kanaal, begrensd door de round-trip over de gedeelde
+verbinding (Sectie~\ref{sec:results-q1}), zonder zichtbare stap-sprongen.
 Het Kalman filter werkt hier vooral als \emph{temporele} interpolator en
 snelheidsschatter voor de render-loop, niet als ruisonderdrukkingsfilter. De
 traction-encoder is namelijk een digitale pulse-counter zonder value-jitter op
@@ -1319,7 +1319,7 @@ geëvalueerd op de twee niveaus die het DV2(b)-ontwerp voorschrijft:
     firmware-encoded begin van het raildeel van de marker, plus de met meetlint
     gemeten offset daarbinnen. Door elke marker te refereren aan de oorsprong van
     zijn raildeel legt deze maat de end-to-end nauwkeurigheid binnen dat raildeel
-    vast --- inclusief de eigen encoded-vs-fysieke schaling --- precies wat een
+    vast, inclusief de eigen encoded-vs-fysieke schaling. Dat is precies wat een
     service-engineer zou zien.
   \item \emph{Display vs.\ firmware-encoded} (secundair): de weergegeven
     positie wordt vergeleken met de firmware-encoded positie afgeleid uit
@@ -1484,8 +1484,8 @@ rail) op de 5428\,mm-rail, waarbij de weergegeven positie op framerate werd
 gelogd (13\,596 frames, $\sim$53\,fps op de tablet). Op het stabiele traject van
 onder naar boven traden snelheidspieken boven 5$\times$ de mediane $|v|$ op bij
 0.04\,\% van de frames voor de traction-as (0.04\,\% spindle, 0.21\,\% swivel).
-Ter referentie: een last-value-hold-rendering --- de staircase-faalmodus die
-het criterium moet detecteren --- zou ruwweg één piek per tien frames produceren
+Ter referentie: een last-value-hold-rendering (de staircase-faalmodus die
+het criterium moet detecteren) zou ruwweg één piek per tien frames produceren
 ($\sim$10\,\%). De waargenomen rate ligt dus meer dan twee ordes van grootte
 (een factor $\sim$250) onder die signatuur: er is geen staircase aanwezig.
 De enkele geïsoleerde pieken treden op normale frame-intervallen op (de enkele
