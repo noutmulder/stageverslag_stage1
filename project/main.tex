@@ -125,10 +125,12 @@
 Dit onderzoek beschrijft de ontwikkeling en validatie van een pipeline die
 ruwe traplift-telemetrie omzet in een stabiele, nauwkeurige live
 3D-visualisatie als basis voor storingsdiagnose. Het technische
-kernprobleem is tweeledig. Pulse-encoder-metingen komen binnen over een
-Bluetooth-verbinding met hoge latency. Ze moeten worden afgebeeld op een gebogen
-3D-rail, waar de verhouding tussen encoder-pulsen en afstand per segment verschilt.
-Tegelijk moet de weergegeven beweging vloeiend blijven op de display-loop.
+kernprobleem is tweeledig. De positie van de traplift wordt gemeten met een
+pulse-encoder, en die metingen komen binnen over een Bluetooth-verbinding met
+hoge latency. Ze moeten worden afgebeeld op een gebogen 3D-rail, waar de
+verhouding tussen encoder-pulsen en afstand per segment verschilt. Tegelijk moet
+de weergegeven beweging vloeiend blijven: het beeld wordt steeds opnieuw
+getekend in de display-loop, en daar mag geen schokkerigheid in zitten.
 
 Een ``virtual ghost''-prototype is iteratief ontwikkeld en gevalideerd op
 fysieke traplifthardware, over twee rail-configuraties (3403\,mm en 5428\,mm)
@@ -145,10 +147,11 @@ drempels, en een continue rit vertoonde geen getrapte beweging
 (rendering-staircase).
 
 Binnen de geteste configuraties levert één processing-pipeline dus een stabiele,
-nauwkeurige live 3D-weergave van de trapliftpositie op. Deze combineert
-niet-lineaire encoder-mapping, recursieve toestandsschatting met dead-reckoning
-(positie voorspellen tussen metingen) en vloeiende tangent-gebaseerde
-oriëntatiereconstructie. De storingstoestand wordt rechtstreeks uit de geparste
+nauwkeurige live 3D-weergave van de trapliftpositie op. Daarin komen drie onderdelen samen. De encoder-pulsen worden via een
+niet-lineaire afbeelding omgezet naar een positie op de rail. Een recursieve
+toestandsschatting met dead-reckoning (positie voorspellen tussen metingen) houdt
+de beweging stabiel. En de oriëntatie wordt vloeiend gereconstrueerd op basis van
+de spline-tangent. De storingstoestand wordt rechtstreeks uit de geparste
 statusbits weergegeven.
 \end{minipage}
 \end{center}
@@ -167,7 +170,7 @@ stoel die over een rail rijdt. Die rail is met een modulair ontwerp aan de trap 
 De stoel wordt aangedreven door een traction-motor, terwijl een spindle-motor
 de zittinghoek instelt en een swivel-motor de zitting bij overlooppunten draait.
 Tijdens aandrijving produceren embedded controllers continu telemetrie:
-traction-encoder-pulsen, spindle-encoder-waarden, swivel-hoeken en
+pulsen van de traction-encoder, waarden van de spindle-encoder, swivel-hoeken en
 systeemstatusbits, inclusief foutcodes. Voor service, onderhoud en
 doorontwikkeling moeten engineers snel de actuele toestand van een traplift
 kunnen begrijpen. Daarbij gaat het om de vraag of de rail in de software klopt,
@@ -192,7 +195,7 @@ ruimtelijke weergave die met de display-framerate ververst.
 
 Een live 3D-visualisatie van trapliftpositie en -beweging vult een belangrijke kloof. Ze maakt de ruimtelijke toestand van de stoel expliciet: de positie op de rail, de beweging door bochten en de zittinghoek. De huidige tekst- en code-uitvoer toont die toestand alleen impliciet. Een service-engineer ziet zo in één oogopslag de positie en oriëntatie van de stoel, en het ontwikkelteam kan firmwaregedrag direct verifiëren tijdens testen en bij het inbedrijfstellen van nieuwe rails. Of de visualisatie de diagnosetijd verkort of het aantal bezoeken vermindert, wordt niet onderzocht; dat valt buiten de scope van dit onderzoek.
 
-Het doel is vast te stellen welke data-processing-stappen en wiskundige modellen nodig zijn om live traplift-telemetrie om te zetten in een stabiele en nauwkeurige 3D-weergave. Het praktische effect van zo'n visualisatie op storingsdiagnose blijft buiten beschouwing. De centrale onderzoeksvraag richt zich daarom uitsluitend op wat deductief kan worden vastgesteld:
+Het doel is vast te stellen welke stappen in de dataverwerking en welke wiskundige modellen nodig zijn om live traplift-telemetrie om te zetten in een stabiele en nauwkeurige 3D-weergave. Het praktische effect van zo'n visualisatie op storingsdiagnose blijft buiten beschouwing. De centrale onderzoeksvraag richt zich daarom uitsluitend op wat deductief kan worden vastgesteld:
 
 \textit{Welke data-processing-pipeline en wiskundige modellen zijn vereist om
 live traplift-telemetrie om te zetten in een stabiele, nauwkeurige
@@ -330,8 +333,8 @@ dat die aanname faalt waar de padgeometrie varieert: op een gebogen rail bouwt
 de lineaire factor bij elke bochtovergang een positiefout op. Deze
 aanpak wordt daarom verworpen als primaire mapping.
 
-Een \textbf{gesloten-vorm booglengte-parametrisatie} integreert de
-encoder-naar-booglengte-relatie analytisch wanneer het pad één enkele
+Een \textbf{gesloten-vorm booglengte-parametrisatie} integreert de relatie
+tussen encoder-telling en booglengte analytisch wanneer het pad één enkele
 analytische curve is~\cite{strang2016calculus}. Dit is exact en compact, maar
 een gesloten-vorm inverse bestaat alleen voor één uniform segmenttype (constante
 kromming). De trapliftrail mengt rechte, verticaal-gebogen en
@@ -471,8 +474,8 @@ visualisatiehost. Een bekabelde verbinding valt daarmee meteen af: een seriële
 (UART/RS-232) of Ethernet-kabel zou met de rijdende wagen meegesleept moeten
 worden. Een draadloze verbinding is daarom een harde eis. Het
 transport is hier echter geen vrije ontwerpkeuze; het is overgeërfd van de
-ingezette hardware. De liftcontroller draagt een HC-serie
-Bluetooth-naar-serieel-module en heeft altijd met companion-applicaties
+ingezette hardware. De liftcontroller draagt een module uit de HC-serie die Bluetooth omzet naar
+serieel, en heeft altijd met companion-applicaties
 gecommuniceerd over die Bluetooth-seriële verbinding. De pipeline neemt daarom
 Bluetooth Classic met het Serial Port Profile~\cite{bluetoothsig2022spp} als
 gegeven. Alternatieven zoals Wi-Fi vallen af: die vereisen een IP-stack en
@@ -562,7 +565,7 @@ kloof tussen het geïdentificeerde probleem en de beschikbare oplossingen.
     \label{q:encoder}
   \item \textit{Welke toestandsschattings- en oriëntatiemodellen produceren een
     stabiele live 3D-weergave uit telemetrie die asynchroon en ruim onder de
-    display-refresh-rate wordt bemonsterd?}
+    refresh-rate van het display wordt bemonsterd?}
     Het overzicht van eerder werk identificeerde meerdere kandidaat-modellen per
     deelprobleem. Deze vraag behandelt de formele afleiding, parametrisatie en
     empirische evaluatie van de geselecteerde modellen voor deze specifieke
@@ -624,7 +627,7 @@ het scherm de fysieke stoel volgt tijdens steady-state-beweging, zonder
 waarneembare lag (criterium DV1(b); de DV1--DV3-criteria staan in
 Sectie~\ref{sec:method-validation}). De percentielgrens wordt gebruikt in plaats
 van een enkel-sample-drempel, omdat de pipeline de per-sample-latency bewust aan
-de display-zijde maskeert (Sectie~\ref{sec:results-q3}); ze begrenst de
+de displayzijde maskeert (Sectie~\ref{sec:results-q3}); ze begrenst de
 tussen-sample-gaten die de dead-reckoning moet overbruggen. De zichtbare lag
 wordt er los naast gerapporteerd, als de eindgebruiker-eigenschap die het
 verbindingscriterium uiteindelijk dient.
@@ -642,8 +645,8 @@ verticale bocht, horizontale bocht). Voor elk segmenttype wordt de
 encoder-pulskost afgeleid uit firmware-constanten. Cumulatieve 3D-Euclidische
 afstanden worden berekend op segmentgrenzen, wat een stuksgewijze lineaire
 mapping van encoder-waarde naar genormaliseerde rail-positie oplevert. De
-afleiding omvat de arc-tracing-geometrie die wordt gebruikt om 3D-controlepunten
-te construeren uit de segmentbeschrijving van de firmware.\\
+afleiding omvat de geometrie van het arc-tracing waarmee 3D-controlepunten
+worden geconstrueerd uit de segmentbeschrijving van de firmware.\\
 \textbf{Waarom deze aanpak:} De mapping wordt vooraf berekend en op
 segmentgrenzen opgeslagen, in plaats van de curve elk frame opnieuw te
 integreren. De reden: zodra de rail bekend is, is de mapping statisch, terwijl
@@ -721,15 +724,15 @@ De drempels in Tabel~\ref{tab:validation-criteria} zijn de
 tweede-versie-criteria (v2). De eerste meetronde
 (Sectie~\ref{sec:results-validation}) liet zien dat de oorspronkelijke
 v1-drempels voor DV1(b) en DV3(b) gedrag veronderstelden dat dit systeem niet
-vertoont. De DV1(b)-drempel was een enkel-sample 100\,ms-round-trip-doel; dat
+vertoont. De DV1(b)-drempel was een round-trip-doel van 100\,ms voor een enkel sample; dat
 negeert dat de state estimator de latency maskeert. De DV3(b)-drempel was een
-verhouding ``Kalman-jitter $\geq$ 10$\times$ kleiner dan ruw''; die is
+verhouding ``Kalman-jitter $\geq$ 10$\times$ kleiner dan ruw''. Die verhouding is
 ongedefinieerd voor een digitale pulse-encoder, want die toont in rust geen
 value-jitter. De criteria zijn
 daarom geherformuleerd tot kwantitatieve, sensor-passende vormen: een
-percentiel-latency-grens en een snelheidsgebaseerde smoothness-test. Deze zijn
-\emph{vooraf geregistreerd} met een vastgelegde version-control-timestamp, vóór
-de tweede meetronde, zodat de beslissende runs op de langere rail worden
+percentiel-latency-grens en een snelheidsgebaseerde smoothness-test. Deze nieuwe vormen zijn
+\emph{vooraf geregistreerd} met een vastgelegde version-control-timestamp, en wel vóór
+de tweede meetronde. Zo worden de beslissende runs op de langere rail
 beoordeeld tegen vooraf vastgelegde drempels. Deze verfijning en haar effect op
 de bewijskracht worden expliciet vermeld onder Beperkingen
 (Sectie~\ref{sec:conclusion}). Naast DV1--DV3 worden de oriëntatie-uitvoeren
@@ -770,10 +773,10 @@ de weergegeven positie op bekende referentiepunten (stationgrenzen, begin/eind
 van bochten) te vergelijken met de fysieke positie van de stoel, met de
 meetprocedure beschreven in Sectie~\ref{sec:results-validation}.\\
 \textbf{Waarom deze aanpak:} Drempels worden vóór de runs gedefinieerd, niet
-erna, en elk is gekoppeld aan een van de DV1--DV3-instrument-criteria. Meten op
+erna, en elk is gekoppeld aan een van de DV1--DV3-instrument-criteria. Er wordt gemeten op
 vaste referentiepunten (stationgrenzen en bochtingangen/-uitgangen) in plaats
-van middelen over de hele run is gekozen omdat dit de punten zijn waarop een
-mapping-fout zichtbaar zou zijn voor een operator; een gemiddelde over de hele
+van te middelen over de hele run, omdat dit de punten zijn waarop een
+mapping-fout zichtbaar zou zijn voor een operator. Een gemiddelde over de hele
 rail zou een gelokaliseerde fout verdunnen.\\
 \textbf{Instrument (wanneer klaar):} Een run wordt gerapporteerd met metingen
 tegen elk DV1--DV3-criterium dat empirisch bewijs vereist. Pass/fail wordt per
@@ -886,7 +889,7 @@ te testen. Figuur~\ref{fig:pipeline} toont de vijf lagen.
 
 \textbf{Transport-laag.} Abstraheert Bluetooth Classic- en TCP-verbindingen
 achter een gemeenschappelijke interface. Het Bluetooth-transport communiceert
-met een HC-06-module (een goedkope serieel-naar-Bluetooth-adapter) op de
+met een HC-06-module (een goedkope adapter die serieel naar Bluetooth omzet) op de
 liftcontroller. Vóór elke sessie worden 40 null-bytes verstuurd om de
 ontvangstbuffer van de module te legen. Berichttellers lopen op van 1 tot 200 en
 wrappen rond.
@@ -975,12 +978,12 @@ geïnstalleerd, zodat de rail vanuit een recht stuk omhoog, omlaag, links of
 rechts kan draaien met identieke hardware. De liftcontroller slaat de rail op
 als een reeks getypeerde blokken, elk met een type, een oriëntatie en een
 hoeveelheid, gemeten via incrementele encoders~\cite{bolton2019mechatronics}.
-Voor de arc-tracing-geometrie reduceren de vier bochtoriëntaties tot twee
+Voor de geometrie van het arc-tracing reduceren de vier bochtoriëntaties tot twee
 gevallen: verticale bochten (omhoog/omlaag) veranderen de pitch, en horizontale
 bochten (links/rechts) veranderen de yaw. Om een 3D-weergave te construeren,
 worden deze blokken sequentieel getraceerd met arc-geometrie.
 Figuur~\ref{fig:rail-segments} toont de rechte sectie en het bochtstuk, samen
-met de pitch/yaw-oriëntaties en hun arc-tracing-geometrie.
+met de pitch/yaw-oriëntaties en de bijbehorende geometrie van het arc-tracing.
 
 \begin{figure}[H]
 \centering
@@ -1112,10 +1115,10 @@ P_{01} &\leftarrow P_{01} + \Delta t \cdot P_{11} + \sigma_a^2 \cdot \tfrac{\Del
 P_{11} &\leftarrow P_{11} + \sigma_a^2 \cdot \Delta t \nonumber
 \end{align}
 waar $\sigma_a$ de procesruis is (standaarddeviatie van de versnelling) en
-$\mathbf{P}$ de covariantiematrix. De procesruismatrix is die van het continue
-white-noise-acceleration-model voor een constant-velocity-toestand~\cite{labbe2015kalman, barshalom2001estimation},
-waarin de niet-gemodelleerde versnelling wordt behandeld als een
-white-noise-proces met gemiddelde nul en intensiteit $\sigma_a^2$:
+$\mathbf{P}$ de covariantiematrix. De procesruismatrix is die van een
+constant-velocity-toestand met een continu witteruis-versnellingsmodel~\cite{labbe2015kalman, barshalom2001estimation}:
+de niet-gemodelleerde versnelling wordt behandeld als een
+witteruisproces met gemiddelde nul en intensiteit $\sigma_a^2$:
 \begin{equation}
 \label{eq:kf-Q}
 \mathbf{Q} = \sigma_a^2 \begin{bmatrix} \Delta t^3/3 & \Delta t^2/2 \\ \Delta t^2/2 & \Delta t \end{bmatrix}
@@ -1319,7 +1322,7 @@ geëvalueerd op de twee niveaus die het DV2(b)-ontwerp voorschrijft:
     firmware-encoded begin van het raildeel van de marker, plus de met meetlint
     gemeten offset daarbinnen. Door elke marker te refereren aan de oorsprong van
     zijn raildeel legt deze maat de end-to-end nauwkeurigheid binnen dat raildeel
-    vast, inclusief de eigen encoded-vs-fysieke schaling. Dat is precies wat een
+    vast, inclusief de eigen schaling tussen de door de firmware gecodeerde en de fysiek gemeten positie. Dat is precies wat een
     service-engineer zou zien.
   \item \emph{Display vs.\ firmware-encoded} (secundair): de weergegeven
     positie wordt vergeleken met de firmware-encoded positie afgeleid uit
@@ -1436,7 +1439,7 @@ Figuur~\ref{fig:rtt-hist} toont de verdeling voor de tweede meetronde: het gros
 van de round-trips clustert rond 80--90\,ms en de hele verdeling ligt onder de
 150\,ms-P95-grens, op een dunne staart na (één maximum van 167\,ms op rail 2;
 één uitschieter van 543\,ms op rail 1). Omdat het Kalman filter en
-dead-reckoning de single-sample-latency aan de display-zijde maskeren, komt deze
+dead-reckoning de latency van een enkel sample aan de displayzijde maskeren, komt deze
 latency niet als zichtbare lag naar voren; de percentielgrens houdt de
 round-trip-gaten bovendien binnen de 0.8\,s-horizon waarvoor de
 dead-reckoning-extrapolatie is ontworpen (Sectie~\ref{sec:results-q3}).
@@ -1448,14 +1451,14 @@ van de bovenliggende rail-configurator. De pipeline-integratiefout (display
 vs.\ firmware-encoded positie) was op of onder 0.7\,mm op rail 1 (gemiddelde
 0.39\,mm, SD 0.22\,mm, 95\,\% CI van het gemiddelde [0.23, 0.55]\,mm;
 t-gebaseerd, df=9) en $\leq$\,0.1\,mm op rail 2, beide onder de tape-resolutie
-van $\approx\pm$1\,mm, wat bevestigt dat de encoder-naar-positie-wiskunde de
-firmware-positie vrijwel exact reproduceert. De end-to-end display-vs-fysiek
-fout, gemeten op de 5428\,mm-rail (Figuur~\ref{fig:dv2-error}), bereikte een
+van $\approx\pm$1\,mm, wat bevestigt dat de omzetting van encoder naar positie de
+firmware-positie vrijwel exact reproduceert. De end-to-end fout tussen de
+weergegeven en de fysieke positie, gemeten op de 5428\,mm-rail (Figuur~\ref{fig:dv2-error}), bereikte een
 maximum van 9.88\,mm bij marker rd7, binnen de 10\,mm-tolerantie voor rails
 langer dan 5\,m, zodat het primaire DV2(b)-criterium slaagt. Alle vijf fouten
 zijn negatief (gemiddelde $-6.9$\,mm): de weergegeven positie leest consistent
 enkele millimeters korter dan fysiek. Het verschil van $\approx$\,7\,mm tussen
-dit display-vs-fysiek-cijfer en de bijna-nul pipeline-integratiefout valt
+dit cijfer voor de fout tussen display en fysiek en de bijna-nul pipeline-integratiefout valt
 daarmee buiten de pipeline zelf; de bijbehorende onafhankelijke lengtemeting
 staat hieronder en de duiding van de bron in Sectie~\ref{sec:conclusion}.
 De richtingsherhaalbaarheid was hoog: dezelfde fysieke marker, in beide
@@ -1470,12 +1473,12 @@ raildeel-lengtes tot 16\,mm per raildeel afweken van de fysiek gemeten lengtes
 3.4\,m-rail, 0.3\,\%). Deze lengtes worden vastgelegd door de
 rail-configurator tijdens de liftinstallatie, buiten de
 visualisatie-pipeline om; de duiding ervan in relatie tot de systematische
-rail-2-offset staat in Sectie~\ref{sec:conclusion}. De encoded-vs-fysieke
-afwijking is alleen op rail 1 onafhankelijk gekwantificeerd, niet apart op rail
+rail-2-offset staat in Sectie~\ref{sec:conclusion}. De afwijking tussen de
+gecodeerde en de fysiek gemeten lengte is alleen op rail 1 onafhankelijk gekwantificeerd, niet apart op rail
 2. De rail-2-fout is ook niet ontleed in tracking-binnen-een-raildeel versus
 encoded-lengte-fout; dat zou fysiek gemeten \emph{cumulatieve} afstanden tot het
 begin van elk raildeel vereisen, en die zijn hier niet verzameld. Het primaire DV2(b)-cijfer omvat zulke
-encoded-vs-fysieke afwijkingen per ontwerp (het is de fout die een
+afwijkingen tussen de gecodeerde en de fysieke lengte per ontwerp (het is de fout die een
 service-engineer zou zien), terwijl de secundaire maat de pipeline isoleert.
 
 \textbf{DV3(b): smoothness.} De snelheidsgebaseerde smoothness-test is
@@ -1506,7 +1509,7 @@ digitale waterpas, over het volledige bereik 0--75$^\circ$ in stappen van
 van 75$^\circ$), gemiddeld $\approx$\,0.4$^\circ$. Voor de swivel-as is de
 weergegeven hoek vergeleken met de tablet-gyroscoop over $\pm$60$^\circ$
 (meetopstelling: Bijlage~\ref{app:opstellingen}). De maximale afwijking was
-2.83$^\circ$, binnen de encoder-naar-fysiek-tolerantie van $\pm$3.5$^\circ$.
+2.83$^\circ$, binnen de tolerantie van $\pm$3.5$^\circ$ tussen encoder en fysieke hoek.
 Daarvan is $\sim$2.6$^\circ$ toe te schrijven aan gyroscoop-drift in de
 referentie zelf: de gyro las 2.6$^\circ$ bij een gecommandeerde 0$^\circ$ na de
 sweep. Beide assen zijn op de zitting gemonteerd
@@ -1547,15 +1550,15 @@ round-trips, Sectie~\ref{sec:results-validation}). Toekomstige uitbreidingen
 (bijv. trillings- of temperatuurmonitoring) zouden eerst vereisen te controleren
 of de seriële bandbreedte de extra streams kan accommoderen zonder de
 positie-update-rates te degraderen. Over de twee meetrondes voldeed de Bluetooth
-round-trip-latency op beide rails aan de vooraf geregistreerde
-DV1(b)-percentieldrempels. P95 was 113\,ms (rail 1) en 112\,ms (rail 2), tegen de
-150\,ms-grens; P99 was 135\,ms en 134\,ms, tegen de 250\,ms-grens (gemiddelden
-89\,ms en 88\,ms; Tabel~\ref{tab:validation}, Figuur~\ref{fig:rtt-hist}). DV1(b)
-slaagt daarmee kwantitatief. De zichtbare eindgebruiker-eigenschap bleek ook te
+round-trip-latency op beide rails aan de vooraf geregistreerde percentieldrempels
+voor de latency (DV1(b)). P95 was 113\,ms (rail 1) en 112\,ms (rail 2),
+tegen de 150\,ms-grens. P99 was 135\,ms en 134\,ms, tegen de 250\,ms-grens
+(gemiddelden 89\,ms en 88\,ms; Tabel~\ref{tab:validation},
+Figuur~\ref{fig:rtt-hist}). DV1(b) slaagt daarmee kwantitatief. De zichtbare eindgebruiker-eigenschap bleek ook te
 gelden (O3, kwalitatief): de stoel op het scherm volgt de fysieke stoel zonder
 waarneembare vertraging. Dit is consistent met het Kalman filter en
-dead-reckoning die de single-sample-latency aan de display-zijde maskeren in
-plaats van die door te geven. Een kwantitatieve video-frame-offset-meting van
+dead-reckoning die de latency van een enkel sample aan de displayzijde maskeren
+in plaats van die door te geven. Een kwantitatieve video-frame-offset-meting van
 deze lag wordt overgelaten aan toekomstig werk (Sectie~\ref{sec:conclusion},
 Aanbevelingen). De vijflaagse architectuur isoleert faalmodi per ontwerp.
 Byte-level-fouten worden opgevangen door de checksum van de protocol parser;
@@ -1568,9 +1571,10 @@ niet beproefd en wordt als beperking gerapporteerd.
 De stuksgewijze mapping lost het geometrische kernprobleem op dat in
 Sectie~\ref{sec:problem-analysis} is geïdentificeerd: de niet-lineaire relatie
 tussen encoder-pulsen en fysieke afstand bij bochten. Het primaire
-DV2(b)-criterium (display vs.\ fysieke positie) werd gehaald op de 5428\,mm-rail,
-waar de maximale end-to-end fout 9.9\,mm was tegen de 10\,mm-tolerantie voor
-rails langer dan 5\,m (Figuur~\ref{fig:dv2-error}). Het isoleren van de pipeline
+criterium voor positienauwkeurigheid (DV2(b)), de fout tussen de weergegeven en
+de fysieke positie, werd gehaald op de 5428\,mm-rail, waar de maximale
+end-to-end fout 9.9\,mm was tegen de 10\,mm-tolerantie voor rails langer dan
+5\,m (Figuur~\ref{fig:dv2-error}). Het isoleren van de pipeline
 laat zien waar die fout ontstaat: de pipeline-integratiefout (display vs.\
 firmware-encoded positie) was $\leq$\,0.7\,mm op de eerste rail en
 $\leq$\,0.1\,mm op de tweede (verdelingsstatistieken in
@@ -1578,11 +1582,12 @@ Sectie~\ref{sec:results-validation}), in alle gevallen onder de tape-resolutie v
 $\approx\pm$1\,mm, d.w.z.\ de mapping reproduceert de firmware-positie vrijwel
 exact. Vergelijking~\ref{eq:arctracing-error} begrenst de arc-tracing-fout per
 segment op $\approx 4.2\,\mu$m per segment, consistent met dit
-submillimeter-residu en met de eindige precisie van de
-firmware-pulskost-constanten (Vergelijking~\ref{eq:pulsecosts}). De display
-volgt de firmware-geometrie exact. De resterende $\sim$7\,mm van de
-display-vs-fysiek-fout is daarom het meest plausibel toe te schrijven aan de
-encoded-vs-fysieke discrepantie van de rail-configurator, niet aan de pipeline. Deze discrepantie is op rail 1 onafhankelijk gemeten op tot 16\,mm per
+submillimeter-residu en met de eindige precisie van de pulskost-constanten uit de
+firmware (Vergelijking~\ref{eq:pulsecosts}). De display
+volgt de firmware-geometrie exact. De resterende $\sim$7\,mm van de fout tussen
+display en fysiek is daarom het meest plausibel toe te schrijven aan het verschil
+tussen de in de firmware gecodeerde en de fysiek gemeten lengtes van de
+rail-configurator, niet aan de pipeline. Deze discrepantie is op rail 1 onafhankelijk gemeten op tot 16\,mm per
 raildeel (netto $+10$\,mm over de 3.4\,m-rail, 0.3\,\%). Dit is consistent met de
 systematisch negatieve rail-2-fouten (gemiddelde $-6.9$\,mm: de weergegeven
 positie leest kort waar het encoded raildeel korter is dan fysiek). Een directe
@@ -1634,8 +1639,8 @@ criterium staan in de antwoorden hierboven en in Tabel~\ref{tab:validation}.
 
 De latency- en pipeline-integratiematen beslaan beide rail-configuraties
 (3403\,mm met één horizontale bocht; 5428\,mm met twee horizontale en meerdere
-verticale bochten); de primaire end-to-end display-vs-fysiek maat is alleen op
-de 5428\,mm-rail verzameld. Deze twee-geometrie-dekking versterkt het pleidooi
+verticale bochten); de primaire end-to-end maat, de fout tussen de weergegeven
+en de fysieke positie, is alleen op de 5428\,mm-rail verzameld. Deze twee-geometrie-dekking versterkt het pleidooi
 voor generalisatie voorbij één enkele rail. Bredere generalisatie over het
 volledige scala aan rail-ontwerpen (en de primaire positiemaat op meer rails)
 vereist echter nog verdere runs en wordt overgelaten aan toekomstig werk.
@@ -1671,13 +1676,13 @@ geïmplementeerd.
     maar voor de \emph{eerste} meetronde zijn deze criteria post-hoc; alleen de
     tweede meetronde is een echte vooraf geregistreerde test van DV1(b) en
     DV3(b). Voor DV2(b) is in de eerste meetronde alleen het
-    pipeline-integratieniveau (display-vs-firmware) verzameld; de
-    v2-pre-registratie herstelde display-vs-fysiek als de primaire maat,
-    verzameld in de tweede meetronde (vandaar de ``n/a'' voor rail 1 in
-    Tabel~\ref{tab:validation}).
-  \item \textbf{Display-vs-fysiek-referentie.} De primaire DV2(b)-maat refereert
-    elke marker aan het firmware-encoded begin van zijn raildeel, plus een met
-    meetlint gemeten offset \emph{binnen} dat raildeel. Dit legt de end-to-end
+    pipeline-integratieniveau (display vs. firmware-encoded) verzameld; de
+    v2-pre-registratie herstelde de fout tussen display en fysiek als de
+    primaire maat, verzameld in de tweede meetronde (vandaar de ``n/a'' voor
+    rail 1 in Tabel~\ref{tab:validation}).
+  \item \textbf{Referentie voor de fout tussen display en fysiek.} De primaire
+    DV2(b)-maat refereert elke marker aan het firmware-encoded begin van zijn
+    raildeel, plus een met meetlint gemeten offset \emph{binnen} dat raildeel. Dit legt de end-to-end
     nauwkeurigheid binnen een raildeel vast, maar niet de cumulatieve drift over
     raildelen heen in de configurator-geometrie. Het begrenzen van de absolute
     weergegeven positie over de hele rail zou fysiek gemeten cumulatieve
@@ -1709,9 +1714,10 @@ geïmplementeerd.
     framerate-onafhankelijke snelheids-smoothness-maat (die slaagde), maar het
     beïnvloedt de waargenomen vloeiendheid op zwakkere hardware.
   \item \textbf{Rail-configurator-precisie domineert de end-to-end fout.}
-    De display-vs-fysiek fout wordt gedomineerd door de encoded-vs-fysieke
-    discrepantie van de rail-configurator, niet door de pipeline (zie het
-    encoder-mapping-antwoord hierboven). De configurator wordt behandeld als
+    De fout tussen de weergegeven en de fysieke positie wordt gedomineerd door
+    de afwijking tussen de gecodeerde en de fysiek gemeten lengte van de
+    rail-configurator, niet door de pipeline (zie het encoder-mapping-antwoord
+    hierboven). De configurator wordt behandeld als
     een gegeven invoer voor de pipeline (Sectie~\ref{sec:method-q1}); de
     bijbehorende vervolgstudie staat onder Aanbevelingen.
   \item \textbf{Empirische filter-tuning.} De Kalman-tuning-parameters en de
@@ -1721,8 +1727,8 @@ geïmplementeerd.
   \item \textbf{Bochtovergangsfout niet ontleed.} Referentiemarkers staan op
     rechte raildelen; de positiefout bij de bochten zelf wordt niet direct
     gemeten en kan niet individueel worden toegeschreven aan de
-    firmware-pulskost-constanten, mechanische speling, of het arc-tracing-schema
-    zonder instrumentatie per component.
+    pulskost-constanten uit de firmware, mechanische speling, of het
+    arc-tracing-schema zonder instrumentatie per component.
     Vergelijking~\ref{eq:arctracing-error} sluit het arc-tracing-schema uit als
     dominante bron bij de huidige segmentresolutie, maar de overige bronnen
     worden niet apart gemeten.
@@ -1738,9 +1744,9 @@ geïmplementeerd.
     dan bij DV1(b)/DV3(b) waren de pass-drempels voor spindle ($\sim$1--2$^\circ$)
     en swivel ($\pm$3.5$^\circ$) niet scherp vooraf geregistreerd vóór hun runs
     van 2026-06-04; de pre-registratie vermeldde ze als ``nog te bevestigen''. Het
-    $\pm$3.5$^\circ$-cijfer is bovendien de inherente
-    encoder-naar-fysiek-tolerantie, gebruikt als grens in plaats van een
-    onafhankelijk vastgelegd doel. De oriëntatie-pass moet daarom worden gelezen
+    $\pm$3.5$^\circ$-cijfer is bovendien de inherente tolerantie tussen encoder
+    en fysieke hoek, gebruikt als grens in plaats van een onafhankelijk
+    vastgelegd doel. De oriëntatie-pass moet daarom worden gelezen
     als een grove controle op grove afwijkingen, niet als een strikt vooraf
     geregistreerde test.
   \item \textbf{Zelf-validatie.} De auteur definieerde de pass/fail-criteria,
@@ -1750,7 +1756,7 @@ geïmplementeerd.
     het meetontwerp (een expliciet aanbevolen extra in de pre-registratie) en is
     alleen wegens tijd geschrapt, dus dit is een bekende, vooraf
     geïdentificeerde leemte; voor de eerste meetronde, waarvan de criteria
-    post-hoc zijn, geldt de single-author-labeling ook.
+    post-hoc zijn, geldt de labeling door één auteur ook.
   \item \textbf{Robuustheid niet adversarieel getest.} De afhandeling van
     byte-level-corruptie door de protocol parser wordt door de architectuur
     ondersteund maar is niet beproefd onder fault-injection; de observatie dat
@@ -1760,9 +1766,10 @@ geïmplementeerd.
 
 \subsection{Aanbevelingen}
 \begin{itemize}[leftmargin=*]
-  \item \textbf{Rail-configurator-precisiestudie.} De encoded-vs-fysieke
-    discrepantie die de end-to-end positiefout domineert
-    (Sectie~\ref{sec:results-validation}, Beperkingen) ligt buiten de pipeline.
+  \item \textbf{Rail-configurator-precisiestudie.} De afwijking tussen de
+    gecodeerde en de fysiek gemeten lengte die de end-to-end positiefout
+    domineert (Sectie~\ref{sec:results-validation}, Beperkingen) ligt buiten de
+    pipeline.
     Een speciale studie die een rail door de configurator-workflow traceert met
     een externe referentie (laserafstandsmeter) zou deze bron apart
     kwantificeren en mogelijk corrigeren.
@@ -1881,7 +1888,7 @@ meetronde de mismatch blootlegde, en één meetronde later dan ideaal vooraf
 geregistreerd. Een korte karakterisering van de
 verdeling van tussen-sample-gaten en het stoel-snelheidsprofiel aan het begin
 zou beide mismatches vóór elke run hebben opgevangen. Ze zou bovendien een
-gemeten basis hebben gegeven voor de filter-tuning-parameters ($\sigma_a$,
+gemeten basis hebben gegeven voor de parameters waarmee het filter wordt afgesteld ($\sigma_a$,
 dead-reckoning-vervalconstante, de 0.85/0.15-spindle-blend), in plaats van een
 schatting op het oog.
 
@@ -1889,7 +1896,7 @@ Een secundaire les betreft dekking: de twee runs van de eerste meetronde op éé
 enkele rail waren een keuze voor correctness-of-concept, niet voor
 generaliseerbaarheid. De tweede meetronde voegde een langere rail met een andere
 bochtsamenstelling toe, en daarom kan het verslag nu twee geometrieën dekken.
-Toch was test-bench-tijd over meerdere rails vanaf het begin reserveren het
+Toch was tijd op de test-bench over meerdere rails vanaf het begin reserveren het
 defensievere plan geweest. Beide lessen wijzen dezelfde kant op: reserveer
 vooraf tijd voor sensor- en rail-karakterisering voordat validatiecriteria
 worden vastgelegd.
@@ -1952,7 +1959,7 @@ Sectie~\ref{sec:results-validation} zijn uitgevoerd.}
 
 \subsection{Referentiemarkers en offset-meting (DV2(b))}
 \label{app:opstelling-markers}
-De primaire display-vs-fysiek-meting gebruikt referentiemarkers op rechte
+De primaire meting van de fout tussen de weergegeven en de fysieke positie gebruikt referentiemarkers op rechte
 raildelen. Elke marker is een dun strookje met een penstreep als afleesrand. Een dunne
 streep is gekozen in plaats van brede tape: een tapebreedte van $\sim$15\,mm zou
 een afleesonzekerheid van dezelfde orde toevoegen aan een meting met een
@@ -1995,7 +2002,7 @@ meetlint (1\,mm-schaalverdeling) gemeten.}
 meetronde, gezien langs het bovenste raildeel.}
 \label{fig:app-marker-rail1}
 \end{subfigure}
-\caption{De markerprocedure voor de display-vs-fysiek-meting (DV2(b)).}
+\caption{De markerprocedure voor de meting van de fout tussen display en fysiek (DV2(b)).}
 \label{fig:app-markers}
 \end{figure}
 \newpage
