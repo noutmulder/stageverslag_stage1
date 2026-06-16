@@ -680,8 +680,10 @@ validatieruns van Sectie~\ref{sec:method-validation}.
 \textbf{Waarom deze methode:} De toestandsschattings-, interpolatie- en
 rotatiemodellen zijn gegrond in gevestigde wiskundige theorie (Kalman filtering,
 Catmull-Rom-splines, quaternion-algebra). Formele afleiding vanuit eerste
-principes zorgt dat de modellen correct worden toegepast en dat tuning-parameters
-een duidelijke theoretische basis hebben.\\
+principes zorgt dat de modelvorm correct wordt toegepast en theoretisch is
+onderbouwd. De numerieke tuning-parameters worden daarentegen empirisch gekozen,
+niet uit eerste principes afgeleid (zie Sectie~\ref{sec:results-q3} en de
+Beperkingen in Sectie~\ref{sec:conclusion}).\\
 \textbf{Aanpak:} Er worden drie modellen afgeleid:
 \begin{itemize}[leftmargin=*]
   \item Een 2D constant-velocity Kalman filter voor elke telemetrie-as (traction,
@@ -1890,7 +1892,7 @@ drie engineering-competenties expliciet:
     Sectie~\ref{sec:results-validation} met expliciete pass/fail-labels tegen de
     criteria zoals gedefinieerd.
 \end{itemize}
-
+\newpage
 \subsection{Wat anders had gekund}
 De beperkingen die in Sectie~\ref{sec:conclusion} staan beschrijven wat de
 huidige runs wel en niet vaststellen; deze subsectie reflecteert op de
@@ -1921,7 +1923,10 @@ vooraf tijd voor sensor- en rail-karakterisering voordat validatiecriteria
 worden vastgelegd.
 
 % ============================================================
-
+% \clearpage sluit de pagina volledig af (twee \newpage zou in
+% tweekolommen alleen naar de tweede kolom springen); zo begint de
+% bibliografie bovenaan een nieuwe pagina.
+\clearpage
 \bibliographystyle{ieeetr}
 \bibliography{bibliography}
 
