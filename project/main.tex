@@ -1579,9 +1579,9 @@ DV2(b)-criterium (display vs.\ fysieke positie) werd gehaald op de 5428\,mm-rail
 waar de maximale end-to-end fout 9.9\,mm was tegen de 10\,mm-tolerantie voor
 rails langer dan 5\,m (Figuur~\ref{fig:dv2-error}). Het isoleren van de pipeline
 laat zien waar die fout ontstaat: de pipeline-integratiefout (display vs.\
-firmware-encoded positie) was $\leq$\,0.7\,mm op de eerste rail (gemiddelde
-0.39\,mm, SD 0.22\,mm, 95\,\% CI van het gemiddelde [0.23, 0.55]\,mm) en
-$\leq$\,0.1\,mm op de tweede, in alle gevallen onder de tape-resolutie van
+firmware-encoded positie) was $\leq$\,0.7\,mm op de eerste rail en
+$\leq$\,0.1\,mm op de tweede (verdelingsstatistieken in
+Sectie~\ref{sec:results-validation}), in alle gevallen onder de tape-resolutie van
 $\approx\pm$1\,mm, d.w.z.\ de mapping reproduceert de firmware-positie vrijwel
 exact. Vergelijking~\ref{eq:arctracing-error} begrenst de arc-tracing-fout per
 segment op $\approx 4.2\,\mu$m per segment, consistent met dit
@@ -1634,18 +1634,11 @@ temporele interpolatie en voorspelling tussen metingen, en quaternion-gebaseerde
 oriëntatiereconstructie uit spline-tangentvectoren.
 
 Over de twee meetrondes voldoen de geïmplementeerde pipeline en modellen
-aan de positienauwkeurigheids- en latency-criteria en slagen ze substantieel
-voor het smoothness-criterium. De positienauwkeurigheid (DV2(b)) slaagt op beide
-niveaus: de pipeline-integratiefout blijft $\leq$\,0.7\,mm op beide rails, en de
-end-to-end display-vs-fysiek fout op de 5428\,mm-rail is maximaal 9.9\,mm,
-binnen de 10\,mm-tolerantie voor rails langer dan 5\,m. De latency (DV1(b))
-voldoet aan de percentieldrempels op beide rails (P95\,$\leq$\,113\,ms,
-P99\,$\leq$\,135\,ms). De smoothness (DV3(b)) toont geen staircase:
-snelheidspieken bij 0.04\,\% van de frames, tegen $\sim$10\,\% voor een
-last-value-hold. De letterlijke vooraf geregistreerde ``0 pieken''-drempel wordt
-daarbij nipt overschreden door enkele milde pieken; dit is uitgewerkt in
-Beperkingen. De volledige uitkomst per criterium staat in
-Tabel~\ref{tab:validation}.
+binnen de geteste configuraties aan alle drie de empirische criteria:
+positienauwkeurigheid (DV2(b)) en latency (DV1(b)) slagen volledig, en
+smoothness (DV3(b)) substantieel (de letterlijke ``0 pieken''-drempel wordt
+nipt overschreden door enkele milde pieken; zie Beperkingen). De cijfers per
+criterium staan in de antwoorden hierboven en in Tabel~\ref{tab:validation}.
 
 De latency- en pipeline-integratiematen beslaan beide rail-configuraties
 (3403\,mm met één horizontale bocht; 5428\,mm met twee horizontale en meerdere
@@ -1724,13 +1717,11 @@ geïmplementeerd.
     framerate-onafhankelijke snelheids-smoothness-maat (die slaagde), maar het
     beïnvloedt de waargenomen vloeiendheid op zwakkere hardware.
   \item \textbf{Rail-configurator-precisie domineert de end-to-end fout.}
-    De display-vs-fysiek fout (max 9.9\,mm, gemiddelde $-6.9$\,mm) wordt
-    gedomineerd door de encoded-vs-fysieke discrepantie van de rail-configurator
-    (tot 16\,mm per raildeel), niet door de pipeline ($\leq$\,0.1\,mm). De
-    configurator wordt behandeld als een gegeven invoer voor de pipeline
-    (Sectie~\ref{sec:method-q1}); een speciale studie met een externe referentie
-    (laserafstandsmeter) zou deze bovenliggende bron karakteriseren en mogelijk
-    corrigeren.
+    De display-vs-fysiek fout wordt gedomineerd door de encoded-vs-fysieke
+    discrepantie van de rail-configurator, niet door de pipeline (zie het
+    encoder-mapping-antwoord hierboven). De configurator wordt behandeld als
+    een gegeven invoer voor de pipeline (Sectie~\ref{sec:method-q1}); de
+    bijbehorende vervolgstudie staat onder Aanbevelingen.
   \item \textbf{Empirische filter-tuning.} De Kalman-tuning-parameters en de
     0.85/0.15-spindle-blend-verhouding zijn geconfigureerde waarden in de
     implementatie in plaats van afleidingen uit een gemeten sensor-ruismodel.
@@ -1777,13 +1768,12 @@ geïmplementeerd.
 
 \subsection{Aanbevelingen}
 \begin{itemize}[leftmargin=*]
-  \item \textbf{Rail-configurator-precisiestudie.} De observatie dat
-    firmware-encoded raildeel-lengtes tot 16\,mm per part afweken van fysieke
-    meetlint-metingen (Sectie~\ref{sec:results-validation}, Beperkingen) is een
-    kandidaat-bovenliggende bijdrager aan de end-to-end positiefout. Een speciale
-    studie die een rail door de configurator-workflow traceert met een externe
-    referentie (laserafstandsmeter) zou deze bron apart van de hier
-    gerapporteerde pipeline-integratiefout kwantificeren.
+  \item \textbf{Rail-configurator-precisiestudie.} De encoded-vs-fysieke
+    discrepantie die de end-to-end positiefout domineert
+    (Sectie~\ref{sec:results-validation}, Beperkingen) ligt buiten de pipeline.
+    Een speciale studie die een rail door de configurator-workflow traceert met
+    een externe referentie (laserafstandsmeter) zou deze bron apart
+    kwantificeren en mogelijk corrigeren.
   \item \textbf{High-speed video voor zichtbare lag.} Met DV3(b)-smoothness nu
     gemeten uit positie-logging op frame-niveau en DV1(b)-latency uit
     round-trip-percentielen, blijft zichtbare lag (de offset tussen de fysieke
@@ -1891,15 +1881,13 @@ procesbeslissingen erachter, niet op de beperkingen zelf.
 
 De centrale procesles is dat twee van de drie empirische instrument-criteria
 (DV1(b), DV3(b)) zijn gespecificeerd voordat het gedrag van de sensor en de
-pipeline voldoende werd begrepen. De oorspronkelijke
-100\,ms-Bluetooth-round-trip-drempel en de tienvoudige
-Kalman-jitter-reductie-drempel codeerden beide impliciete aannames (een
-last-value-wins-display, een analoge ruizige sensor) die niet opgingen voor het
-systeem dat daadwerkelijk is gebouwd. De geherformuleerde v2-criteria
-(percentiel-latency en een snelheidsgebaseerde smoothness-test) zijn precies de
-kwantitatieve vormen die een zorgvuldige analyse vooraf zou hebben opgeleverd,
-maar ze zijn pas bereikt nadat de eerste meetronde de mismatch blootlegde, en één
-meetronde later dan ideaal vooraf geregistreerd. Een korte karakterisering van de
+pipeline voldoende werd begrepen; hun oorspronkelijke vormen en de impliciete
+aannames waarop die sneuvelden zijn beschreven in
+Sectie~\ref{sec:method-validation} en onder Beperkingen. De geherformuleerde
+v2-criteria zijn precies de kwantitatieve vormen die een zorgvuldige analyse
+vooraf zou hebben opgeleverd, maar ze zijn pas bereikt nadat de eerste
+meetronde de mismatch blootlegde, en één meetronde later dan ideaal vooraf
+geregistreerd. Een korte karakterisering van de
 verdeling van tussen-sample-gaten en het stoel-snelheidsprofiel aan het begin
 zou beide mismatches vóór elke run hebben opgevangen, en zou ook een gemeten in
 plaats van op het oog geschatte basis hebben gegeven voor de
