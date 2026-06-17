@@ -96,6 +96,7 @@
 
 % ---------- Document ----------
 \begin{document}
+% \tableofcontents
 
 % ---------- Journal-style Title Block (full width) ----------
 \twocolumn[
@@ -126,8 +127,8 @@ Dit onderzoek beschrijft de ontwikkeling en validatie van een pipeline die
 ruwe traplift-telemetrie omzet in een stabiele, nauwkeurige live
 3D-visualisatie als basis voor storingsdiagnose. Het technische
 kernprobleem is tweeledig. De positie van de traplift wordt gemeten met een
-pulse-encoder, en die metingen komen binnen over een Bluetooth-verbinding met
-hoge latency. Ze moeten worden afgebeeld op een gebogen 3D-rail, waar de
+een aantal pulse-encoders, en die metingen komen binnen over een Bluetooth-verbinding met
+hoge latency. Ze moeten worden afgebeeld op een 3D-rail, waar de
 verhouding tussen encoder-pulsen en afstand per segment verschilt. Tegelijk moet
 de weergegeven beweging vloeiend blijven: het beeld wordt steeds opnieuw
 getekend in de display-loop, en daar mag geen schokkerigheid in zitten.
@@ -143,12 +144,11 @@ niveaus geëvalueerd. De pipeline-integratiefout bleef op beide rails binnen
 waarschijnlijk toe te schrijven aan de bovenliggende rail-configurator, niet
 aan de pipeline. De Bluetooth
 round-trip-latency voldeed op beide rails ruim aan de vooraf geregistreerde
-drempels, en een continue rit vertoonde geen getrapte beweging
-(rendering-staircase).
+drempels, en een continue rit vertoonde geen schokkerige bewegingen.
 
 Binnen de geteste configuraties levert één processing-pipeline dus een stabiele,
 nauwkeurige live 3D-weergave van de trapliftpositie op. Daarin komen drie onderdelen samen. De encoder-pulsen worden via een
-niet-lineaire afbeelding omgezet naar een positie op de rail. Een recursieve
+niet-lineaire mapping omgezet naar een positie op de rail. Een recursieve
 toestandsschatting met dead-reckoning (positie voorspellen tussen metingen) houdt
 de beweging stabiel. En de oriëntatie wordt vloeiend gereconstrueerd op basis van
 de spline-tangent. De storingstoestand wordt rechtstreeks uit de geparste
@@ -172,14 +172,14 @@ de zittinghoek instelt en een swivel-motor de zitting bij overlooppunten draait.
 Tijdens aandrijving produceren embedded controllers continu telemetrie:
 pulsen van de traction-encoder, waarden van de spindle-encoder, swivel-hoeken en
 systeemstatusbits, inclusief foutcodes. Voor service, onderhoud en
-doorontwikkeling moeten engineers snel de actuele toestand van een traplift
+doorontwikkeling moeten engineers en monteurs snel de actuele toestand van een traplift
 kunnen begrijpen. Daarbij gaat het om de vraag of de rail in de software klopt,
 waar de stoel zich op de rail bevindt, of de stoel correct beweegt en welke
 afwijkingen of storingen zijn opgetreden.
 
 Op dit moment wordt storingsinformatie van de controller gepresenteerd als
 tekstuele foutcodes en numerieke statuswaarden. Hoewel technisch correct,
-vergen deze veel domeinkennis om ruimtelijk te interpreteren. Een foutcode die
+vergen deze veel vakkennis om ruimtelijk te interpreteren. Een foutcode die
 een positieafwijking aangeeft, vertelt niet waar op de rail de afwijking
 optrad, in welke richting, of hoe groot het verschil is.
 
@@ -193,7 +193,7 @@ verbinding met ruis, latency en soms packet loss. De visualisatie moet
 de kloof overbruggen tussen deze asynchrone metingen en een continue, vloeiende
 ruimtelijke weergave die met de display-framerate ververst.
 
-Een live 3D-visualisatie van trapliftpositie en -beweging vult een belangrijke kloof. Ze maakt de ruimtelijke toestand van de stoel expliciet: de positie op de rail, de beweging door bochten en de zittinghoek. De huidige tekst- en code-uitvoer toont die toestand alleen impliciet. Een service-engineer ziet zo in één oogopslag de positie en oriëntatie van de stoel. Het ontwikkelteam kan firmwaregedrag direct verifiëren tijdens testen en bij het inbedrijfstellen van nieuwe rails. Of de visualisatie de diagnosetijd verkort of het aantal bezoeken vermindert, wordt niet onderzocht; dat valt buiten de scope van dit onderzoek.
+Een live 3D-visualisatie van trapliftpositie en -beweging vult een belangrijke kloof. Ze maakt de ruimtelijke toestand van de stoel expliciet: de positie op de rail, de beweging door bochten en de zittinghoek. De huidige tekst- en code-uitvoer toont die toestand alleen impliciet. Een service-engineer ziet zo in één oogopslag de positie en oriëntatie van de stoel. Het ontwikkelteam kan firmwaregedrag direct verifiëren tijdens testen en bij het monteren van nieuwe rails. Of de visualisatie de diagnosetijd verkort of het aantal bezoeken vermindert, wordt niet onderzocht; dat valt buiten de scope van dit onderzoek.
 
 Het doel is vast te stellen welke stappen in de dataverwerking en welke wiskundige modellen nodig zijn om live traplift-telemetrie om te zetten in een stabiele en nauwkeurige 3D-weergave. Het praktische effect van zo'n visualisatie op storingsdiagnose blijft buiten beschouwing. De centrale onderzoeksvraag richt zich daarom uitsluitend op wat deductief kan worden vastgesteld:
 
@@ -232,7 +232,7 @@ is een welbekende uitdaging in de diagnostiek van mechatronische
 systemen~\cite{grieves2017digitaltwin}. In de bredere context van
 digital-twin-onderzoek identificeren Bofill et al.\ real-time integratie van
 sensordata als een van de voornaamste technische barrières voor effectieve
-storingsmonitoring~\cite{bofill2023digitaltwin}. De fundamentele moeilijkheid is een mismatch: sensoren leveren scalaire
+storingsmonitoring~\cite{bofill2023digitaltwin}. De fundamentele moeilijkheid is een mismatch: sensoren leveren enkelvoudige
 waarden (tellingen, spanningen, statusbits) op discrete intervallen. Een
 ruimtelijke visualisatie vereist juist een continue 3D-positie en -oriëntatie
 die met de display-framerate ververst.
@@ -308,7 +308,7 @@ Drie onderling samenhangende technische deelproblemen komen uit deze analyse
 naar voren:
 \begin{enumerate}[leftmargin=*]
   \item \textbf{Niet-lineaire encoder-naar-positie-mapping:} Het omzetten van een
-    scalaire encoder-telling naar een genormaliseerde positie langs een
+    enkele encoder-telling naar een genormaliseerde positie langs een
     3D-curve met segmentafhankelijke pulskosten.
   \item \textbf{Toestandsschatting:} Het produceren van een vloeiende,
     low-latency schatting van positie en snelheid uit ruizige, asynchrone
@@ -330,9 +330,9 @@ het werk rekening houdt.
 
 \subsubsection{Encoder-naar-positie-mapping op niet-uniforme paden}
 Het omzetten van een incrementele encoder-telling naar een positie langs het
-afgelegde pad is, voor een uniform pad, een opgelost probleem: de encoder
-produceert pulsen evenredig aan de verplaatsing en één enkele schaalconstante
-volstaat~\cite{bolton2019mechatronics, elmenreich2002sensorfusion}. Voor het
+afgelegde pad is voor een uniform pad een opgelost probleem: de encoder geeft
+pulsen die recht evenredig zijn met de afgelegde afstand, dus één vast
+omrekengetal (pulsen per millimeter) is genoeg~\cite{bolton2019mechatronics, elmenreich2002sensorfusion}. Voor het
 niet-uniforme geval dat in Sectie~\ref{sec:problem-analysis} is
 geïdentificeerd, bestaan drie oplossingsrichtingen.
 
@@ -421,8 +421,9 @@ richtingsveranderingen op segmentgrenzen (geen $C^1$-continuïteit). Ze is
 rekenkundig goedkoop en is de juiste keuze wanneer de geïnterpoleerde grootheid
 naar verwachting stuksgewijs lineair verandert, of wanneer downstream-verwerking
 geen continue tangent nodig heeft. Voor de visuele oriëntatie van een stoel
-langs een continu gebogen rail zou de discontinue tangent van lineaire
-interpolatie de stoel zichtbaar laten ``snappen'' bij elk rail-punt.
+langs een continu gebogen rail is dat een probleem: omdat de richting bij
+lineaire interpolatie op elk rail-punt met een sprong verandert, zou de stoel
+daar zichtbaar ``snappen'' in plaats van vloeiend mee te draaien.
 
 \textbf{B-splines} (en hun rationele veralgemening, NURBS) zijn de facto
 standaard in CAD en industrieel curve-ontwerp. Ze bieden willekeurige
@@ -577,7 +578,7 @@ kloof tussen het geïdentificeerde probleem en de beschikbare oplossingen.
     \label{q:encoder}
   \item \textit{Welke toestandsschattings- en oriëntatiemodellen produceren een
     stabiele live 3D-weergave uit telemetrie die asynchroon en ruim onder de
-    refresh-rate van het display wordt bemonsterd?}
+    refresh-rate van het display wordt gemeten?}
     Het overzicht van eerder werk identificeerde meerdere kandidaat-modellen per
     deelprobleem. Deze vraag behandelt de formele afleiding, parametrisatie en
     empirische evaluatie van de geselecteerde modellen voor deze specifieke
@@ -600,8 +601,8 @@ hoe de methode concreet wordt toegepast, en welke criteria de afronding bepalen.
 
 \subsection{Data-pipeline-architectuur (ontwerp + documentatieanalyse)}
 \label{sec:method-q1}
-\textbf{Methode:} Architectuurontwerp, gecombineerd met formele analyse van de
-firmware-protocolspecificatie om de input-laag te definiëren.\\
+\textbf{Methode:} Architectuurontwerp, gecombineerd met een formele analyse van de
+protocolspecificatie van de firmware om de input-laag te bepalen.\\
 \textbf{Waarom deze methode:} De telemetrie-pipeline beslaat meerdere lagen
 (draadloos transport, binaire protocol-parsing, polling, toestandsschatting,
 rendering). Ze moet de positie-relevante kanalen zo snel pollen als de gedeelde
@@ -611,7 +612,7 @@ architectuurontwerp zorgt dat de bijdrage van elke laag aan latency en
 betrouwbaarheid identificeerbaar is. De invoer voor die pipeline is een subset
 van de $>$\,140 berichttypes van de firmware. Die subset wordt bepaald door
 documentatieanalyse in plaats van observatie van live verkeer. De invoer is dus de
-volledige firmware-enumeratie, niet bemonsterde message-frames.\\
+volledige firmware-enumeratie, geen steekproef van waargenomen message-frames.\\
 \textbf{Aanpak:} De architectuur wordt gespecificeerd als een gelaagde pipeline
 (transport, protocol parser, telemetry poller, state estimator, 3D renderer).
 Elke laag is gedocumenteerd met haar invoer, uitvoer en faalmodi. Als invoer
@@ -634,7 +635,9 @@ geclassificeerd; de subset die relevant is voor de visualisatie-pipeline is
 expliciet aangewezen, onderbouwd, en op byte-niveau gedocumenteerd voor elk
 bericht met een positie-, hoek- of statusbit-veld. (b) Op elke run blijft het
 95e percentiel (P95) van de Bluetooth round-trip-latency onder 150\,ms en het
-99e percentiel (P99) onder 250\,ms. Aanvullend wordt waargenomen of de stoel op
+99e percentiel (P99) onder 250\,ms. Het 95e percentiel is de waarde waar 95\,\%
+van de round-trips onder blijft (en het 99e percentiel die voor 99\,\%).
+Aanvullend wordt waargenomen of de stoel op
 het scherm de fysieke stoel volgt tijdens steady-state-beweging, zonder
 waarneembare lag (criterium DV1(b); de DV1--DV3-criteria staan in
 Sectie~\ref{sec:method-validation}). De percentielgrens wordt gebruikt in plaats
@@ -658,7 +661,7 @@ encoder-pulskost afgeleid uit firmware-constanten. Cumulatieve 3D-Euclidische
 afstanden worden berekend op segmentgrenzen, wat een stuksgewijze lineaire
 mapping van encoder-waarde naar genormaliseerde rail-positie oplevert. De
 afleiding omvat de geometrie van het arc-tracing waarmee 3D-controlepunten
-worden geconstrueerd uit de segmentbeschrijving van de firmware.\\
+worden opgezet uit de segmentbeschrijving van de firmware.\\
 \textbf{Waarom deze aanpak:} De mapping wordt vooraf berekend en op
 segmentgrenzen opgeslagen, in plaats van de curve elk frame opnieuw te
 integreren. De reden: zodra de rail bekend is, is de mapping statisch, terwijl
@@ -749,9 +752,9 @@ percentiel-latency-grens en een snelheidsgebaseerde smoothness-test. Deze nieuwe
 de tweede meetronde. Zo worden de beslissende runs op de langere rail
 beoordeeld tegen vooraf vastgelegde drempels. Deze verfijning en haar effect op
 de bewijskracht worden expliciet vermeld onder Beperkingen
-(Sectie~\ref{sec:conclusion}). Naast DV1--DV3 worden de oriëntatie-uitvoeren
+(Sectie~\ref{sec:conclusion}). Naast DV1--DV3 worden de weergegeven oriëntatiehoeken
 (spindle-zittinghoek en swivel-hoek) gecontroleerd in afzonderlijke statische
-tests tegen externe referenties (een digitale waterpas en de tablet-gyroscoop).
+tests tegen een digitale waterpas en de tablet-gyroscoop.
 Deze resultaten worden naast de hoofdcriteria gerapporteerd in Sectie~\ref{sec:results-validation}.
 
 \begin{table}[H]
@@ -977,7 +980,7 @@ onderzoeksresultaten van dit artikel.
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.85\textwidth]{images/ghost_chair_screenshot.png}
+\includegraphics[width=0.55\textwidth]{images/ghost_chair_screenshot.png}
 \caption{De pipeline-uitvoer: de 3D ghost chair volgt de rail op basis van live telemetrie, met semi-transparante ghost stairs die ruimtelijke context bieden en rail-annotaties die segmentgrenzen identificeren.}
 \label{fig:ghost-chair}
 \end{figure*}
