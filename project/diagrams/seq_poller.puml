@@ -1,0 +1,50 @@
+@startuml
+' Sequence-diagram van de telemetry poller (Visual Paradigm-achtige stijl).
+' Render: java -jar ../../tools/plantuml.jar -tpng -o <images-map> seq_poller.puml
+skinparam dpi 300
+skinparam shadowing false
+skinparam backgroundColor transparent
+skinparam defaultFontName Helvetica
+skinparam sequenceMessageAlign center
+hide footbox
+
+skinparam participant {
+  BackgroundColor #DCE7FB
+  BorderColor #5B7FC7
+  FontColor #1A1A1A
+}
+skinparam sequence {
+  LifeLineBorderColor #9AA7C0
+  LifeLineBackgroundColor #DCE7FB
+  ArrowColor #2E2E2E
+  GroupBackgroundColor #F2F5FC
+  GroupBorderColor #5B7FC7
+  GroupHeaderFontColor #1A3A6B
+}
+
+participant "poller : TelemetryPoller" as P
+participant "controller : Liftcontroller" as C
+
+loop elke tick - traction/spindle afwisselend
+  P -> C : 1: request MSG 110 (traction)
+  activate C
+  C --> P : 32-bit telling
+  deactivate C
+  P -> C : 2: request MSG 111 (spindle)
+  activate C
+  C --> P : 16-bit
+  deactivate C
+end
+
+P -> C : 3: request MSG 168 (swivel)
+activate C
+C --> P : ACK (1 byte)
+deactivate C
+
+loop tot data klaar - max 10x, 100 ms
+  P -> C : 4: poll data
+  activate C
+  C --> P : 16-bit hoek
+  deactivate C
+end
+@enduml
