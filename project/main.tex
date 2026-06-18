@@ -684,7 +684,7 @@ validatieruns van Sectie~\ref{sec:method-validation}.
 rotatiemodellen zijn gegrond in gevestigde wiskundige theorie (Kalman filtering,
 Catmull-Rom-splines, quaternion-algebra). Formele afleiding vanuit eerste
 principes zorgt dat de modelvorm correct wordt toegepast en theoretisch is
-onderbouwd. De numerieke tuning-parameters worden daarentegen empirisch gekozen,
+onderbouwd. De numerieke tuning-parameters worden daarentegen experimenteel gekozen,
 niet uit eerste principes afgeleid (zie Sectie~\ref{sec:results-q3} en de
 Beperkingen in Sectie~\ref{sec:conclusion}).\\
 \textbf{Aanpak:} Er worden drie modellen afgeleid:
@@ -1003,7 +1003,7 @@ als een reeks getypeerde blokken, elk met een type, een oriëntatie en een
 hoeveelheid, gemeten via incrementele encoders~\cite{bolton2019mechatronics}.
 Voor de geometrie van het arc-tracing reduceren de vier bochtoriëntaties tot twee
 gevallen. Verticale bochten (omhoog/omlaag) veranderen de pitch, en horizontale
-bochten (links/rechts) veranderen de yaw. Om een 3D-weergave te construeren,
+bochten (links/rechts) veranderen de yaw. Om een 3D-weergave te bouwen,
 worden deze blokken sequentieel getraceerd met arc-geometrie.
 Figuur~\ref{fig:rail-segments} toont de rechte sectie en het bochtstuk.
 
@@ -1082,8 +1082,8 @@ opwaartse bocht plaatst het wiel op de binnenboog (korter) en een neerwaartse
 bocht op de buitenboog (langer), met het horizontale geval ertussenin. Vandaar
 $k_{\text{up}} < k_{\text{horiz}} < k_{\text{down}}$.
 
-Een stuksgewijze lineaire mapping wordt geconstrueerd door, op elke
-segmentgrens, zowel de cumulatieve encoder-waarde als de cumulatieve
+Een stuksgewijze lineaire mapping wordt opgebouwd door, op elke
+segmentgrens, zowel de totale encoder-waarde als de totale
 3D-Euclidische afstand vanaf het railbegin te berekenen. Voor een encoder-meting
 $E$ wordt de genormaliseerde positie $t \in [0,1]$ gevonden door:
 \begin{enumerate}[leftmargin=*]
@@ -1178,12 +1178,12 @@ schattingsonzekerheid~\cite{welch1995kalman}.
 
 De tuning-parameters per as staan in Tabel~\ref{tab:kalman}. De waarden
 $\sigma_a$ (procesruis / versnellingsonzekerheid) en $\sigma_m$
-(meetonzekerheid) zijn empirisch bepaald door te itereren op de waargenomen
+(meetonzekerheid) zijn experimenteel bepaald door te itereren op de waargenomen
 filteruitvoer tijdens testruns. De traction-encoder is een digitale pulse-counter, geen analoge ruizige
 sensor. Daarom werkt $\sigma_m$ hier als een knop voor smoothness en
 responsiviteit tussen samplepunten, niet als een letterlijke standaarddeviatie
 van de meetruis. $\sigma_a$ bepaalt hoe agressief dead-reckoning tussen samples
-extrapoleert. Deze tuning is empirisch in plaats van afgeleid; de gevolgen voor
+extrapoleert. Deze tuning is experimenteel in plaats van afgeleid; de gevolgen voor
 generaliseerbaarheid worden besproken in Sectie~\ref{sec:conclusion}.
 
 \begin{table*}[t]
@@ -1281,7 +1281,7 @@ van de tangent:
 met phase unwrapping om $2\pi$-discontinuïteiten te vermijden.
 
 Rail-chiraliteit (welke kant de stoel op kijkt) wordt bepaald door het
-cumulatieve kruisproduct van opeenvolgende richtingsvectoren geprojecteerd op
+opgetelde kruisproduct van opeenvolgende richtingsvectoren geprojecteerd op
 het $xz$-vlak:
 \begin{equation}
 \label{eq:chirality}
@@ -1505,7 +1505,7 @@ visualisatie-pipeline om; de duiding ervan in relatie tot de systematische
 rail-2-offset staat in Sectie~\ref{sec:conclusion}. De afwijking tussen de
 gecodeerde en de fysiek gemeten lengte is alleen op rail 1 onafhankelijk gekwantificeerd, niet apart op rail
 2. De rail-2-fout is ook niet ontleed in tracking-binnen-een-raildeel versus
-encoded-lengte-fout; dat zou fysiek gemeten \emph{cumulatieve} afstanden tot het
+encoded-lengte-fout; dat zou fysiek gemeten \emph{totale} afstanden tot het
 begin van elk raildeel vereisen, en die zijn hier niet verzameld. Het primaire DV2(b)-cijfer omvat zulke
 afwijkingen tussen de gecodeerde en de fysieke lengte per ontwerp (het is de fout die een
 service-engineer zou zien), terwijl de secundaire maat de pipeline isoleert.
@@ -1712,9 +1712,9 @@ geïmplementeerd.
   \item \textbf{Referentie voor de fout tussen display en fysiek.} De primaire
     DV2(b)-maat refereert elke marker aan het firmware-encoded begin van zijn
     raildeel, plus een met meetlint gemeten offset \emph{binnen} dat raildeel. Dit legt de end-to-end
-    nauwkeurigheid binnen een raildeel vast, maar niet de cumulatieve drift over
+    nauwkeurigheid binnen een raildeel vast, maar niet de totale drift over
     raildelen heen in de configurator-geometrie. Het begrenzen van de absolute
-    weergegeven positie over de hele rail zou fysiek gemeten cumulatieve
+    weergegeven positie over de hele rail zou fysiek gemeten totale
     afstanden tot elk raildeel vereisen, en die zijn niet verzameld. Het
     gerapporteerde maximum (9.9\,mm) is dus een cijfer binnen één raildeel.
   \item \textbf{De DV2(b)-pass is marginaal ten opzichte van de
@@ -1749,7 +1749,7 @@ geïmplementeerd.
     hierboven). De configurator wordt behandeld als
     een gegeven invoer voor de pipeline (Sectie~\ref{sec:method-q1}); de
     bijbehorende vervolgstudie staat onder Aanbevelingen.
-  \item \textbf{Empirische filter-tuning.} De Kalman-tuning-parameters en de
+  \item \textbf{Experimentele filter-tuning.} De Kalman-tuning-parameters en de
     0.85/0.15-spindle-blend-verhouding zijn geconfigureerde waarden in de
     implementatie in plaats van afleidingen uit een gemeten sensor-ruismodel.
     Een formele gevoeligheidsanalyse ontbreekt.
@@ -1844,7 +1844,7 @@ interpreteren. De gevalideerde pipeline is een noodzakelijke bouwsteen voor dat
 doel: ze plaatst de stoel op de rail met submillimeter-pipeline-nauwkeurigheid,
 binnen 10\,mm end-to-end, en geeft de storingstoestand ruimtelijk weer. Of ze
 daadwerkelijk de diagnosetijd verkort of bezoeken ter plaatse vermindert, is een
-empirische human-factors-vraag die dit verslag bewust buiten scope heeft gehouden
+experimentele human-factors-vraag die dit verslag bewust buiten scope heeft gehouden
 (Sectie~\ref{sec:introduction}). De natuurlijke vervolgstap is een
 kleine veldstudie die de diagnosetijd met en zonder de live visualisatie op
 echte serviceoproepen vergelijkt; de hier geleverde pipeline is de voorwaarde
