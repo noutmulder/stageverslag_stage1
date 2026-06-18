@@ -46,7 +46,6 @@
 % ---------- Code ----------
 \usepackage{listings}
 
-
 % ---------- Hyperlinks ----------
 \usepackage{hyperref}
 \hypersetup{
@@ -943,48 +942,7 @@ De checksum dekt alle voorafgaande bytes:
 $}
 \end{equation}
 Ongeldige lengtes ($>40$) of checksum-mismatches veroorzaken een resync naar
-\texttt{WAIT\_START}. Figuur~\ref{fig:fsm} verduidelijkt deze toestanden en
-overgangen.
-
-\begin{figure*}[t]
-\centering
-\resizebox{\textwidth}{!}{%
-\begin{tikzpicture}[
-  >={Stealth[length=5pt]},
-  st/.style={rectangle, draw, rounded corners=2pt, minimum height=0.9cm,
-             minimum width=1.7cm, font=\scriptsize\ttfamily, align=center,
-             fill=blue!12},
-  lbl/.style={font=\scriptsize, text=gray},
-  node distance=1.0cm
-]
-\node[st] (ws) {WAIT\_START};
-\node[circle, fill=black, inner sep=1.8pt, left=0.6cm of ws] (init) {};
-\draw[->, thick] (init) -- (ws);
-\node[st, right=of ws] (nr) {MSG\_NUMBER};
-\node[st, right=of nr] (cmd) {COMMAND\_ID};
-\node[st, right=of cmd] (len) {LENGTH};
-\node[st, right=of len] (dat) {DATA};
-\node[st, right=of dat] (chk) {CHECKSUM};
-
-\draw[->, thick] (ws)  -- node[above, lbl] {\texttt{0x0A}} (nr);
-\draw[->, thick] (nr)  -- node[above, lbl] {Nr} (cmd);
-\draw[->, thick] (cmd) -- node[above, lbl] {Cmd} (len);
-\draw[->, thick] (len) -- node[above, lbl] {Len\,$\le$\,40} (dat);
-\draw[->, thick] (dat) -- node[above, lbl] {Data\,$\times$\,Len} (chk);
-
-% bericht compleet: terug naar WAIT_START (boven)
-\draw[->, thick] (chk.north) .. controls +(0,1.1) and +(0,1.1) ..
-  node[above, lbl] {checksum ok: bericht compleet $\rightarrow$ volgende} (ws.north);
-
-% resync bij fout (onder, gestippeld)
-\draw[->, thick, dashed] (len.south) .. controls +(0,-0.85) and +(0,-0.85) ..
-  node[below, lbl, pos=0.35] {Len\,$>$\,40} (ws.south);
-\draw[->, thick, dashed] (chk.south) .. controls +(0,-1.6) and +(0,-1.6) ..
-  node[below, lbl, pos=0.6] {checksum-mismatch} (ws.south);
-\end{tikzpicture}}
-\caption{Toestandsdiagram van de protocol-parser (de 6-state FSM uit Figuur~\ref{fig:pipeline}). Dit diagram is opgenomen om te verduidelijken hoe de parser per binnenkomende byte door zijn toestanden loopt: bij een geldig bericht keert hij terug naar \texttt{WAIT\_START} (bovenste pijl), en bij een ongeldige lengte ($>$\,40) of een checksum-mismatch volgt een resync naar \texttt{WAIT\_START} (gestippeld).}
-\label{fig:fsm}
-\end{figure*}
+\texttt{WAIT\_START}.
 
 \textbf{Telemetry poller.} Drie gelijktijdige loops (coroutines, d.w.z.
 coöperatieve lichtgewicht threads die tussen iteraties de controle teruggeven)
@@ -1003,16 +961,6 @@ delen de seriële verbinding:
   \item \textit{Slow loop} (0.5\,Hz): pollt systeemstatus (MSG\,114) en
     voetsteunstatus (MSG\,113) elke 2\,s.
 \end{itemize}
-
-Figuur~\ref{fig:seq} verduidelijkt hoe deze loops de ene gedeelde verbinding
-beurtelings gebruiken en hoe de AppToBus-handshake verloopt.
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{images/seq_poller.png}
-\caption{Sequence-diagram van de telemetry poller (UML, Visual Paradigm-stijl). Dit diagram is opgenomen om te verduidelijken hoe de poller en de liftcontroller via één gedeelde Bluetooth-verbinding communiceren: de fast loop wisselt traction- en spindle-requests af (loop-fragment), en de swivel-as gebruikt de AppToBus-handshake (request, ACK, daarna in een lus de data pollen). Elke respons (gestippeld) is compleet vóór de volgende request, zodat de totale doorvoer rond $\sim$10\,Hz ligt (Sectie~\ref{sec:results-q1}).}
-\label{fig:seq}
-\end{figure}
 
 \textbf{Data parsing.} De traction-encoder wordt geëxtraheerd als een 32-bit
 integer (most-significant byte eerst opgeslagen) uit bytes 1--4 van de
