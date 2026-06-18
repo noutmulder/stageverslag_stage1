@@ -1222,12 +1222,13 @@ v \leftarrow v \cdot e^{-5.0 \cdot (t_{\text{elapsed}} - 0.8)}
 \end{equation}
 
 De displaypositie wordt vervolgens gladgestreken met een
-framerate-onafhankelijk exponentieel filter. Deze blend is de exacte
-discrete-tijd-oplossing van de eerste-orde-relaxatie
-$\dot{p} = \alpha\,(p_{\text{target}} - p)$ over een frame-interval
-$\Delta t$, die integreert tot
+framerate-onafhankelijk exponentieel filter. Het idee erachter: de positie
+beweegt continu naar het doel toe, met een snelheid die evenredig is met de nog
+resterende afstand, $\dot{p} = \alpha\,(p_{\text{target}} - p)$; ze nadert het
+doel dus exponentieel. Over één frame-interval $\Delta t$ lost deze vergelijking
+zich exact op tot
 $p \leftarrow p_{\text{target}} + (p - p_{\text{target}})\,e^{-\alpha\Delta t}$,
-equivalent:
+wat hetzelfde is als:
 \begin{equation}
 \label{eq:displaysmooth}
 p_{\text{display}} = \text{lerp}(p_{\text{display}},\; p_{\text{target}},\; 1 - e^{-\alpha \cdot \Delta t})
@@ -1244,7 +1245,7 @@ een nieuwe richting te snappen), wordt een wiskundige curve genaamd een
 Catmull-Rom-spline gebruikt. Deze curve loopt exact door elk rail-punt en levert
 een vloeiende richting op elke positie langs de rail.
 
-De tangent $\mathbf{T}(t) = \tfrac{d}{dt}\mathbf{C}(t)$ op parameter $t$ wordt
+De tangent (de bewegingsrichting op een punt van de curve) $\mathbf{T}(t) = \tfrac{d}{dt}\mathbf{C}(t)$ op parameter $t$ wordt
 verkregen door het uniforme Catmull-Rom-positiepolynoom~\cite{catmullrom1974} te
 differentiëren over de omliggende controlepunten
 $\mathbf{p}_0 \ldots \mathbf{p}_3$, wat geeft:
@@ -1266,8 +1267,8 @@ terwijl hij vloeiend door overgangen roteert.
 \subsubsection{Quaternion-oriëntatie}
 De stoel heeft vier rotatie-assen (richting langs de rail, railhelling,
 zittinghoek en zittingrotatie), elk bestuurd door een andere motor of bepaald
-door de railvorm. Het combineren van meerdere rotaties is wiskundig delicaat:
-een naïeve aanpak met hoeken kan bij bepaalde oriëntaties vervormingen
+door de railvorm. Het combineren van meerdere rotaties is wiskundig lastig:
+een voor de hand liggende aanpak met hoeken kan bij bepaalde oriëntaties vervormingen
 produceren (bekend als gimbal lock). Quaternionen zijn een wiskundige
 representatie van rotaties die dit probleem volledig
 vermijdt~\cite{kuipers1999quaternions}.
@@ -1278,11 +1279,11 @@ van de tangent:
 \label{eq:yaw}
 \psi = \text{atan2}(T_x, T_z)
 \end{equation}
-met phase unwrapping om $2\pi$-discontinuïteiten te vermijden.
+met \emph{phase unwrapping} (hele omwentelingen continu doortellen) om sprongen van $2\pi$ te vermijden.
 
 Rail-chiraliteit (welke kant de stoel op kijkt) wordt bepaald door het
-opgetelde kruisproduct van opeenvolgende richtingsvectoren geprojecteerd op
-het $xz$-vlak:
+opgetelde kruisproduct van opeenvolgende richtingsvectoren $d^i$ langs de rail,
+geprojecteerd op het $xz$-vlak:
 \begin{equation}
 \label{eq:chirality}
 C = \sum_i (d^i_x \cdot d^{i+1}_z - d^i_z \cdot d^{i+1}_x)
@@ -1290,8 +1291,10 @@ C = \sum_i (d^i_x \cdot d^{i+1}_z - d^i_z \cdot d^{i+1}_x)
 Als $C \geq 0$ is de rail linksdraaiend en kijkt de stoel naar buiten op
 $+90^\circ$; anders op $+270^\circ$.
 
-De pitch-kanteling van de stoeleenheid wordt toegepast via een world-to-local
-quaternion-transform:
+De pitch-kanteling van de stoeleenheid wordt toegepast door de rotatie om te
+rekenen naar een ander assenstelsel. Het product $q_{\text{parent}}^{-1} \cdot q \cdot q_{\text{parent}}$
+drukt een rotatie $q$ uit in het assenstelsel van de ouder (de rail) in plaats
+van in het wereldstelsel:
 \begin{equation}
 \label{eq:pitch-quat}
 q_{\text{unit}} = q_{\text{parent}}^{-1} \cdot q(\mathbf{a}_{\text{pitch}},\; -\phi) \cdot q_{\text{parent}}
@@ -1300,7 +1303,7 @@ waar $\phi = \text{atan2}(T_y, \|\mathbf{T}_{xz}\|)$ en
 $\mathbf{a}_{\text{pitch}} = \hat{\mathbf{y}} \times \hat{\mathbf{T}}_{\text{flat}}$.
 
 De spindle-motor compenseert de rail-pitch om de zitting waterpas te houden, en
-voegt vervolgens zijn eigen kanteling toe:
+voegt vervolgens zijn eigen kanteling toe (zelfde omrekening als hierboven):
 \begin{equation}
 \label{eq:spindle-quat}
 q_{\text{spindle}} = q_{\text{parent}}^{-1} \cdot q(\mathbf{a},\; -\phi + \theta_{\text{spindle}}) \cdot q_{\text{parent}}
@@ -1330,7 +1333,7 @@ bochten: twee horizontale en vijf verticale). Foto's van beide
 testopstellingen staan in Bijlage~\ref{app:opstellingen}.
 De tweede meetronde omvat aanvullend een speciale continue-rit-log voor de
 snelheidsgebaseerde DV3(b)-test en twee statische oriëntatietests (spindle en
-swivel). Het systeem pollt telemetrie op een geaggregeerde $\sim$10\,Hz aan
+swivel). Het systeem pollt telemetrie op een totale $\sim$10\,Hz aan
 round-trips tijdens de runs (gedeeld over alle kanalen,
 Sectie~\ref{sec:results-q1}) en logt elke gebeurtenis met milliseconde-timestamps
 via de in-app TestLogger-module; representatieve logfragmenten per event-type
@@ -1574,7 +1577,7 @@ ruimtelijk interpreteerbare informatie dragen, zodat de bandbreedte-beperkte
 Bluetooth-verbinding niet de volledige telemetrie-stream hoeft te dragen. Door
 alleen deze zes berichten te targeten met een multi-rate-polling-strategie houdt
 de pipeline de positie-relevante kanalen gepolld op de hoogste rate die de
-gedeelde seriële verbinding volhoudt (een geaggregeerde $\sim$10\,Hz aan
+gedeelde seriële verbinding volhoudt (een totale $\sim$10\,Hz aan
 round-trips, Sectie~\ref{sec:results-validation}). Toekomstige uitbreidingen
 (bijv. trillings- of temperatuurmonitoring) zouden eerst vereisen te controleren
 of de seriële bandbreedte de extra streams kan accommoderen zonder de
