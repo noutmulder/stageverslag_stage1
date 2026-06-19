@@ -53,7 +53,10 @@
   colorlinks = true,
   linkcolor = black,
   citecolor = black,
-  urlcolor = black
+  urlcolor = black,
+  pdftitle = {Ontwikkeling van een live 3D-telemetrievisualisatie als basis voor storingsdiagnose van trapliften},
+  pdfauthor = {Nout Mulder},
+  pdflang = {nl}
 }
 
 % ---------- References ----------
@@ -77,7 +80,7 @@
 \renewcommand{\footrulewidth}{0pt}
 
 % ---------- Title ----------
-\title{Internship Research Report Period 1 and 2}
+\title{Ontwikkeling van een live 3D-telemetrievisualisatie als basis voor storingsdiagnose van trapliften}
 \author{Nout Mulder}
 \date{2026}
 
@@ -127,7 +130,7 @@ Dit onderzoek beschrijft de ontwikkeling en validatie van een pipeline die
 ruwe traplift-telemetrie omzet in een stabiele, nauwkeurige live
 3D-visualisatie als basis voor storingsdiagnose. Het technische
 kernprobleem is tweeledig. De positie van de traplift wordt gemeten met een
-een aantal pulse-encoders, en die metingen komen binnen over een Bluetooth-verbinding met
+aantal pulse-encoders, en die metingen komen binnen over een Bluetooth-verbinding met
 hoge latency. Ze moeten worden afgebeeld op een 3D-rail, waar de
 verhouding tussen encoder-pulsen en afstand per segment verschilt. Tegelijk moet
 de weergegeven beweging vloeiend blijven: het beeld wordt steeds opnieuw
@@ -1740,58 +1743,56 @@ geïmplementeerd.
 
 \subsection{Aanbevelingen}
 \begin{itemize}[leftmargin=*]
-  \item \textbf{Rail-configurator-precisiestudie.} De configurator-lengtefout die
-    de end-to-end positiefout domineert (Beperkingen) ligt buiten de pipeline. Een
-    aparte studie die een rail door de configurator-workflow traceert met een
-    externe referentie (laserafstandsmeter) kwantificeert en corrigeert die bron.
-  \item \textbf{High-speed video voor zichtbare lag.} Zichtbare lag (de offset
-    tussen de fysieke en weergegeven stoel) is de enige gebruikersgerichte
-    eigenschap die nog alleen observationeel is beoordeeld. Een
-    high-speed-video-vergelijking op pilot-snelheid maakt er een gemeten
-    frame-offset van en dicht de laatste kwalitatieve leemte rond DV1(b).
+  \item \textbf{Configurator-precisie meten.} De grootste end-to-end fout
+    komt niet uit de pipeline, maar uit de lengtefout van de configurator (zie
+    Beperkingen). Meet die apart: volg één rail door de configurator-workflow en
+    vergelijk met een laserafstandsmeter. Zo breng je de fout in kaart en kun je
+    hem corrigeren.
+  \item \textbf{High-speed video voor zichtbare lag.} De zichtbare vertraging (het
+    gat tussen de echte stoel en de stoel op het scherm) is als enige nog alleen op
+    het oog beoordeeld. Film de rit op pilot-snelheid met een high-speed camera. Dan wordt het een gemeten waarde en is ook dit laatste stuk van DV1(b)
+    hard onderbouwd.
   \item \textbf{Driftvrije swivel- en yaw-referentie.} De swivel-hoek en de
-    compass-bochtcorrectie worden nog gecontroleerd tegen de driftende
-    tablet-gyroscoop (Beperkingen). Een driftvrije referentie (digitale gradenboog
-    of laser-hoekmeter) geeft ze dezelfde externe grond als de spindle al heeft.
-  \item \textbf{Filter-tuning op gemeten data.} Leid $\sigma_a$ en de
-    dead-reckoning-vervalconstante opnieuw af uit de gemeten tussen-sample-gaten
-    en stoelsnelheden (beide staan al in de huidige logs), zodat de tuning
-    onderbouwd is in plaats van geschat (Beperkingen).
-  \item \textbf{Robuustheidstests.} Pas fault-injection toe (gecorrumpeerde bytes,
-    geforceerde disconnects, latency-pieken) om de claims over fout-afhandeling en
-    transport-herstel (Sectie~\ref{sec:results-q1}) onder adversariële
-    omstandigheden te verifiëren.
+    bochtcorrectie worden nu getoetst aan de tablet-gyroscoop, en die drijft weg
+    (zie Beperkingen). Gebruik in plaats daarvan een stabiele referentie, zoals een
+    digitale gradenboog of laser-hoekmeter. Dan rusten ze op dezelfde harde basis
+    als de spindle.
+  \item \textbf{Filter-tuning op gemeten data.} De tuning is nu op het oog gekozen
+    (zie Beperkingen). Leid $\sigma_a$ en de dead-reckoning-constante opnieuw af
+    uit de gemeten gaten tussen samples en de stoelsnelheid. Beide staan al in de
+    huidige logs, dus de tuning wordt onderbouwd in plaats van geschat.
+  \item \textbf{Robuustheidstests.} Test de robuustheid bewust: voer fouten in
+    (kapotte bytes, geforceerde verbroken verbindingen, latency-pieken). Zo
+    controleer je of de fout-afhandeling en het verbindingsherstel
+    (Sectie~\ref{sec:results-q1}) ook onder zware omstandigheden werken.
 \end{itemize}
 
-\textbf{Opschalen naar het functionele probleem.} De bovenstaande aanbevelingen
-scherpen de technische bijdrage aan; een laatste stap keert terug naar het
-functionele probleem dat haar motiveerde (Sectie~\ref{sec:introduction}): de
-moeite die service-engineers hebben om tekstuele foutcodes ruimtelijk te
-interpreteren. De gevalideerde pipeline is een noodzakelijke bouwsteen voor dat
-doel: ze plaatst de stoel op de rail met submillimeter-pipeline-nauwkeurigheid,
-binnen 10\,mm end-to-end, en geeft de storingstoestand ruimtelijk weer. Of ze de
-diagnosetijd ook echt verkort of bezoeken ter plaatse vermindert, is een
-experimentele human-factors-vraag die dit verslag bewust buiten scope heeft
-gehouden (Sectie~\ref{sec:introduction}). Adoptie in de praktijk vraagt bovendien
-om inbedding in de service-workflow: waar de weergave draait (een service-tablet
-bij de lift of een externe supportdesk), hoe ze aan een installatie wordt
-gekoppeld, en hoe ze het bestaande tekst-en-code-storingskanaal aanvult in plaats
-van vervangt. De natuurlijke vervolgstap verenigt beide: een kleine veldstudie met
-service-engineers die de diagnosetijd met en zonder de live visualisatie
-vergelijkt én de integratie-eisen blootlegt vóór bredere uitrol. De hier geleverde
-pipeline is de voorwaarde die zo'n studie mogelijk maakt.
+\textbf{Opschalen naar het functionele probleem.} De aanbevelingen hierboven
+scherpen de techniek aan. Een laatste stap keert terug naar het oorspronkelijke
+probleem (Sectie~\ref{sec:introduction}): service-engineers kunnen tekstuele
+foutcodes moeilijk ruimtelijk plaatsen. De gevalideerde pipeline is daarvoor een
+noodzakelijke bouwsteen. Ze zet de stoel met submillimeter-nauwkeurigheid op de
+rail (binnen 10\,mm end-to-end) en toont de storingstoestand ruimtelijk. Of dat de
+diagnosetijd echt verkort of bezoeken ter plaatse vermindert, is een
+human-factors-vraag die buiten de scope van dit verslag valt
+(Sectie~\ref{sec:introduction}). Praktijkgebruik vraagt ook om inbedding in de
+service-workflow: waar de weergave draait (een tablet bij de lift of een centrale
+supportdesk), hoe je ze aan een installatie koppelt, en hoe ze het bestaande
+tekstkanaal aanvult in plaats van vervangt. De logische vervolgstap combineert
+dit: een kleine veldstudie met service-engineers. Die meet de diagnosetijd met en
+zonder de visualisatie, en legt de integratie-eisen bloot vóór een bredere uitrol.
+De pipeline uit dit verslag maakt zo'n studie mogelijk.
 
-\textbf{Overdracht naar andere domeinen.} De technische kern (het afbeelden van
-één enkele incrementele-encoder-telling op een niet-uniform gebogen pad met
-segmentafhankelijke pulskosten, en deze vervolgens interpoleren en oriënteren
-voor een real-time display over een verbinding met hoge latency) is niet
-specifiek voor trapliften. Dezelfde probleemvorm komt terug bij liften,
-plateauliften, portaalkranen, bovenloopconveyors en automated guided vehicles op
-gebogen sporen, die allemaal een gebogen rijpad combineren met encoder-gebaseerde
-positie-feedback. De stuksgewijze kalibratiekaart (Sectie~\ref{sec:results-q2})
-en de temporele Kalman/dead-reckoning-interpolatie (Sectie~\ref{sec:results-q3})
-zijn daar direct herbruikbaar; alleen de pulskost-tabel per segmenttype en de
-oriëntatie-assen zouden opnieuw geparametriseerd moeten worden.
+\textbf{Overdracht naar andere domeinen.} De techniek is niet uniek voor
+trapliften. De kern is: één encoder-telling omzetten naar een positie op een
+gebogen pad waar de pulskosten per stuk verschillen, en die positie daarna
+interpoleren en oriënteren voor een real-time weergave over een trage verbinding.
+Datzelfde probleem speelt bij liften, plateauliften, portaalkranen,
+transportbanden en automatisch geleide voertuigen (AGV's) op gebogen sporen:
+allemaal een gebogen rijpad met encoder-positie. De stuksgewijze kalibratiekaart
+(Sectie~\ref{sec:results-q2}) en de Kalman/dead-reckoning-interpolatie
+(Sectie~\ref{sec:results-q3}) zijn daar direct herbruikbaar. Alleen de pulskosten
+per segmenttype en de oriëntatie-assen moet je opnieuw instellen.
 
 % ============================================================
 \section{Discussie}
