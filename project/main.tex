@@ -1573,10 +1573,9 @@ bandbreedte de extra stromen aankan zonder de positie-update-snelheid te
 verlagen.
 
 Over de twee meetrondes bleef de Bluetooth-latency (heen en terug) op beide rails
-binnen de vooraf vastgelegde drempels (DV1(b)). De P95 was 113\,ms (rail 1) en
-112\,ms (rail 2), tegen een grens van 150\,ms; de P99 was 135\,ms en 134\,ms,
-tegen 250\,ms (gemiddelden 89\,ms en 88\,ms; Tabel~\ref{tab:validation},
-Figuur~\ref{fig:rtt-hist}). DV1(b) slaagt dus kwantitatief. Ook wat de gebruiker
+ruim binnen de vooraf vastgelegde P95- en P99-drempels (DV1(b); de cijfers staan
+in Tabel~\ref{tab:validation} en Figuur~\ref{fig:rtt-hist}). DV1(b) slaagt dus
+kwantitatief. Ook wat de gebruiker
 ziet klopt (O3, kwalitatief): de stoel op het scherm volgt de fysieke stoel
 zonder merkbare vertraging. Dat past bij het Kalman filter en de dead-reckoning,
 die de vertraging van één enkel sample aan de schermkant opvangen in plaats van
@@ -1602,53 +1601,42 @@ eind was 9.9\,mm, tegen een tolerantie van 10\,mm voor rails langer dan 5\,m
 
 Door de pipeline apart te bekijken wordt zichtbaar wáár die fout ontstaat. De
 fout die de pipeline zelf toevoegt (de weergegeven positie tegenover de uit de
-firmware afgeleide positie) was $\leq$\,0.7\,mm op de eerste rail en
-$\leq$\,0.1\,mm op de tweede (verdelingsstatistieken in
-Sectie~\ref{sec:results-validation}), in alle gevallen onder de meetlint-resolutie
-van $\approx\pm$1\,mm. De mapping geeft de firmware-positie dus vrijwel exact
-weer. Vergelijking~\ref{eq:arctracing-error} begrenst de fout van het natekenen
-van de bochten op $\approx 4.2\,\mu$m per segment, wat past bij dit residu onder
-één millimeter en bij de eindige precisie van de pulskost-constanten uit de
-firmware (Vergelijking~\ref{eq:pulsecosts}).
+firmware afgeleide positie) bleef op beide rails onder de meetlint-resolutie
+(verdelingsstatistieken in Sectie~\ref{sec:results-validation}). De mapping geeft
+de firmware-positie dus vrijwel exact weer, consistent met de analytische grens op
+de arc-tracing-fout (Vergelijking~\ref{eq:arctracing-error}) en de precisie van de
+pulskost-constanten (Vergelijking~\ref{eq:pulsecosts}).
 
 De display volgt de firmware-geometrie dus exact. De resterende $\sim$7\,mm van de
 fout tussen display en fysiek komt daarom het meest plausibel niet uit de
-pipeline, maar uit het verschil tussen de in de firmware gecodeerde en de fysiek
-gemeten lengtes van de rail-configurator. Op rail 1 is dat verschil los gemeten
-op tot 16\,mm per raildeel (netto $+10$\,mm over de 3.4\,m-rail, 0.3\,\%). Dat is
-consistent met de systematisch negatieve fouten op rail 2 (gemiddeld $-6.9$\,mm:
-de weergegeven positie leest te kort waar een gecodeerd raildeel korter is dan in
-werkelijkheid). Een directe meting van deze splitsing op rail 2 is niet gedaan;
-deze bovenliggende bron wordt verder besproken onder Beperkingen.
+pipeline, maar uit het lengteverschil tussen de in de firmware gecodeerde en de
+fysiek gemeten rail-configurator (op rail 1 los gemeten, en consistent met de
+systematisch negatieve fouten op rail 2; Sectie~\ref{sec:results-validation}). Een
+directe meting van deze splitsing op rail 2 is niet gedaan; deze bovenliggende
+bron wordt verder besproken onder Beperkingen.
 
 \textbf{Wiskundige modellen.}
 Het Kalman filter met constante snelheid, de dead-reckoning, de
 Catmull-Rom-tangent en de quaternion-compositie leveren samen een vloeiende,
-stabiele weergave. Het herziene DV3(b)-criterium is nu kwantitatief getoetst. Op
-een speciale continue rit over de 5428\,mm-rail kwamen snelheidspieken boven
-5$\times$ de mediane snelheid tussen opeenvolgende frames voor bij 0.04\,\% van de
-frames (traction-as). Dat is meer dan twee ordes van grootte onder de
-$\sim$10\,\% die een weergave zou geven die tussen metingen op de laatste positie
-blijft staan en dan verspringt. Er is dus geen trapjespatroon, en DV3(b) wordt
-substantieel gehaald (de letterlijke ``0 pieken''-drempel wordt nipt
+stabiele weergave. Het herziene DV3(b)-criterium is kwantitatief getoetst en
+substantieel gehaald: de gemeten piek-rate ligt meer dan twee ordes van grootte
+onder de signatuur van een trapjes-weergave (Sectie~\ref{sec:results-validation}),
+dus er is geen trapjespatroon (de letterlijke ``0 pieken''-drempel wordt nipt
 overschreden; zie Beperkingen).
 
-De stationaire baseline van 13\,s gaf nul pulsen encoder-variatie (constant
-16\,030). Daardoor was het oorspronkelijke jitter-ratio-criterium ongedefinieerd
-voor deze digitale pulse-counter en is het vervangen door de snelheidstest. De
-rol van het Kalman filter in deze pipeline is dan ook niet ruisreductie maar
-\emph{tijdsinterpolatie}: het vult de gaten tussen sensorsamples voor de
-render-loop en schat de snelheid voor de dead-reckoning tijdens latency-pieken.
+De rol van het Kalman filter is hier geen ruisreductie maar
+\emph{tijdsinterpolatie}: de traction-encoder is een digitale pulse-counter zonder
+rust-jitter (Sectie~\ref{sec:results-validation}), dus het filter vult de gaten
+tussen samples voor de render-loop en schat de snelheid voor de dead-reckoning
+tijdens latency-pieken.
 
-De oriëntatiemodellen zijn in twee statische tests tegen externe referenties
-gecontroleerd: de spindle-zittinghoek volgde een digitale waterpas tot op
-1.05$^\circ$ over 0--75$^\circ$, en de swivel-hoek volgde de tablet-gyroscoop tot
-op 2.83$^\circ$ over $\pm$60$^\circ$ (binnen de $\pm$3.5$^\circ$-tolerantie,
-waarbij een deel van de spreiding drift in de gyroscoop-referentie is). De
-Kalman-tuning-parameters (Tabel~\ref{tab:kalman}) en de
-0.85/0.15-spindle-pitch-verhouding blijven ingestelde waarden, geen afleidingen
-uit een ruismodel vanaf eerste principes. Hoe gevoelig het resultaat voor deze
-keuzes is, is niet formeel begrensd en wordt als beperking gerapporteerd.
+De oriëntatiemodellen slaagden in twee statische tests tegen externe referenties,
+beide binnen tolerantie (spindle tegen een digitale waterpas, swivel tegen de
+tablet-gyroscoop; cijfers in Sectie~\ref{sec:results-validation}), waarbij een deel
+van de swivel-spreiding drift in de gyroscoop-referentie is. De
+Kalman-tuning-parameters (Tabel~\ref{tab:kalman}) en de spindle-pitch-verhouding
+blijven ingestelde waarden, geen afleidingen uit een ruismodel; hoe gevoelig het
+resultaat daarvoor is, is niet formeel begrensd (zie Beperkingen).
 
 \subsection{Antwoord op de centrale vraag}
 De pipeline die nodig is om live traplift-telemetrie om te zetten in een
