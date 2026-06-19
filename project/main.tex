@@ -130,36 +130,25 @@
 \textbf{Samenvatting.}
 Dit onderzoek beschrijft de ontwikkeling en validatie van een pipeline die
 ruwe traplift-telemetrie omzet in een stabiele, nauwkeurige live
-3D-visualisatie als basis voor storingsdiagnose. Het technische
-kernprobleem is tweeledig. De positie van de traplift wordt gemeten met een
-aantal pulse-encoders, en die metingen komen binnen over een Bluetooth-verbinding met
-hoge latency. Ze moeten worden afgebeeld op een 3D-rail, waar de
-verhouding tussen encoder-pulsen en afstand per segment verschilt. Tegelijk moet
-de weergegeven beweging vloeiend blijven: het beeld wordt steeds opnieuw
-getekend in de renderlus, en daar mag geen schokkerigheid in zitten.
-
-Een ``virtual ghost''-prototype is iteratief ontwikkeld en gevalideerd op
-fysieke traplifthardware, over twee rail-configuraties (3403\,mm en 5428\,mm)
-en tegen vooraf geregistreerde kwantitatieve criteria; de resultaten gelden
-binnen deze twee geteste configuraties. De positienauwkeurigheid is op twee
-niveaus geëvalueerd. De pipeline-integratiefout bleef op beide rails binnen
-0.7\,mm. De fout tussen display en fysieke positie, per raildeel
-gerefereerd, bedroeg op de 5428\,mm-rail maximaal 9.9\,mm. Dat viel binnen de
-10\,mm-tolerantie voor rails langer dan 5\,m, al was de marge kleiner dan de
-meetonzekerheid. Het foutpatroon is consistent met een afwijking in de
-bovenliggende rail-configurator, maar die oorzaak is op rail 2 niet onafhankelijk
-vastgesteld. De Bluetooth round-trip-latency voldeed op beide rails ruim aan de
-vooraf geregistreerde drempels. Het DV3-criterium van nul snelheidspieken werd
-met een gemeten piek-rate van 0.04--0.21\,\% formeel niet gehaald; de beweging
-vertoonde echter geen systematisch trapjespatroon.
-
-Binnen de geteste configuraties levert één verwerkingspipeline dus een stabiele,
-nauwkeurige live 3D-weergave van de trapliftpositie op. Daarin komen drie onderdelen samen. De encoder-pulsen worden via een
-niet-lineaire mapping omgezet naar een positie op de rail. Een recursieve
-toestandsschatting met dead-reckoning (positie voorspellen tussen metingen) houdt
-de beweging stabiel. En de oriëntatie wordt vloeiend gereconstrueerd op basis van
-de spline-tangent. De storingstoestand wordt rechtstreeks uit de geparste
-statusbits weergegeven.
+3D-visualisatie als basis voor storingsdiagnose. Het technische kernprobleem is
+tweeledig: positiemetingen van pulse-encoders komen over een
+Bluetooth-verbinding met hoge latency binnen en moeten worden afgebeeld op een
+3D-rail waar de verhouding tussen encoder-pulsen en afstand per segment
+verschilt, terwijl de weergegeven beweging vloeiend moet blijven. De oplossing
+is een verwerkingspipeline met een niet-lineaire encoder-naar-positie-mapping,
+recursieve toestandsschatting met dead-reckoning en quaternion-gebaseerde
+oriëntatiereconstructie. Een ``virtual ghost''-prototype is iteratief ontwikkeld
+en gevalideerd op fysieke traplifthardware, over twee rail-configuraties
+(3403\,mm en 5428\,mm) en tegen vooraf geregistreerde kwantitatieve criteria; de
+resultaten gelden binnen deze twee geteste configuraties. De
+pipeline-integratiefout bleef op beide rails binnen 0.7\,mm; de fout tussen
+display en fysieke positie bedroeg op de 5428\,mm-rail maximaal 9.9\,mm, binnen
+de 10\,mm-tolerantie voor rails langer dan 5\,m, al was de marge kleiner dan de
+meetonzekerheid. De Bluetooth round-trip-latency voldeed ruim aan de vooraf
+geregistreerde drempels. Het DV3-criterium van nul snelheidspieken werd formeel
+niet gehaald, al vertoonde de beweging geen systematisch trapjespatroon. Binnen
+de geteste configuraties levert één verwerkingspipeline zo een stabiele,
+nauwkeurige live 3D-weergave van de trapliftpositie op.
 
 % \vspace{0.25cm}
 % \noindent\textit{Trefwoorden}: traplift-telemetrie, encoder-naar-positie-mapping, Kalman-filter, dead-reckoning, quaternion-oriëntatie, Catmull-Rom-spline, real-time 3D-visualisatie, storingsdiagnose.
