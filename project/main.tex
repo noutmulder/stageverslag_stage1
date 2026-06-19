@@ -1519,11 +1519,12 @@ bron wordt verder besproken onder Beperkingen.
 \textbf{Wiskundige modellen.}
 Het Kalman filter met constante snelheid, de dead-reckoning, de
 Catmull-Rom-tangent en de quaternion-compositie leveren samen een vloeiende,
-stabiele weergave. Het herziene DV3(b)-criterium is kwantitatief getoetst en
-substantieel gehaald: de gemeten piek-rate ligt meer dan twee ordes van grootte
-onder de signatuur van een schokkerige weergave (Sectie~\ref{sec:results-validation}),
-dus er is geen schokkerig patroon (de letterlijke ``0 pieken''-drempel wordt nipt
-overschreden; zie Beperkingen).
+stabiele weergave. Het herziene DV3(b)-criterium is kwantitatief getoetst en formeel niet gehaald:
+de letterlijke ``0 pieken''-drempel wordt door enkele milde pieken overschreden
+(zie Beperkingen). De zeer lage gemeten piek-rate (0.04--0.21\,\%) ligt meer dan
+twee ordes van grootte onder de signatuur van een schokkerige weergave
+(Sectie~\ref{sec:results-validation}) en ondersteunt zo de conclusie dat er geen
+systematisch schokkerig patroon aanwezig was.
 
 De rol van het Kalman filter is hier geen ruisreductie maar
 \emph{tijdsinterpolatie}: de traction-encoder is een digitale pulse-counter zonder
@@ -1581,9 +1582,10 @@ Over de twee meetrondes presteren de geïmplementeerde pipeline en modellen
 binnen de geteste configuraties als volgt tegen de drie empirische criteria:
 latency (DV1(b)) slaagt volledig; positienauwkeurigheid (DV2(b)) slaagt, maar
 met een marge die binnen de meetonzekerheid valt (zie Beperkingen); en
-vloeiendheid (DV3(b)) wordt letterlijk nipt gemist (de ``0 pieken''-drempel
-wordt door enkele milde pieken overschreden), maar is substantieel gehaald: de
-piek-rate ligt meer dan twee ordes onder de signatuur van het schokkerige patroon. De cijfers per
+vloeiendheid (DV3(b)) wordt formeel niet gehaald: de ``0 pieken''-drempel
+wordt door enkele milde pieken overschreden. De zeer lage piek-rate ligt wel meer
+dan twee ordes onder de signatuur van een schokkerige weergave en ondersteunt de
+conclusie dat er geen systematisch schokkerig patroon aanwezig was. De cijfers per
 criterium staan in de antwoorden hierboven en in Tabel~\ref{tab:validation}.
 
 De latency- en pipeline-integratiematen beslaan beide rail-configuraties
