@@ -610,129 +610,96 @@ hoe de methode concreet wordt toegepast, en welke criteria de afronding bepalen.
 \subsection{Data-pipeline-architectuur (ontwerp + documentatieanalyse)}
 \label{sec:method-q1}
 \textbf{Methode:} Architectuurontwerp, gecombineerd met een formele analyse van de
-protocolspecificatie van de firmware om de input-laag te bepalen.\\
-\textbf{Waarom deze methode:} De telemetrie-pipeline beslaat meerdere lagen
-(draadloos transport, binaire protocol-parsing, polling, toestandsschatting,
-rendering). Ze moet de positie-relevante kanalen zo snel pollen als de gedeelde
-Bluetooth-verbinding toelaat. Daarbij moet de round-trip-latency binnen een budget
-blijven dat verenigbaar is met een 60\,fps-render-loop. Een gestructureerd
-architectuurontwerp zorgt dat de bijdrage van elke laag aan latency en
-betrouwbaarheid identificeerbaar is. De invoer voor die pipeline is een subset
-van de $>$\,140 berichttypes van de firmware. Die subset wordt bepaald door
-documentatieanalyse in plaats van observatie van live verkeer. De invoer is dus de
-volledige firmware-enumeratie, geen steekproef van waargenomen message-frames.\\
+firmware-protocolspecificatie om de input-laag te bepalen. De pipeline beslaat
+meerdere lagen (transport, protocol-parsing, polling, toestandsschatting,
+rendering) en moet de positie-kanalen zo snel pollen als de gedeelde
+Bluetooth-verbinding toelaat, met een round-trip-latency die past bij een
+60\,fps-render-loop. Een gelaagd ontwerp maakt de bijdrage van elke laag aan
+latency en betrouwbaarheid identificeerbaar. De invoer is de volledige
+firmware-enumeratie ($>$\,140 berichttypes), bepaald via documentatieanalyse in
+plaats van observatie van live verkeer.\\
 \textbf{Aanpak:} De architectuur wordt gespecificeerd als een gelaagde pipeline
-(transport, protocol parser, telemetry poller, state estimator, 3D renderer).
-Elke laag is gedocumenteerd met haar invoer, uitvoer en faalmodi. Als invoer
-voor het ontwerp wordt de message-enumeratie in de firmware-broncode van de
-controller geëxtraheerd. Vervolgens wordt elk berichttype geclassificeerd langs drie assen:
-(1) data-inhoud, (2) update-rate en (3) ruimtelijke interpreteerbaarheid.\\
-\textbf{Waarom deze aanpak:} Een vijflaagse decompositie is gekozen (in plaats
-van een platte producer/consumer of een tweelaags client/renderer) omdat elke
-geïdentificeerde faalmodus (bit-level-corruptie, message-level-corruptie,
-verbindingsverlies, sensorruis, frame drops) netjes op precies één laag
-afbeeldt. Een plattere splitsing zou de renderer dwingen protocolfouten af te
-handelen of het transport laten weten van toestandsschatting, waarmee concerns
-worden samengevoegd die het timing-budget al scheidt. De
-drie-assen-berichtclassificatie is gekozen boven een één-as ``relevant ja/nee''
-omdat inhoud de parse-logica selecteert, rate de polling-strategie, en
-ruimtelijke interpreteerbaarheid de relevantie voor de visualisatie.\\
-\textbf{Instrument (wanneer klaar):} Het ontwerp is voldoende wanneer aan twee
-voorwaarden is voldaan. (a) Elke message-ID in de firmware-enumeratie is
-geclassificeerd; de subset die relevant is voor de visualisatie-pipeline is
-expliciet aangewezen, onderbouwd, en op byte-niveau gedocumenteerd voor elk
-bericht met een positie-, hoek- of statusbit-veld. (b) Op elke run blijft het
-95e percentiel (P95) van de Bluetooth round-trip-latency onder 150\,ms en het
-99e percentiel (P99) onder 250\,ms. Het 95e percentiel is de waarde waar 95\,\%
-van de round-trips onder blijft (en het 99e percentiel die voor 99\,\%).
-Aanvullend wordt waargenomen of de stoel op
-het scherm de fysieke stoel volgt tijdens steady-state-beweging, zonder
-waarneembare lag (criterium DV1(b); de DV1--DV3-criteria staan in
-Sectie~\ref{sec:method-validation}). De percentielgrens wordt gebruikt in plaats
-van een enkel-sample-drempel, omdat de pipeline de per-sample-latency bewust aan
-de displayzijde maskeert (Sectie~\ref{sec:results-q3}). Ze begrenst zo de
-tussen-sample-gaten die de dead-reckoning moet overbruggen. De zichtbare lag
-wordt er los naast gerapporteerd, als de eindgebruiker-eigenschap die het
-verbindingscriterium uiteindelijk dient.
+(transport, protocol parser, telemetry poller, state estimator, 3D renderer),
+elk gedocumenteerd met invoer, uitvoer en faalmodi. De message-enumeratie wordt
+uit de firmware-broncode geëxtraheerd en elk berichttype geclassificeerd langs
+drie assen: (1) data-inhoud, (2) update-rate en (3) ruimtelijke
+interpreteerbaarheid. De vijflaagse decompositie is gekozen boven een plattere
+splitsing omdat elke faalmodus (bit-level-corruptie, message-level-corruptie,
+verbindingsverlies, sensorruis, frame drops) op precies één laag afbeeldt; de
+drie-assen-classificatie omdat inhoud de parse-logica selecteert, rate de
+polling-strategie, en interpreteerbaarheid de relevantie voor de visualisatie.\\
+\textbf{Instrument (wanneer klaar):} Het ontwerp is voldoende wanneer (a) elke
+message-ID is geclassificeerd en de visualisatie-relevante subset expliciet,
+onderbouwd en op byte-niveau gedocumenteerd is, en (b) op elke run het 95e
+percentiel (P95) van de Bluetooth round-trip-latency onder 150\,ms blijft en het
+99e (P99) onder 250\,ms. Aanvullend wordt waargenomen of de stoel op het scherm
+de fysieke stoel zonder waarneembare lag volgt (DV1(b); de DV1--DV3-criteria
+staan in Sectie~\ref{sec:method-validation}). De percentielgrens wordt gebruikt
+in plaats van een enkel-sample-drempel omdat de pipeline de per-sample-latency
+bewust aan de displayzijde maskeert (Sectie~\ref{sec:results-q3}); ze begrenst zo
+de tussen-sample-gaten die de dead-reckoning overbrugt.
 
 \subsection{Encoder-naar-positie-mapping (formele analyse)}
 \label{sec:method-q2}
-\textbf{Methode:} Formele wiskundige analyse.\\
-\textbf{Waarom deze methode:} De encoder-naar-positie-mapping is een
-deterministisch geometrisch probleem: gegeven een rail die is samengesteld uit
-segmenten met bekende kromming en bekende pulskosten per segmenttype, kan de
-mapping analytisch worden afgeleid. Een formele afleiding waarborgt correctheid
-en maakt de mapping reproduceerbaar.\\
+\textbf{Methode:} Formele wiskundige analyse. De encoder-naar-positie-mapping is
+een deterministisch geometrisch probleem: gegeven een rail van segmenten met
+bekende kromming en pulskosten per segmenttype kan de mapping analytisch worden
+afgeleid, wat correctheid waarborgt en de mapping reproduceerbaar maakt.\\
 \textbf{Aanpak:} De rail wordt gemodelleerd als een reeks segmenten (recht,
-verticale bocht, horizontale bocht). Voor elk segmenttype wordt de
-encoder-pulskost afgeleid uit firmware-constanten. Cumulatieve 3D-Euclidische
-afstanden worden berekend op segmentgrenzen, wat een stuksgewijze lineaire
-mapping van encoder-waarde naar genormaliseerde rail-positie oplevert. De
-afleiding omvat de geometrie van het arc-tracing waarmee 3D-controlepunten
-worden opgezet uit de segmentbeschrijving van de firmware.\\
-\textbf{Waarom deze aanpak:} De mapping wordt vooraf berekend en op
-segmentgrenzen opgeslagen, in plaats van de curve elk frame opnieuw te
-integreren. De reden: zodra de rail bekend is, is de mapping statisch, terwijl
-de encoder-meting elk frame verandert. Door de integratie maar één keer per rail
-te doen, blijft de kost per frame één binary search. Een enkele gesloten-vorm
-encoder-naar-booglengte-functie zou alleen bestaan voor één uniform segmenttype,
-en dat gaat hier niet op.\\
-\textbf{Instrument (wanneer klaar):} De formele afleiding wordt als compleet
-beschouwd wanneer: (a) de mapping voor alle segmenttypes is gedefinieerd in
-benoemde vergelijkingen herleidbaar tot firmware-constanten, en (b) de
-resulterende weergegeven positie minder dan 5\,mm afwijkt van de fysiek gemeten
-stoelpositie op elk referentiepunt (stationgrenzen, elke bochtingang, elke
-bochtuitgang) op rails tot 5\,m, en minder dan 10\,mm op langere rails, over de
-validatieruns van Sectie~\ref{sec:method-validation}.
+verticale bocht, horizontale bocht); per segmenttype wordt de encoder-pulskost
+afgeleid uit firmware-constanten. Cumulatieve 3D-Euclidische afstanden op
+segmentgrenzen geven een stuksgewijze lineaire mapping van encoder-waarde naar
+genormaliseerde rail-positie, inclusief de arc-tracing-geometrie waarmee
+3D-controlepunten uit de segmentbeschrijving worden opgezet. De mapping wordt
+vooraf berekend en op segmentgrenzen opgeslagen in plaats van de curve elk frame
+te integreren: zodra de rail bekend is, is de mapping statisch, dus één
+integratie per rail volstaat en blijft de kost per frame één binary search (een
+enkele gesloten-vorm encoder-naar-booglengte-functie bestaat alleen voor één
+uniform segmenttype, wat hier niet opgaat).\\
+\textbf{Instrument (wanneer klaar):} De afleiding is compleet wanneer (a) de
+mapping voor alle segmenttypes in benoemde vergelijkingen staat, herleidbaar tot
+firmware-constanten, en (b) de weergegeven positie minder dan 5\,mm afwijkt van
+de fysiek gemeten stoelpositie op elk referentiepunt (stationgrenzen,
+bochtingangen/-uitgangen) op rails tot 5\,m, en minder dan 10\,mm op langere
+rails, over de validatieruns van Sectie~\ref{sec:method-validation}.
 
 \subsection{Wiskundige modellen (formele analyse)}
 \label{sec:method-q3}
-\textbf{Methode:} Formele wiskundige analyse.\\
-\textbf{Waarom deze methode:} De toestandsschattings-, interpolatie- en
-rotatiemodellen zijn gegrond in gevestigde wiskundige theorie (Kalman filtering,
-Catmull-Rom-splines, quaternion-algebra). Formele afleiding vanuit eerste
-principes zorgt dat de modelvorm correct wordt toegepast en theoretisch is
-onderbouwd. De numerieke tuning-parameters worden daarentegen experimenteel gekozen,
-niet uit eerste principes afgeleid (zie Sectie~\ref{sec:results-q3} en de
-Beperkingen in Sectie~\ref{sec:conclusion}).\\
+\textbf{Methode:} Formele wiskundige analyse. De toestandsschattings-,
+interpolatie- en rotatiemodellen zijn gegrond in gevestigde theorie (Kalman
+filtering, Catmull-Rom-splines, quaternion-algebra); formele afleiding vanuit
+eerste principes zorgt dat de modelvorm correct wordt toegepast. De numerieke
+tuning-parameters worden daarentegen experimenteel gekozen (zie
+Sectie~\ref{sec:results-q3} en de Beperkingen in Sectie~\ref{sec:conclusion}).\\
 \textbf{Aanpak:} Er worden drie modellen afgeleid:
 \begin{itemize}[leftmargin=*]
-  \item Een 2D constant-velocity Kalman filter voor elke telemetrie-as (traction,
-    spindle, swivel), inclusief de afleiding van de procesruismatrix, de
-    measurement-update-vergelijkingen, en de dead-reckoning-extrapolatie tussen
-    metingen.
-  \item Catmull-Rom-spline-interpolatie voor tangentberekening langs de rail,
-    gecombineerd met lineaire positie-interpolatie op segmenten.
-  \item Quaternion-gebaseerde oriëntatiereconstructie voor pitch (uit
-    rail-geometrie), spindle-compensatie en swivel-rotatie.
+  \item Een 2D constant-velocity Kalman filter per telemetrie-as (traction,
+    spindle, swivel), met procesruismatrix, measurement-update en
+    dead-reckoning-extrapolatie tussen metingen.
+  \item Catmull-Rom-spline-interpolatie voor tangentberekening langs de rail, met
+    lineaire positie-interpolatie op segmenten.
+  \item Quaternion-gebaseerde oriëntatiereconstructie voor pitch, spindle-compensatie en swivel-rotatie.
 \end{itemize}
-\textbf{Waarom deze aanpak:} De drie modellen worden onafhankelijk afgeleid, elk
-met een eigen toestand en eigen update-vergelijkingen, in plaats van als één
-gefuseerde toestandsvector. Dit is gekozen omdat de drie assen verschillende
-ruiskarakteristieken hebben (traction-encoder-kwantisatie,
-spindle-lookup-interpolatie, swivel-digitalisatie) en verschillende tijdbases.
-Eén gefuseerd filter zou namelijk een gedeeld procesruismodel vereisen dat deze
-verschillen wegmiddelt. Constant-velocity-filters per as maken tuning mogelijk
-($\sigma_a, \sigma_m$ per as, Tabel~\ref{tab:kalman}) om het werkelijke gedrag
-van elke sensor te weerspiegelen.\\
-\textbf{Instrument (wanneer klaar):} Elk model is correct wanneer aan twee
-voorwaarden is voldaan. (a) Elke stap van de afleiding staat in benoemde
-vergelijkingen, herleidbaar tot de geciteerde bronnen. (b) De weergegeven
-positie doorstaat de snelheidsgebaseerde DV3(b)-smoothness-test: tijdens continue
-beweging vertoont de frame-tot-frame-snelheid geen pieken boven 5$\times$ de
-mediane $|v|$ (de signatuur van een last-value-hold-staircase,
-Sectie~\ref{sec:method-validation}). Zo vult de display de sample-stream van
-$\sim$4--5\,Hz per kanaal, begrensd door de round-trip over de gedeelde
-verbinding (Sectie~\ref{sec:results-q1}), zonder zichtbare stap-sprongen.
-Het Kalman filter werkt hier vooral als \emph{temporele} interpolator en
-snelheidsschatter voor de render-loop, niet als ruisonderdrukkingsfilter. De
-traction-encoder is namelijk een digitale pulse-counter zonder value-jitter op
-het sample zelf. De relevante kwaliteit is dus de gladheid van de gefilterde
-uitvoer, die de $\sim$200\,ms-gaten tussen sensor-updates opvult. De
-singulariteitsvrijheid van de quaternion-compositie is een theoretische
-eigenschap van het formalisme~\cite{shoemake1985quaternion,kuipers1999quaternions}
-en wordt daarom niet apart gemeten; dat de stoel tijdens de validatieruns niet
-zichtbaar snapt, is een voldoende observationele controle.
+De drie modellen worden onafhankelijk afgeleid (elk met eigen toestand en
+update-vergelijkingen) in plaats van als één gefuseerde toestandsvector, omdat de
+assen verschillende ruiskarakteristieken en tijdbases hebben; één gefuseerd filter
+zou een gedeeld procesruismodel vereisen dat die verschillen wegmiddelt.
+Constant-velocity-filters per as maken tuning per as mogelijk ($\sigma_a,
+\sigma_m$, Tabel~\ref{tab:kalman}).\\
+\textbf{Instrument (wanneer klaar):} Elk model is correct wanneer (a) elke
+afleidingsstap in benoemde vergelijkingen staat, herleidbaar tot de geciteerde
+bronnen, en (b) de weergegeven positie de snelheidsgebaseerde
+DV3(b)-smoothness-test doorstaat: tijdens continue beweging geen
+frame-tot-frame-snelheidspieken boven 5$\times$ de mediane $|v|$ (de signatuur van
+een last-value-hold-staircase, Sectie~\ref{sec:method-validation}). Het Kalman
+filter werkt hier vooral als \emph{temporele} interpolator, niet als
+ruisonderdrukking: de traction-encoder is een digitale pulse-counter zonder
+value-jitter, dus de relevante kwaliteit is de gladheid waarmee de
+$\sim$200\,ms-gaten tussen sensor-updates worden opgevuld
+(Sectie~\ref{sec:results-q1}). De singulariteitsvrijheid van de
+quaternion-compositie is een theoretische eigenschap van het
+formalisme~\cite{shoemake1985quaternion,kuipers1999quaternions} en wordt niet
+apart gemeten.
 
 \subsection{Validatie-aanpak (experiment)}
 \label{sec:method-validation}
