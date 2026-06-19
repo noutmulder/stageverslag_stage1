@@ -337,155 +337,104 @@ bij DeVi Comfort gaat het vooral om de gegeven randvoorwaarden waarmee de rest v
 het werk rekening houdt.
 
 \subsubsection{Encoder-naar-positie-mapping op niet-uniforme paden}
-Het omzetten van een incrementele encoder-telling naar een positie langs het
-afgelegde pad is voor een uniform pad een opgelost probleem: de encoder geeft
-pulsen die recht evenredig zijn met de afgelegde afstand, dus één vast
-omrekengetal (pulsen per millimeter) is genoeg~\cite{bolton2019mechatronics, elmenreich2002sensorfusion}. Voor het
-niet-uniforme geval dat in Sectie~\ref{sec:problem-analysis} is
-geïdentificeerd, bestaan drie oplossingsrichtingen.
+Het omzetten van een incrementele encoder-telling naar een positie is voor een
+uniform pad triviaal: pulsen zijn recht evenredig met de afstand, dus één
+omrekengetal (pulsen per mm) volstaat~\cite{bolton2019mechatronics,
+elmenreich2002sensorfusion}. Voor het niet-uniforme geval uit
+Sectie~\ref{sec:problem-analysis} zijn er drie richtingen.
 
-Een \textbf{enkele lineaire schaalfactor} vermenigvuldigt de pulstelling met
-één constante mm-per-puls-waarde, de standaardaanpak voor lineaire
-actuatoren~\cite{elmenreich2002sensorfusion}. Deze is $O(1)$ per frame en vereist
-geen model van het pad. Ze is echter alleen correct zolang de
-pulsen-per-millimeter-verhouding constant is. \cite{merry2010encoder} laat zien
-dat die aanname faalt waar de padgeometrie varieert: op een gebogen rail bouwt
-de lineaire factor bij elke bochtovergang een positiefout op. Deze
-aanpak wordt daarom verworpen als primaire mapping.
+Een \textbf{enkele lineaire schaalfactor} (de standaard voor lineaire
+actuatoren~\cite{elmenreich2002sensorfusion}) is $O(1)$ en modelvrij, maar alleen
+correct bij een constante pulsen-per-mm-verhouding. \cite{merry2010encoder} laat
+zien dat die aanname faalt op een gebogen rail, waar bij elke bochtovergang een
+positiefout opbouwt. Verworpen als primaire mapping.
 
 Een \textbf{gesloten-vorm booglengte-parametrisatie} integreert de relatie
-tussen encoder-telling en booglengte analytisch wanneer het pad één enkele
-analytische curve is~\cite{strang2016calculus}. Dit is exact en compact, maar
-een gesloten-vorm inverse bestaat alleen voor één uniform segmenttype (constante
-kromming). De trapliftrail mengt rechte, verticaal-gebogen en
-horizontaal-gebogen segmenten met verschillende pulskosten per segment, zodat
-geen enkele gesloten-vorm inverse de hele rail dekt; de aanpak is alleen per
-segment bruikbaar, niet rail-breed.
+analytisch~\cite{strang2016calculus}, maar een inverse bestaat alleen voor één
+uniform segmenttype. De rail mengt rechte, verticaal- en horizontaal-gebogen
+segmenten met verschillende pulskosten, zodat geen enkele gesloten vorm de hele
+rail dekt; ze is alleen per segment bruikbaar.
 
-Een \textbf{voorberekende stuksgewijze kalibratiekaart} tabelleert, bij elke
-segmentgrens, de opgetelde encoder-telling tegen de opgetelde Euclidische
-afstand en interpoleert binnen een segment. Daardoor wordt elke per-frame-query
-teruggebracht tot een binary search over een statische
-tabel~\cite{bolton2019mechatronics}. Deze kaart verwerkt willekeurige pulskosten per
-segment en verdeelt de kosten van de padintegratie over één berekening per rail;
-tussen de grenzen verloopt ze stuksgewijs lineair. Het nadeel is dat de volledige
-rail-topologie vooraf bekend moet zijn. Dat is hier het geval: de controller
-slaat de rail op als getypeerde blokken. Deze richting wordt
-geselecteerd en afgeleid in Sectie~\ref{sec:results-q2}.
+Een \textbf{voorberekende stuksgewijze kalibratiekaart} tabelleert per
+segmentgrens de opgetelde encoder-telling tegen de opgetelde Euclidische afstand
+en interpoleert daarbinnen, zodat elke query een binary search over een statische
+tabel wordt~\cite{bolton2019mechatronics}. Ze verwerkt willekeurige pulskosten per
+segment en doet de padintegratie één keer per rail. Nadeel: de rail-topologie moet
+vooraf bekend zijn, wat hier het geval is omdat de controller de rail als
+getypeerde blokken opslaat. Geselecteerd en afgeleid in
+Sectie~\ref{sec:results-q2}.
 
 \subsubsection{Toestandsschatting}
-Voor toestandsschatting uit ruizige sensordata worden in embedded- en
-robotica-toepassingen doorgaans drie aanpakken gebruikt:
-moving-average-filters, complementary filters en Kalman filters.
+Voor toestandsschatting uit ruizige sensordata zijn drie aanpakken gangbaar:
+moving-average-, complementary- en Kalman filters.
 
-Een \textbf{moving-average-filter} berekent het gemiddelde van de laatste $N$
-samples en geeft dat als gefilterde waarde uit. Smith laat zien dat voor zuivere
-tijddomein-ruisreductie op stationaire of langzaam variërende signalen
-moving-averages vrijwel optimaal zijn, met als voordeel hun rekenkundige
-eenvoud~\cite{smith1997dsp}. Ze zijn daarom een sterke keuze voor toepassingen
-waar het ingangssignaal langzaam verandert ten opzichte van de sample-rate en
-geen voorspelling tussen samples nodig is. Moving-averages introduceren echter
-een latency evenredig aan de venstergrootte: ze vertragen het signaal effectief
-met $N/2$ samples. Daarnaast kunnen ze niet extrapoleren tussen metingen, en presteren
-ze slecht op transiënte of snel veranderende signalen. Voor traplift-telemetrie,
-waar de sensormetingen per kanaal enkele keren minder vaak binnenkomen dan de
-60\,fps-display-refresh, kan pure moving-average-smoothing de tussen-sample-kloof
-niet vullen.
+Een \textbf{moving-average-filter} middelt de laatste $N$ samples; voor
+ruisreductie op langzaam variërende signalen is dat vrijwel optimaal en
+rekenkundig eenvoudig~\cite{smith1997dsp}. Maar het introduceert latency
+($\sim N/2$ samples), kan niet tussen metingen extrapoleren, en presteert slecht
+op transiënten. Voor traplift-telemetrie, die per kanaal enkele keren trager
+binnenkomt dan de 60\,fps-refresh, vult het de tussen-sample-kloof niet.
 
 Een \textbf{complementary filter} combineert twee sensorbronnen met
-complementaire frequentiekarakteristieken, doorgaans met een low-pass-filter op
-de ene bron en een high-pass-filter op de andere~\cite{narkhede2021cascaded}.
-Dit is de standaardaanpak in IMU-fusie, waar langzame, driftvrije
-accelerometerdata wordt gecombineerd met snelle, ruizige gyroscoopdata om de
-oriëntatie te schatten. Complementary filters zijn rekenkundig licht en vereisen
-geen statistisch model van de ruis. Ze hebben daarom de voorkeur in
-kostengevoelige of high-rate embedded systemen met meerdere complementaire
-sensoren. Ze gaan er echter van uit dat er twee sensorbronnen met complementaire
-frequentie-inhoud beschikbaar zijn, wat bij de traplift niet het geval is. De
-traction-encoder is de enige directe positiesensor, en zijn ruis is niet op
-frequentie te scheiden van zijn signaal.
+complementaire frequentie-inhoud (low-pass op de ene, high-pass op de
+andere)~\cite{narkhede2021cascaded}, de standaard in IMU-fusie. Het is licht en
+vereist geen ruismodel, maar veronderstelt twee complementaire bronnen. Die zijn
+er bij de traplift niet: de traction-encoder is de enige directe positiesensor en
+zijn ruis is niet op frequentie te scheiden van zijn signaal.
 
-Het \textbf{Kalman filter} onderhoudt een probabilistische schatting van de
-systeemtoestand (positie en snelheid) en werkt die bij elke nieuwe meting bij,
-waarbij het de voorspellingsonzekerheid optimaal afweegt tegen de
-meetruis~\cite{kalman1960, welch1995kalman, bolton2019mechatronics}. Het
-combineert toestandsschatting en voorspelling in één raamwerk, wat het een
-natuurlijke keuze maakt wanneer metingen op een lagere rate binnenkomen dan de
-vereiste uitvoer. De kosten zijn een hogere rekencomplexiteit en de noodzaak om
-proces- en meetruisparameters te tunen. Voor de traplifttoepassing wordt het
-Kalman filter geselecteerd omdat het als enige van de drie beide dingen tegelijk
-kan: een continue snelheid schatten uit de discrete pulse-counter-stream, en de
-positie tussen metingen voorspellen. Beide zijn nodig om een 60\,fps-display te
-voeden uit een sensorstream die per kanaal enkele keren trager binnenkomt dan de
-display-refresh, zonder zichtbare getrapte sprongen.
+Het \textbf{Kalman filter} onderhoudt een probabilistische toestandsschatting
+(positie en snelheid) en weegt bij elke meting de voorspellingsonzekerheid
+optimaal af tegen de meetruis~\cite{kalman1960, welch1995kalman,
+bolton2019mechatronics}. Kosten zijn meer rekenwerk en te tunen ruisparameters.
+Het wordt geselecteerd omdat het als enige beide dingen tegelijk doet: een
+continue snelheid schatten uit de discrete pulse-counter-stream, én de positie
+tussen metingen voorspellen. Beide zijn nodig om een 60\,fps-display te voeden uit
+een sensorstream die per kanaal enkele keren trager binnenkomt, zonder zichtbare
+getrapte sprongen.
 
 \subsubsection{Spline-interpolatie}
-Om vloeiende positie- en oriëntatie-overgangen langs een discrete set
-rail-controlepunten te produceren, is interpolatie nodig. Drie families splines
-komen in aanmerking.
+Om vloeiende positie- en oriëntatie-overgangen langs discrete rail-controlepunten
+te produceren is interpolatie nodig. Drie families komen in aanmerking.
 
-\textbf{Lineaire interpolatie} tussen aangrenzende punten produceert scherpe
-richtingsveranderingen op segmentgrenzen (geen $C^1$-continuïteit). Ze is
-rekenkundig goedkoop en is de juiste keuze wanneer de geïnterpoleerde grootheid
-naar verwachting stuksgewijs lineair verandert, of wanneer downstream-verwerking
-geen continue tangent nodig heeft. Voor de visuele oriëntatie van een stoel
-langs een continu gebogen rail is dat een probleem: omdat de richting bij
-lineaire interpolatie op elk rail-punt met een sprong verandert, zou de stoel
-daar zichtbaar ``snappen'' in plaats van vloeiend mee te draaien.
+\textbf{Lineaire interpolatie} is goedkoop maar geeft scherpe
+richtingsveranderingen op segmentgrenzen (geen $C^1$-continuïteit): de stoel zou
+bij elk rail-punt zichtbaar ``snappen'' in plaats van vloeiend mee te draaien.
 
-\textbf{B-splines} (en hun rationele veralgemening, NURBS) zijn de facto
-standaard in CAD en industrieel curve-ontwerp. Ze bieden willekeurige
-continuïteit ($C^k$) via de keuze van de graad, en lokale controle (het
-verplaatsen van één controlepunt beïnvloedt slechts een begrensd deel van de
-curve)~\cite{piegl1991nurbs}. Ze hebben de voorkeur wanneer de curve zelf wordt
-ontworpen (CAD-oppervlakken, font-glyphs, animatiepaden) en de controlepunten
-constructie-handvatten zijn in plaats van vaste waypoints. Hun nadeel voor deze
-toepassing is dat de curve \emph{niet} door de controlepunten loopt, zodat ze
-niet overeenkomt met de fysieke rail-geometrie: de ghost chair zou een
-afgevlakte benadering van de rail volgen in plaats van de rail zelf.
+\textbf{B-splines} (en hun rationele variant NURBS) bieden willekeurige
+continuïteit en lokale controle, de de-facto standaard in CAD~\cite{piegl1991nurbs}.
+Hun nadeel hier: de curve loopt \emph{niet} door de controlepunten, dus de ghost
+chair zou een afgevlakte benadering van de rail volgen in plaats van de rail zelf.
 
-\textbf{Catmull-Rom-splines} lopen precies door de controlepunten en 
-hebben een vloeiende kromming ($C^1$-continuïteit) in die punten~\cite{catmullrom1974}. 
-Ze zijn handig wanneer de controlepunten vaste fysieke waypoints zijn, zoals bij een  
-rail, en het belangrijkste doel is een vloeiende richting voor de stoel. In dit werk 
-worden ze gebruikt om de richting van de stoel te bepalen. De positie van de stoel 
-op elk railsegment wordt lineair berekend tussen twee aangrenzende controlepunten. 
-Zo blijft de stoel altijd op de rail, omdat zowel lineaire als Catmull-Rom-curves 
-precies door de controlepunten gaan. Het resultaat is een vloeiende oriëntatie van 
-de stoel zonder dat hij van de rail afwijkt, wat zou gebeuren als een volledige 
-Catmull-Rom-curve voor de positie werd gebruikt met weinig meetpunten.
+\textbf{Catmull-Rom-splines} lopen precies door de controlepunten met
+$C^1$-continuïteit daar~\cite{catmullrom1974}, ideaal wanneer de controlepunten
+vaste fysieke waypoints zijn. Ze worden gebruikt voor de richting van de stoel; de
+positie op elk segment wordt lineair tussen twee aangrenzende controlepunten
+berekend. Zo blijft de stoel altijd op de rail (beide curves gaan door de
+controlepunten) met een vloeiende oriëntatie, terwijl een volledige
+Catmull-Rom-positiecurve met weinig meetpunten van de rail zou afwijken.
 
 \subsubsection{Rotatierepresentatie}
 Drie representaties van 3D-rotatie zijn algemeen in gebruik: Euler-hoeken,
 rotatiematrices en unit-quaternionen.
 
-\textbf{Euler-hoeken} (roll, pitch, yaw) zijn voor mensen leesbaar en vereisen
-slechts drie parameters. Diebel merkt op dat voor systemen met beperkte
-rotatiebereiken, of waar slechts één rotatie-as actief wordt gebruikt,
-Euler-hoeken een redelijke en rekenkundig goedkope keuze
-zijn~\cite{diebel2006attitude}. Veel industriële toepassingen (bijv.
-servobesturing op één as, eenvoudige tilt-sensoren) gebruiken Euler-hoeken
-zonder problemen. Het bekende nadeel is ``gimbal lock'': wanneer twee rotatie-assen
-samenvallen, gaat één vrijheidsgraad verloren en wordt de inverse mapping
-singulier. Voor de traplift, met vier onafhankelijke rotatie-assen die kunnen
-interageren (rail-yaw, rail-pitch, zittinghoek, zittingrotatie), is het risico
-op gimbal lock bij bepaalde rail-configuraties reëel.
+\textbf{Euler-hoeken} (roll, pitch, yaw) zijn leesbaar en gebruiken drie
+parameters; voor beperkte of enkel-as-rotaties een redelijke, goedkope
+keuze~\cite{diebel2006attitude}. Het bekende nadeel is gimbal lock: vallen twee
+assen samen, dan gaat een vrijheidsgraad verloren en wordt de inverse mapping
+singulier. Met vier interagerende rotatie-assen (rail-yaw, rail-pitch,
+zittinghoek, zittingrotatie) is dat risico bij sommige rail-configuraties reëel.
 
-\textbf{Rotatiematrices} (3$\times$3 orthogonale matrices) zijn vrij van
-singulariteiten en composeren netjes. Ze vereisen echter negen parameters met zes
-constraints, zijn duur om vloeiend te interpoleren, en stapelen numerieke drift
-op (verlies van orthogonaliteit) over veel gecomponeerde rotaties. Ze zijn
-standaard in computer-graphics-shaders, waar de GPU matrixbewerkingen native
-uitvoert.
+\textbf{Rotatiematrices} (3$\times$3 orthogonaal) zijn singulariteitsvrij en
+composeren netjes, maar vergen negen parameters met zes constraints, zijn duur om
+vloeiend te interpoleren, en stapelen numerieke drift (verlies van
+orthogonaliteit) op over veel composities.
 
-\textbf{Unit-quaternionen} (vier parameters, één constraint) zijn vrij van
-gimbal lock, composeren compact, en ondersteunen vloeiende spherical linear
-interpolation~\cite{shoemake1985quaternion}. Ze zijn de standaard in real-time
-graphics en robotica voor volledige 3D-oriëntatie~\cite{kuipers1999quaternions,
-diebel2006attitude}. De trapliftstoel componeert elk frame vier onafhankelijke rotaties, zonder
-visuele artefacten. Daarom worden quaternionen geselecteerd: ze vermijden zowel
-het gimbal-lock-risico van Euler-hoeken als de numerieke drift van
-rotatiematrices.
+\textbf{Unit-quaternionen} (vier parameters, één constraint) zijn
+gimbal-lock-vrij, compact, en ondersteunen vloeiende spherical linear
+interpolation~\cite{shoemake1985quaternion}; de standaard voor 3D-oriëntatie in
+real-time graphics en robotica~\cite{kuipers1999quaternions, diebel2006attitude}.
+Daarom geselecteerd: ze vermijden zowel het gimbal-lock-risico van Euler-hoeken
+als de drift van rotatiematrices.
 
 \subsubsection{Telemetrie-transportverbinding}
 \label{sec:prior-transport}
