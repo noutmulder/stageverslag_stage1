@@ -153,6 +153,9 @@ toestandsschatting met dead-reckoning (positie voorspellen tussen metingen) houd
 de beweging stabiel. En de oriëntatie wordt vloeiend gereconstrueerd op basis van
 de spline-tangent. De storingstoestand wordt rechtstreeks uit de geparste
 statusbits weergegeven.
+
+\vspace{0.25cm}
+\noindent\textit{Trefwoorden}---traplift-telemetrie, encoder-naar-positie-mapping, Kalman-filter, dead-reckoning, quaternion-oriëntatie, Catmull-Rom-spline, real-time 3D-visualisatie, storingsdiagnose.
 \end{minipage}
 \end{center}
 \vspace{0.3cm}
@@ -307,13 +310,13 @@ Sectie~\ref{sec:prior-work}.
 Drie onderling samenhangende technische deelproblemen komen uit deze analyse
 naar voren:
 \begin{enumerate}[leftmargin=*]
-  \item \textbf{Niet-lineaire encoder-naar-positie-mapping:} Het omzetten van een
+  \item \textbf{Niet-lineaire encoder-naar-positie-mapping.} Het omzetten van een
     enkele encoder-telling naar een genormaliseerde positie langs een
     3D-curve met segmentafhankelijke pulskosten.
-  \item \textbf{Toestandsschatting:} Het produceren van een vloeiende,
+  \item \textbf{Toestandsschatting.} Het produceren van een vloeiende,
     low-latency schatting van positie en snelheid uit ruizige, asynchrone
     metingen die op een lagere rate binnenkomen dan de display-refresh.
-  \item \textbf{Multi-as-oriëntatiereconstructie:} Het combineren van vier
+  \item \textbf{Multi-as-oriëntatiereconstructie.} Het combineren van vier
     onafhankelijke rotatie-sensorstreams tot een singulariteitsvrije
     3D-oriëntatie.
 \end{enumerate}
@@ -1345,7 +1348,7 @@ offsets op rechte raildelen geplaatst (vijf op de 3403\,mm-rail; vijf op de
 beide rijrichtingen vastgelegd, wat tien marker-metingen per rail geeft. De
 fysieke stoelpositie wordt afgelezen met een stalen meetlint (schaalverdeling
 1\,mm, afleesonzekerheid $\approx\pm$1\,mm). De markerplaatsing en de
-offset-meting zijn gefotografeerd in Bijlage~\ref{app:opstellingen}; de tijdens
+offset-meting zijn gefotografeerd in Bijlage~\ref{app:opstelling-markers}; de tijdens
 de meetrondes ingevulde meetbladen staan in Bijlage~\ref{app:meetbladen}. De positienauwkeurigheid wordt
 geëvalueerd op de twee niveaus die het DV2(b)-ontwerp voorschrijft:
 \begin{itemize}[leftmargin=*]
@@ -1526,7 +1529,7 @@ digitale waterpas, over het volledige bereik 0--75$^\circ$ in stappen van
 15$^\circ$. De maximale afwijking was 1.05$^\circ$ (bij de mechanische eindstop
 van 75$^\circ$), gemiddeld $\approx$\,0.4$^\circ$. Voor de swivel-as is de
 weergegeven hoek vergeleken met de tablet-gyroscoop over $\pm$60$^\circ$
-(meetopstelling: Bijlage~\ref{app:opstellingen}). De maximale afwijking was
+(meetopstelling: Bijlage~\ref{app:opstelling-swivel}). De maximale afwijking was
 2.83$^\circ$, binnen de tolerantie van $\pm$3.5$^\circ$ tussen encoder en fysieke hoek.
 Daarvan is $\sim$2.6$^\circ$ toe te schrijven aan gyroscoop-drift in de
 referentie zelf: de gyro las 2.6$^\circ$ bij een gecommandeerde 0$^\circ$ na de
@@ -1718,13 +1721,13 @@ geïmplementeerd.
     legt de nauwkeurigheid binnen een raildeel vast, maar niet de totale drift
     over raildelen heen; het gerapporteerde maximum (9.9\,mm) is dus een cijfer
     binnen één raildeel.
-  \item \textbf{De DV2(b)-pass is marginaal ten opzichte van de meetonzekerheid.}
+  \item \textbf{Marginale DV2(b)-pass.}
     Het maximum van 9.88\,mm ligt 0.12\,mm onder de 10\,mm-drempel, terwijl de
     meetlint-aflezing $\approx\pm$1\,mm onzeker is en de richtingsherhaalbaarheid
     4.1\,mm bedraagt. De pass valt daarmee binnen de meetonzekerheid zelf: een
     herhaalde run zou het criterium even goed nipt kunnen missen als halen. Hij moet
     worden gelezen als ``binnen tolerantie op deze run'', niet als een ruime marge.
-  \item \textbf{Smoothness slaagde bij 0.04\,\%, niet een letterlijke nul.}
+  \item \textbf{Smoothness niet letterlijk nul.}
     DV3(b) is geschreven als ``0 pieken''; de gemeten rate is 0.04\,\% van de
     frames (enkele geïsoleerde, milde snelheidsvariaties). De test is eenmaal per
     platform uitgevoerd. Het terugtraject van de continue rit was minder uniform
@@ -1736,7 +1739,7 @@ geïmplementeerd.
     met incidentele haperingen (één frame van 153\,ms). Dit staat los van de
     framerate-onafhankelijke snelheids-smoothness-maat (die slaagde), maar
     beïnvloedt de waargenomen vloeiendheid op zwakkere hardware.
-  \item \textbf{Rail-configurator-precisie domineert de end-to-end fout.} De fout
+  \item \textbf{Rail-configurator-precisie.} De fout
     tussen weergegeven en fysieke positie komt vooral uit de
     configurator-geometrie, niet uit de pipeline (zie het encoder-mapping-antwoord
     en Aanbevelingen).
@@ -1768,7 +1771,7 @@ geïmplementeerd.
     compass-bochtcorrectie worden nog gecontroleerd tegen de driftende
     tablet-gyroscoop (Beperkingen). Een driftvrije referentie (digitale gradenboog
     of laser-hoekmeter) geeft ze dezelfde externe grond als de spindle al heeft.
-  \item \textbf{Filter-tuning gronden in gemeten data.} Leid $\sigma_a$ en de
+  \item \textbf{Filter-tuning op gemeten data.} Leid $\sigma_a$ en de
     dead-reckoning-vervalconstante opnieuw af uit de gemeten tussen-sample-gaten
     en stoelsnelheden (beide staan al in de huidige logs), zodat de tuning
     onderbouwd is in plaats van geschat (Beperkingen).
@@ -1824,19 +1827,19 @@ oriëntatiereconstructie). De weg van probleem naar gevalideerd prototype oefend
 drie engineering-competenties expliciet:
 
 \begin{itemize}[leftmargin=*]
-  \item \textit{Formele analyse gegrond in literatuur.} Elk van de drie
+  \item \textbf{Formele analyse gegrond in literatuur.} Elk van de drie
     wiskundige modellen (Kalman, Catmull-Rom, quaternionen) is tegen
     alternatieven geselecteerd via een vergelijking van gevestigde
     eigenschappen, niet uit persoonlijke voorkeur. De keuzes zijn herleidbaar
     tot geciteerde bronnen, en de afleidingen in Sectie~\ref{sec:results-q3}
     zijn reproduceerbaar.
-  \item \textit{Architecturale decompositie.} De vijflaagse pipeline isoleert
+  \item \textbf{Architecturale decompositie.} De vijflaagse pipeline isoleert
     concerns per ontwerp: elke geïdentificeerde faalmodus (bit-level-corruptie,
     message-level-corruptie, verbindingsverlies, sample-rate / tussen-sample-gat,
     frame drop) wordt op één laag afgebeeld, wat in principe laag-lokale
     containment mogelijk maakt. Het aantonen van containment onder adversariële
     omstandigheden is een afzonderlijke taak die dit verslag niet onderneemt.
-  \item \textit{Validatie tegen meetbare drempels.} De pass/fail-criteria zijn
+  \item \textbf{Validatie tegen meetbare drempels.} De pass/fail-criteria zijn
     kwantitatief en, voor de beslissende tweede meetronde, vooraf geregistreerd
     vóór de runs in plaats van gekalibreerd op de resultaten. Waar de
     oorspronkelijke criteria ongeschikt bleken voor de sensor, zijn ze
@@ -1859,7 +1862,7 @@ tussen-sample-gaten en het snelheidsprofiel had die mismatch opgevangen én een
 gemeten basis gegeven voor de filter-parameters ($\sigma_a$, de
 dead-reckoning-vervalconstante, de 0.85/0.15-blend) in plaats van een schatting.
 
-Een secundaire les betreft dekking: meetronde 1 op één rail was een keuze voor
+Een tweede les betreft dekking: meetronde 1 op één rail was een keuze voor
 correctness-of-concept; meerdere rails vanaf het begin inplannen was defensiever
 geweest. Beide lessen wijzen dezelfde kant op: reserveer vooraf tijd voor sensor-
 en rail-karakterisering voordat de validatiecriteria worden vastgelegd.
@@ -1926,7 +1929,7 @@ Sectie~\ref{sec:results-validation} zijn uitgevoerd.}
 \subsection{Referentiemarkers en offset-meting (DV2(b))}
 \label{app:opstelling-markers}
 De primaire meting van de fout tussen de weergegeven en de fysieke positie gebruikt referentiemarkers op rechte
-raildelen. Elke marker is een dun strookje met een penstreep als afleesrand. Een dunne
+raildelen (Figuur~\ref{fig:app-markers}). Elke marker is een dun strookje met een penstreep als afleesrand. Een dunne
 streep is gekozen in plaats van brede tape: een tapebreedte van $\sim$15\,mm zou
 een afleesonzekerheid van dezelfde orde toevoegen aan een meting met een
 10\,mm-tolerantie. De offset van de marker binnen zijn raildeel
@@ -2182,7 +2185,7 @@ gerenderde hoek.
 \end{lstlisting}
 
 In het swivel-fragment draagt \texttt{compass\_yaw} de gyroscoop-referentie
-(Bijlage~\ref{app:opstellingen}). De tekenconventie van gyroscoop en encoder is
+(Bijlage~\ref{app:opstelling-swivel}). De tekenconventie van gyroscoop en encoder is
 tegengesteld (60.0 vs.\ $-$57.5; oriëntatie-afhankelijk), zodat absolute
 waarden worden vergeleken. Bij terugkeer naar 0$^\circ$ (tweede regel) leest de
 gyro 2.59$^\circ$: de opgebouwde drift die in
