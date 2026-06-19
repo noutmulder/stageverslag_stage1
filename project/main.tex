@@ -1558,85 +1558,94 @@ DV1(b)--DV3(b)-criteria staat in Sectie~\ref{sec:conclusion}.
 \subsection{Antwoorden op de onderzoeksvragen}
 
 \textbf{Pipeline-architectuur.}
-De classificatie van 145 firmware-berichttypes onthulde dat er slechts zes
-ruimtelijk interpreteerbare informatie dragen, zodat de bandbreedte-beperkte
-Bluetooth-verbinding niet de volledige telemetrie-stream hoeft te dragen. Door
-alleen deze zes berichten te targeten met een multi-rate-polling-strategie houdt
-de pipeline de positie-relevante kanalen gepolld op de hoogste rate die de
-gedeelde seriële verbinding volhoudt (een totale $\sim$10\,Hz aan
-round-trips, Sectie~\ref{sec:results-validation}). Toekomstige uitbreidingen
-(bijv. trillings- of temperatuurmonitoring) zouden eerst vereisen te controleren
-of de seriële bandbreedte de extra streams kan accommoderen zonder de
-positie-update-rates te degraderen. Over de twee meetrondes voldeed de Bluetooth
-round-trip-latency op beide rails aan de vooraf geregistreerde percentieldrempels
-voor de latency (DV1(b)). P95 was 113\,ms (rail 1) en 112\,ms (rail 2),
-tegen de 150\,ms-grens. P99 was 135\,ms en 134\,ms, tegen de 250\,ms-grens
-(gemiddelden 89\,ms en 88\,ms; Tabel~\ref{tab:validation},
-Figuur~\ref{fig:rtt-hist}). DV1(b) slaagt daarmee kwantitatief. De zichtbare eindgebruiker-eigenschap bleek ook te
-gelden (O3, kwalitatief): de stoel op het scherm volgt de fysieke stoel zonder
-waarneembare vertraging. Dit is consistent met het Kalman filter en
-dead-reckoning die de latency van een enkel sample aan de displayzijde maskeren
-in plaats van die door te geven. Een kwantitatieve video-frame-offset-meting van
-deze lag wordt overgelaten aan toekomstig werk (Sectie~\ref{sec:conclusion},
-Aanbevelingen). De vijflaagse architectuur isoleert faalmodi per ontwerp.
-Byte-level-fouten worden opgevangen door de checksum van de protocol parser;
-problemen op hoger niveau (verbindingsverlies, timeout) handelt de transport-laag
-af. Over de continue ritten van beide meetrondes hield de pipeline de werking vol
-zonder crashes of UI-corruptie (O1, Tabel~\ref{tab:validation}). Robuustheid onder adversariële fault-injection is
-niet beproefd en wordt als beperking gerapporteerd.
+Van de 145 firmware-berichttypes bleken er maar zes ruimtelijk bruikbare
+informatie te dragen. De Bluetooth-verbinding, die maar beperkte bandbreedte
+heeft, hoeft daardoor niet de volledige telemetrie-stroom te vervoeren. Door
+alleen die zes berichten op te halen, elk op zijn eigen snelheid, houdt de
+pipeline de positie-kanalen op de hoogste snelheid die de gedeelde seriële
+verbinding aankan (samen $\sim$10\,Hz aan round-trips,
+Sectie~\ref{sec:results-validation}). Een latere uitbreiding (bijvoorbeeld
+trillings- of temperatuurmonitoring) zou eerst moeten controleren of die
+bandbreedte de extra stromen aankan zonder de positie-update-snelheid te
+verlagen.
+
+Over de twee meetrondes bleef de Bluetooth-latency (heen en terug) op beide rails
+binnen de vooraf vastgelegde drempels (DV1(b)). De P95 was 113\,ms (rail 1) en
+112\,ms (rail 2), tegen een grens van 150\,ms; de P99 was 135\,ms en 134\,ms,
+tegen 250\,ms (gemiddelden 89\,ms en 88\,ms; Tabel~\ref{tab:validation},
+Figuur~\ref{fig:rtt-hist}). DV1(b) slaagt dus kwantitatief. Ook wat de gebruiker
+ziet klopt (O3, kwalitatief): de stoel op het scherm volgt de fysieke stoel
+zonder merkbare vertraging. Dat past bij het Kalman filter en de dead-reckoning,
+die de vertraging van één enkel sample aan de schermkant opvangen in plaats van
+doorgeven. Het exact opmeten van die vertraging (via een video-frame-offset)
+blijft toekomstig werk (Sectie~\ref{sec:conclusion}, Aanbevelingen).
+
+De vijf lagen isoleren faalmodi per ontwerp: fouten op byte-niveau vangt de
+checksum van de protocol-parser op, en problemen op hoger niveau
+(verbindingsverlies, timeout) handelt de transport-laag af. Over de continue
+ritten van beide meetrondes bleef de pipeline werken zonder crashes of
+UI-corruptie (O1, Tabel~\ref{tab:validation}). Robuustheid onder bewust
+ingebrachte fouten (fault-injection) is niet getest en wordt als beperking
+gerapporteerd.
 
 \textbf{Encoder-mapping.}
-De stuksgewijze mapping lost het geometrische kernprobleem op dat in
-Sectie~\ref{sec:problem-analysis} is geïdentificeerd: de niet-lineaire relatie
-tussen encoder-pulsen en fysieke afstand bij bochten. Het primaire
-criterium voor positienauwkeurigheid (DV2(b)), de fout tussen de weergegeven en
-de fysieke positie, werd gehaald op de 5428\,mm-rail, waar de maximale
-end-to-end fout 9.9\,mm was tegen de 10\,mm-tolerantie voor rails langer dan
-5\,m (Figuur~\ref{fig:dv2-error}). Het isoleren van de pipeline
-laat zien waar die fout ontstaat: de pipeline-integratiefout (display vs.\
-firmware-encoded positie) was $\leq$\,0.7\,mm op de eerste rail en
+De stuksgewijze mapping lost het geometrische kernprobleem uit
+Sectie~\ref{sec:problem-analysis} op: de niet-lineaire relatie tussen
+encoder-pulsen en fysieke afstand in bochten. Het hoofdcriterium voor
+positienauwkeurigheid (DV2(b)) is de fout tussen de weergegeven en de fysieke
+positie. Op de 5428\,mm-rail werd die gehaald: de maximale fout van begin tot
+eind was 9.9\,mm, tegen een tolerantie van 10\,mm voor rails langer dan 5\,m
+(Figuur~\ref{fig:dv2-error}).
+
+Door de pipeline apart te bekijken wordt zichtbaar wáár die fout ontstaat. De
+fout die de pipeline zelf toevoegt (de weergegeven positie tegenover de uit de
+firmware afgeleide positie) was $\leq$\,0.7\,mm op de eerste rail en
 $\leq$\,0.1\,mm op de tweede (verdelingsstatistieken in
-Sectie~\ref{sec:results-validation}), in alle gevallen onder de tape-resolutie van
-$\approx\pm$1\,mm, d.w.z.\ de mapping reproduceert de firmware-positie vrijwel
-exact. Vergelijking~\ref{eq:arctracing-error} begrenst de arc-tracing-fout per
-segment op $\approx 4.2\,\mu$m per segment, consistent met dit
-submillimeter-residu en met de eindige precisie van de pulskost-constanten uit de
-firmware (Vergelijking~\ref{eq:pulsecosts}). De display
-volgt de firmware-geometrie exact. De resterende $\sim$7\,mm van de fout tussen
-display en fysiek is daarom het meest plausibel toe te schrijven aan het verschil
-tussen de in de firmware gecodeerde en de fysiek gemeten lengtes van de
-rail-configurator, niet aan de pipeline. Deze discrepantie is op rail 1 onafhankelijk gemeten op tot 16\,mm per
-raildeel (netto $+10$\,mm over de 3.4\,m-rail, 0.3\,\%). Dit is consistent met de
-systematisch negatieve rail-2-fouten (gemiddelde $-6.9$\,mm: de weergegeven
-positie leest kort waar het encoded raildeel korter is dan fysiek). Een directe
-rail-2-kwantificering van deze splitsing is niet gemaakt. Deze bovenliggende
-bron wordt verder besproken onder Beperkingen.
+Sectie~\ref{sec:results-validation}), in alle gevallen onder de meetlint-resolutie
+van $\approx\pm$1\,mm. De mapping geeft de firmware-positie dus vrijwel exact
+weer. Vergelijking~\ref{eq:arctracing-error} begrenst de fout van het natekenen
+van de bochten op $\approx 4.2\,\mu$m per segment, wat past bij dit residu onder
+één millimeter en bij de eindige precisie van de pulskost-constanten uit de
+firmware (Vergelijking~\ref{eq:pulsecosts}).
+
+De display volgt de firmware-geometrie dus exact. De resterende $\sim$7\,mm van de
+fout tussen display en fysiek komt daarom het meest plausibel niet uit de
+pipeline, maar uit het verschil tussen de in de firmware gecodeerde en de fysiek
+gemeten lengtes van de rail-configurator. Op rail 1 is dat verschil los gemeten
+op tot 16\,mm per raildeel (netto $+10$\,mm over de 3.4\,m-rail, 0.3\,\%). Dat is
+consistent met de systematisch negatieve fouten op rail 2 (gemiddeld $-6.9$\,mm:
+de weergegeven positie leest te kort waar een gecodeerd raildeel korter is dan in
+werkelijkheid). Een directe meting van deze splitsing op rail 2 is niet gedaan;
+deze bovenliggende bron wordt verder besproken onder Beperkingen.
 
 \textbf{Wiskundige modellen.}
-Het constant-velocity Kalman filter, dead-reckoning-extrapolatie,
-Catmull-Rom-tangent en quaternion-compositie produceren samen een vloeiende,
-stabiele weergave. Het geherformuleerde DV3(b)-criterium wordt nu kwantitatief
-geëvalueerd. Op een speciale continue rit over de 5428\,mm-rail traden
-snelheidspieken boven 5$\times$ de mediane frame-tot-frame-$|v|$ op bij
-0.04\,\% van de frames (traction-as). Dat is meer dan twee ordes van grootte
-onder de $\sim$10\,\%-piek-rate die een last-value-hold-rendering zou produceren,
-zodat er geen staircase aanwezig is en DV3(b) substantieel wordt gehaald (de
-letterlijke ``0 pieken''-drempel wordt nipt overschreden; zie Beperkingen). De
-stationaire baseline van 13\,s toonde nul pulsen encoder-variatie (constant
-16\,030), wat de reden is dat het oorspronkelijke jitter-ratio-criterium
-ongedefinieerd was voor deze digitale pulse-counter en is vervangen door de
-snelheidstest. De relevante rol van het Kalman filter in deze pipeline is daarom
-niet ruisreductie maar \emph{temporele interpolatie}: gap-filling tussen
-sensorsamples voor de render-loop en snelheidsschatting voor dead-reckoning
-tijdens latency-pieken. De oriëntatiemodellen zijn in twee statische tests tegen
-externe referenties gecontroleerd: de spindle-zittinghoek volgde een digitale
-waterpas tot op 1.05$^\circ$ over 0--75$^\circ$, en de swivel-hoek volgde de
-tablet-gyroscoop tot op 2.83$^\circ$ over $\pm$60$^\circ$ (binnen de
-$\pm$3.5$^\circ$-tolerantie, met een deel van de spreiding als drift in de
-gyroscoop-referentie). De Kalman-tuning-parameters (Tabel~\ref{tab:kalman}) en
-de 0.85/0.15-spindle-pitch-blend blijven geconfigureerde waarden, geen
-afleidingen uit een ruismodel vanuit eerste principes. De gevoeligheid voor deze
-keuzes is niet formeel begrensd en wordt als beperking gerapporteerd.
+Het Kalman filter met constante snelheid, de dead-reckoning, de
+Catmull-Rom-tangent en de quaternion-compositie leveren samen een vloeiende,
+stabiele weergave. Het herziene DV3(b)-criterium is nu kwantitatief getoetst. Op
+een speciale continue rit over de 5428\,mm-rail kwamen snelheidspieken boven
+5$\times$ de mediane snelheid tussen opeenvolgende frames voor bij 0.04\,\% van de
+frames (traction-as). Dat is meer dan twee ordes van grootte onder de
+$\sim$10\,\% die een weergave zou geven die tussen metingen op de laatste positie
+blijft staan en dan verspringt. Er is dus geen trapjespatroon, en DV3(b) wordt
+substantieel gehaald (de letterlijke ``0 pieken''-drempel wordt nipt
+overschreden; zie Beperkingen).
+
+De stationaire baseline van 13\,s gaf nul pulsen encoder-variatie (constant
+16\,030). Daardoor was het oorspronkelijke jitter-ratio-criterium ongedefinieerd
+voor deze digitale pulse-counter en is het vervangen door de snelheidstest. De
+rol van het Kalman filter in deze pipeline is dan ook niet ruisreductie maar
+\emph{tijdsinterpolatie}: het vult de gaten tussen sensorsamples voor de
+render-loop en schat de snelheid voor de dead-reckoning tijdens latency-pieken.
+
+De oriëntatiemodellen zijn in twee statische tests tegen externe referenties
+gecontroleerd: de spindle-zittinghoek volgde een digitale waterpas tot op
+1.05$^\circ$ over 0--75$^\circ$, en de swivel-hoek volgde de tablet-gyroscoop tot
+op 2.83$^\circ$ over $\pm$60$^\circ$ (binnen de $\pm$3.5$^\circ$-tolerantie,
+waarbij een deel van de spreiding drift in de gyroscoop-referentie is). De
+Kalman-tuning-parameters (Tabel~\ref{tab:kalman}) en de
+0.85/0.15-spindle-pitch-verhouding blijven ingestelde waarden, geen afleidingen
+uit een ruismodel vanaf eerste principes. Hoe gevoelig het resultaat voor deze
+keuzes is, is niet formeel begrensd en wordt als beperking gerapporteerd.
 
 \subsection{Antwoord op de centrale vraag}
 De pipeline die nodig is om live traplift-telemetrie om te zetten in een
