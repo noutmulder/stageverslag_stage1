@@ -776,21 +776,16 @@ MSG\,44  & Pilot-status & Op aanvraag & Keep-alive \\
 \end{table*}
 
 De drie hoogfrequente streams (traction, spindle, swivel) vormen de hoofdinput
-voor de 3D-visualisatie. Ze worden in een alternerend patroon gepolld om de
-enkele seriële Bluetooth-verbinding te delen. De fast loop is ingepland om op
-$\sim$20\,Hz te tikken en wisselt op opeenvolgende ticks af tussen traction- en
-spindle-requests. De swivel-coroutine pollt ondertussen op dezelfde verbinding op
-50\,ms-intervallen. De haalbare rate wordt begrensd door de
-round-trip-latency op applicatieniveau, gemiddeld 89\,ms over de
-validatieruns (Sectie~\ref{sec:results-validation}). Elke request en zijn
-respons moeten klaar zijn voordat de volgende request uitgaat. De
-\emph{totale} round-trip-doorvoer is daardoor $\sim$10\,Hz (5295
-round-trips over 524\,s rijden), niet de nominale 20\,Hz. Dat totaal wordt
-verdeeld over de traction-, spindle-, swivel- en status-kanalen. De
-traction-updatefrequentie per kanaal is daardoor lager, in de orde van
-$\sim$4--5\,Hz: een tussen-sample-gat van $\sim$200\,ms. De renderer overbrugt
-dit tussen-sample-gat met Kalman-gebaseerde interpolatie en dead-reckoning
-(Sectie~\ref{sec:results-q3}). De laagfrequente streams (systeemstatus,
+voor de 3D-visualisatie. Ze worden alternerend gepolld om de enkele seriële Bluetooth-verbinding te delen:
+de fast loop tikt op $\sim$20\,Hz en wisselt per tick tussen traction- en
+spindle-requests, terwijl de swivel-coroutine op 50\,ms-intervallen pollt. Elke
+request moet met zijn respons klaar zijn vóór de volgende, dus de haalbare rate
+wordt begrensd door de round-trip-latency (gemiddeld 89\,ms;
+Sectie~\ref{sec:results-validation}): de totale doorvoer is $\sim$10\,Hz (5295
+round-trips over 524\,s), verdeeld over de traction-, spindle-, swivel- en
+status-kanalen. Per kanaal komt traction daardoor op $\sim$4--5\,Hz binnen (een
+tussen-sample-gat van $\sim$200\,ms), dat de renderer met Kalman-interpolatie en
+dead-reckoning overbrugt (Sectie~\ref{sec:results-q3}). De laagfrequente streams (systeemstatus,
 voetsteun) werken de accessoire-toestanden van de stoel elke 2\,seconden bij.
 Statusbits die relevant zijn voor storingsvisualisatie omvatten:
 armleuningpositie (links en rechts, uit \texttt{data[14]} bits 0 en 1 van
@@ -1042,13 +1037,10 @@ hoe hij kantelt) uit afzonderlijke sensorstreams zonder wiskundige fouten die
 het model zouden laten ``snappen'' of vervormen.
 
 \subsubsection{Kalman filter}
-In essentie onderhoudt het Kalman filter een lopende schatting van de positie en
-snelheid van de stoel. Telkens als een nieuwe sensormeting binnenkomt, mengt het
-de voorspelling (op basis van de vorige positie en snelheid) met de nieuwe
-meting. Het resultaat is een continu bijgewerkte positie-en-snelheidstoestand
-die de render-loop tussen sensorsamples kan extrapoleren, zodat de stoel
-vloeiend beweegt op de display-framerate, ook al komen updates per kanaal
-slechts op $\sim$4--5\,Hz binnen.
+In essentie onderhoudt het Kalman filter een lopende positie-en-snelheidsschatting:
+bij elke nieuwe meting mengt het de voorspelling met die meting, zodat de
+render-loop tussen samples een continu bijgewerkte toestand kan extrapoleren
+(updates komen per kanaal slechts op $\sim$4--5\,Hz binnen).
 
 Formeel wordt een 2D constant-velocity Kalman
 filter~\cite{kalman1960, welch1995kalman} onafhankelijk toegepast op elke
@@ -1160,11 +1152,9 @@ constante blijft de smoothing-tijdconstante onafhankelijk van het (variabele)
 render-frame-interval.
 
 \subsubsection{Catmull-Rom-spline-tangent}
-De rail is gedefinieerd door een reeks 3D-punten. Om de stoel vloeiend te laten
-roteren terwijl hij tussen deze punten beweegt (in plaats van bij elk punt naar
-een nieuwe richting te snappen), wordt een wiskundige curve genaamd een
-Catmull-Rom-spline gebruikt. Deze curve loopt exact door elk rail-punt en levert
-een vloeiende richting op elke positie langs de rail.
+De rail is gedefinieerd door een reeks 3D-controlepunten. Voor een vloeiende
+staprichting (in plaats van een sprong bij elk punt) wordt een Catmull-Rom-spline
+gebruikt, die exact door elk rail-punt loopt en overal een vloeiende richting geeft.
 
 De tangent (de bewegingsrichting op een punt van de curve) $\mathbf{T}(t) = \tfrac{d}{dt}\mathbf{C}(t)$ op parameter $t$ wordt
 verkregen door het uniforme Catmull-Rom-positiepolynoom~\cite{catmullrom1974} te
@@ -1187,12 +1177,8 @@ terwijl hij vloeiend door overgangen roteert.
 
 \subsubsection{Quaternion-oriëntatie}
 De stoel heeft vier rotatie-assen (richting langs de rail, railhelling,
-zittinghoek en zittingrotatie), elk bestuurd door een andere motor of bepaald
-door de railvorm. Het combineren van meerdere rotaties is wiskundig lastig:
-een voor de hand liggende aanpak met hoeken kan bij bepaalde oriëntaties vervormingen
-produceren (bekend als gimbal lock). Quaternionen zijn een wiskundige
-representatie van rotaties die dit probleem volledig
-vermijdt~\cite{kuipers1999quaternions}.
+zittinghoek, zittingrotatie). Die met hoeken combineren kan gimbal lock geven;
+quaternionen vermijden dat probleem~\cite{kuipers1999quaternions}.
 
 De stoel-yaw (horizontale richting) wordt berekend uit de horizontale projectie
 van de tangent:
