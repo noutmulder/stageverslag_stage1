@@ -1497,7 +1497,7 @@ afwijkingen tussen de gecodeerde en de fysieke lengte per ontwerp (het is de fou
 service-engineer zou zien), terwijl de secundaire maat de pipeline isoleert.
 
 \textbf{DV3(b): smoothness.} Deze test meet of de weergegeven beweging vloeiend
-verloopt of juist met sprongetjes. Hij is uitgevoerd op één continue rit (geen
+verloopt of juist schokkerig. Het is uitgevoerd op één continue rit (geen
 tussenstops, vrijwel de volledige 5428\,mm-rail), waarbij de weergegeven positie
 per frame werd gelogd: 13\,596 frames op $\sim$53\,fps op de tablet.
 
@@ -1512,7 +1512,7 @@ er is dus geen trapjespatroon. De paar losse pieken vallen op normale
 frame-intervallen en zijn milde snelheidsvariaties, geen trapjes.
 
 De enige render-hapering in de log (153\,ms) leverde geen positiepiek op, omdat de
-dead-reckoning dat gat overbrugde. Een eerdere desktop-run (60\,fps, gelogd
+dead-reckoning dat gat overbrugde. Een andere desktop-run (60\,fps, gelogd
 2026-06-02) gaf 0, 0 en 1 piek op de drie assen: hetzelfde gedrag, maar zonder de
 lagere, wisselende framerate van de tablet. Die run dateert van vóór de
 pre-registratie (2026-06-04) en is daarom ondersteunend, niet bevestigend. De
@@ -1639,14 +1639,19 @@ afleidingen uit een ruismodel vanuit eerste principes. De gevoeligheid voor deze
 keuzes is niet formeel begrensd en wordt als beperking gerapporteerd.
 
 \subsection{Antwoord op de centrale vraag}
-De data-processing-pipeline die vereist is om live traplift-telemetrie om te
-zetten in een stabiele, nauwkeurige 3D-visualisatie bestaat uit vijf lagen:
-draadloos transport, checksummed protocol-parsing, multi-rate-coroutine-polling,
-recursieve toestandsschatting, en spline-geïnterpoleerde 3D-rendering. De
-wiskundige basis rust op drie pijlers: stuksgewijze encoder-mapping voor
-niet-lineaire rail-geometrieën, een constant-velocity recursief filter voor
-temporele interpolatie en voorspelling tussen metingen, en quaternion-gebaseerde
-oriëntatiereconstructie uit spline-tangentvectoren.
+De pipeline die nodig is om live traplift-telemetrie om te zetten in een
+stabiele, nauwkeurige 3D-visualisatie bestaat uit vijf lagen:
+\begin{enumerate}[leftmargin=*]
+  \item draadloos transport van de data;
+  \item het protocol uitlezen en met een checksum op fouten controleren;
+  \item de telemetrie ophalen, elk kanaal op zijn eigen snelheid (via coroutines);
+  \item de positie schatten en bijwerken uit de ruwe metingen (een recursief filter);
+  \item de 3D-weergave tekenen met vloeiende interpolatie tussen de rail-punten (spline).
+\end{enumerate}
+De wiskunde erachter rust op drie pijlers: een stuksgewijze kalibratiekaart die
+encoder-tellingen omzet naar posities op niet-rechte rails; een filter met
+constante snelheid dat tussen metingen interpoleert en vooruit voorspelt; en
+quaternionen die de oriëntatie afleiden uit de richting (tangent) van de spline.
 
 Over de twee meetrondes voldoen de geïmplementeerde pipeline en modellen
 binnen de geteste configuraties aan alle drie de empirische criteria:
