@@ -744,17 +744,14 @@ De drempels in Tabel~\ref{tab:validation-criteria} zijn de
 tweede-versie-criteria (v2). De eerste meetronde
 (Sectie~\ref{sec:results-validation}) liet zien dat de oorspronkelijke
 v1-drempels voor DV1(b) en DV3(b) gedrag veronderstelden dat dit systeem niet
-vertoont. De DV1(b)-drempel was een round-trip-doel van 100\,ms voor een enkel sample; dat
-negeert dat de state estimator de latency maskeert. De DV3(b)-drempel was een
-verhouding ``Kalman-jitter $\geq$ 10$\times$ kleiner dan ruw''. Die verhouding is
-ongedefinieerd voor een digitale pulse-encoder, want die toont in rust geen
-value-jitter. De criteria zijn
-daarom geherformuleerd tot kwantitatieve, sensor-passende vormen: een
-percentiel-latency-grens en een snelheidsgebaseerde smoothness-test. Deze nieuwe vormen zijn
-\emph{vooraf geregistreerd} met een vastgelegde version-control-timestamp, en wel vóór
-de tweede meetronde. Zo worden de beslissende runs op de langere rail
-beoordeeld tegen vooraf vastgelegde drempels. Deze verfijning en haar effect op
-de bewijskracht worden expliciet vermeld onder Beperkingen
+vertoont (een enkel-sample-latencydoel terwijl de state estimator de latency
+maskeert, en een jitter-verhouding die ongedefinieerd is voor een digitale
+pulse-encoder zonder rust-jitter). De criteria zijn daarom geherformuleerd tot
+kwantitatieve, sensor-passende vormen: een percentiel-latency-grens en een
+snelheidsgebaseerde smoothness-test, \emph{vooraf geregistreerd} met een
+version-control-timestamp vóór de tweede meetronde. Zo worden de beslissende runs
+op de langere rail beoordeeld tegen vooraf vastgelegde drempels; deze verfijning
+en haar effect op de bewijskracht staan onder Beperkingen
 (Sectie~\ref{sec:conclusion}). Naast DV1--DV3 worden de weergegeven oriëntatiehoeken
 (spindle-zittinghoek en swivel-hoek) gecontroleerd in afzonderlijke statische
 tests tegen een digitale waterpas en de tablet-gyroscoop.
@@ -1495,9 +1492,7 @@ rail-2-offset staat in Sectie~\ref{sec:conclusion}. De afwijking tussen de
 gecodeerde en de fysiek gemeten lengte is alleen op rail 1 onafhankelijk gekwantificeerd, niet apart op rail
 2. De rail-2-fout is ook niet ontleed in tracking-binnen-een-raildeel versus
 encoded-lengte-fout; dat zou fysiek gemeten \emph{totale} afstanden tot het
-begin van elk raildeel vereisen, en die zijn hier niet verzameld. Het primaire DV2(b)-cijfer omvat zulke
-afwijkingen tussen de gecodeerde en de fysieke lengte per ontwerp (het is de fout die een
-service-engineer zou zien), terwijl de secundaire maat de pipeline isoleert.
+begin van elk raildeel vereisen, en die zijn hier niet verzameld.
 
 \textbf{DV3(b): smoothness.} Deze test meet of de weergegeven beweging vloeiend
 verloopt of juist schokkerig. Het is uitgevoerd op één continue rit (geen
@@ -1548,11 +1543,10 @@ stoel stilstaat. Precies daarom is het oorspronkelijke criterium ``jitter
 $\geq$ 10$\times$ kleiner dan ruw'' ongedefinieerd voor deze sensor, en is het
 vervangen door de snelheidsgebaseerde DV3(b)-test.
 
-\textbf{Gelogde gebeurtenissen.} Er traden tijdens geen enkele run
-Bluetooth-disconnects, parser-checksum-fouten of handmatige interventies op. De
-latency-uitschieters (543\,ms op rail 1, 167\,ms op rail 2) produceerden geen
-zichtbare positiesprongen. De interpretatie van alle metingen tegen de
-DV1(b)--DV3(b)-criteria staat in Sectie~\ref{sec:conclusion}.
+\textbf{Gelogde gebeurtenissen.} Tijdens geen enkele run traden
+Bluetooth-disconnects, parser-checksum-fouten of handmatige interventies op (O1).
+De interpretatie van alle metingen tegen de DV1(b)--DV3(b)-criteria staat in
+Sectie~\ref{sec:conclusion}.
 
 % ============================================================
 \section{Conclusie}
