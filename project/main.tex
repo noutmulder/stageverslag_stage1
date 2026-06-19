@@ -1751,20 +1751,6 @@ geïmplementeerd.
     Vergelijking~\ref{eq:arctracing-error} sluit dat laatste uit als dominante
     bron bij de huidige segmentresolutie; de overige bronnen worden niet apart
     gemeten.
-  \item \textbf{Oriëntatie-referenties zijn gemengd.} De spindle-zittinghoek is
-    gevalideerd tegen een externe digitale waterpas (max 1.05$^\circ$), maar de
-    swivel-hoek alleen tegen de tablet-gyroscoop, die drift heeft
-    ($\sim$2.6$^\circ$ over een sweep). De absolute swivel-nauwkeurigheid wordt
-    daardoor begrensd door de referentie, niet volledig vastgesteld; en omdat de
-    compass-bocht-yaw-correctie door diezelfde gyroscoop wordt gegenereerd, blijft
-    dat een interne-consistentiecontrole. Een driftvrije gradenboog-template zou
-    deze cijfers aanscherpen. De oriëntatie-pass leest daarom als een grove
-    controle op grove afwijkingen, niet als een strikt vooraf geregistreerde test.
-  \item \textbf{Robuustheid niet adversarieel getest.} De afhandeling van
-    byte-corruptie door de protocol-parser wordt door de architectuur ondersteund
-    maar is niet beproefd onder fault-injection (zie het pipeline-antwoord en
-    Aanbevelingen); dat er tijdens de runs geen corruptie optrad, is geen
-    robuustheidstest.
 \end{itemize}
 
 \subsection{Aanbevelingen}
@@ -1862,33 +1848,21 @@ drie engineering-competenties expliciet:
 \end{itemize}
 \newpage
 \subsection{Wat anders had gekund}
-De beperkingen die in Sectie~\ref{sec:conclusion} staan beschrijven wat de
-huidige runs wel en niet vaststellen; deze subsectie reflecteert op de
-procesbeslissingen erachter, niet op de beperkingen zelf.
+Waar Beperkingen beschrijft wat de runs wel en niet vaststellen, reflecteert deze
+subsectie op de procesbeslissingen erachter.
 
-De centrale procesles is dat twee van de drie empirische instrument-criteria
-(DV1(b), DV3(b)) zijn gespecificeerd voordat het gedrag van de sensor en de
-pipeline voldoende werd begrepen. Hun oorspronkelijke vormen en de impliciete
-aannames waarop die sneuvelden zijn beschreven in
-Sectie~\ref{sec:method-validation} en onder Beperkingen. De geherformuleerde
-v2-criteria zijn precies de kwantitatieve vormen die een zorgvuldige analyse
-vooraf zou hebben opgeleverd. Maar ze zijn pas bereikt nadat de eerste
-meetronde de mismatch blootlegde, en daarmee één meetronde later dan ideaal vooraf
-geregistreerd. Een korte karakterisering van de
-verdeling van tussen-sample-gaten en het stoel-snelheidsprofiel aan het begin
-zou beide mismatches vóór elke run hebben opgevangen. Ze zou bovendien een
-gemeten basis hebben gegeven voor de parameters waarmee het filter wordt afgesteld ($\sigma_a$,
-dead-reckoning-vervalconstante, de 0.85/0.15-spindle-blend), in plaats van een
-schatting op het oog.
+De centrale les: twee van de drie empirische criteria (DV1(b), DV3(b)) zijn
+vastgelegd vóór het sensor- en pipelinegedrag voldoende begrepen was, zodat de
+kwantitatieve v2-vormen pas na meetronde 1 werden bereikt, één meetronde later dan
+ideaal (zie Beperkingen). Een korte karakterisering vooraf van de
+tussen-sample-gaten en het snelheidsprofiel had die mismatch opgevangen én een
+gemeten basis gegeven voor de filter-parameters ($\sigma_a$, de
+dead-reckoning-vervalconstante, de 0.85/0.15-blend) in plaats van een schatting.
 
-Een secundaire les betreft dekking: de twee runs van de eerste meetronde op één
-enkele rail waren een keuze voor correctness-of-concept, niet voor
-generaliseerbaarheid. De tweede meetronde voegde een langere rail met een andere
-bochtsamenstelling toe, en daarom kan het verslag nu twee geometrieën dekken.
-Toch was tijd op de test-bench over meerdere rails vanaf het begin reserveren het
-defensievere plan geweest. Beide lessen wijzen dezelfde kant op: reserveer
-vooraf tijd voor sensor- en rail-karakterisering voordat validatiecriteria
-worden vastgelegd.
+Een secundaire les betreft dekking: meetronde 1 op één rail was een keuze voor
+correctness-of-concept; meerdere rails vanaf het begin inplannen was defensiever
+geweest. Beide lessen wijzen dezelfde kant op: reserveer vooraf tijd voor sensor-
+en rail-karakterisering voordat de validatiecriteria worden vastgelegd.
 
 % ============================================================
 % \clearpage sluit de pagina volledig af (twee \newpage zou in
