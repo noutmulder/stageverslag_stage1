@@ -1695,148 +1695,101 @@ geïmplementeerd.
     Aanvullende installaties, en herhaalde sessies per rail, zouden nodig zijn
     voor statistische generalisatie. Ook de aantallen per marker (vijf per rail)
     zijn klein.
-  \item \textbf{De DV1(b)- en DV3(b)-criteria zijn na de eerste meetronde
-    herzien.} Hun oorspronkelijke (v1) vormen (een enkel-sample
-    100\,ms-round-trip-doel en een ``Kalman-jitter $\geq$ 10$\times$ kleiner dan
-    ruw''-verhouding) veronderstelden gedrag dat dit systeem niet vertoont
-    (latency wordt gemaskeerd aan de display, en een digitale pulse-encoder
-    toont in rust nul value-jitter; de baseline van 13\,s bevestigde dit). Ze
-    zijn geherformuleerd tot de kwantitatieve v2-vormen (percentiel-latency,
-    snelheidsgebaseerde smoothness) en vooraf geregistreerd met een
-    version-control-timestamp vóór de tweede meetronde. De beslissende
-    langere-rail-runs worden daarom beoordeeld tegen vooraf vastgelegde drempels.
-    Voor de \emph{eerste} meetronde zijn deze criteria echter post-hoc: alleen de
-    tweede meetronde is een echte vooraf geregistreerde test van DV1(b) en
-    DV3(b). Voor DV2(b) is in de eerste meetronde alleen het
-    pipeline-integratieniveau (display vs. firmware-encoded) verzameld. De
-    v2-pre-registratie herstelde de fout tussen display en fysiek als de
-    primaire maat, verzameld in de tweede meetronde (vandaar de ``n/a'' voor
-    rail 1 in Tabel~\ref{tab:validation}).
+  \item \textbf{Pre-registratie en zelf-validatie.} De DV1(b)- en
+    DV3(b)-criteria zijn na meetronde 1 herzien: de oorspronkelijke v1-vormen (een
+    enkel-sample 100\,ms-doel en een ``Kalman-jitter $\geq$ 10$\times$ kleiner dan
+    ruw''-verhouding) veronderstelden gedrag dat dit systeem niet vertoont (latency
+    wordt aan de display gemaskeerd; een digitale pulse-encoder toont in rust nul
+    value-jitter, bevestigd door de baseline van 13\,s). De herziene v2-vormen
+    (percentiel-latency, snelheidssmoothness) zijn met een
+    version-control-timestamp vooraf geregistreerd vóór meetronde 2. Meetronde 1
+    is daardoor post-hoc; alleen meetronde 2 is een echte vooraf geregistreerde
+    test (voor DV2(b) is in ronde 1 enkel het pipeline-integratieniveau verzameld,
+    vandaar de ``n/a'' voor rail 1 in Tabel~\ref{tab:validation}). De
+    oriëntatie-drempels (spindle $\sim$1--2$^\circ$, swivel $\pm$3.5$^\circ$) waren
+    niet scherp vooraf geregistreerd (de pre-registratie noemde ze ``nog te
+    bevestigen''; $\pm$3.5$^\circ$ is bovendien de inherente encoder-tolerantie,
+    als grens gebruikt). Tot slot definieerde, draaide en scoorde de auteur de
+    runs zelf; een onafhankelijke tweede waarnemer (voorzien in het ontwerp, maar
+    wegens tijd geschrapt) ontbreekt.
   \item \textbf{Referentie voor de fout tussen display en fysiek.} De primaire
     DV2(b)-maat refereert elke marker aan het firmware-encoded begin van zijn
-    raildeel, plus een met meetlint gemeten offset \emph{binnen} dat raildeel. Dit legt de end-to-end
-    nauwkeurigheid binnen een raildeel vast, maar niet de totale drift over
-    raildelen heen in de configurator-geometrie. Het begrenzen van de absolute
-    weergegeven positie over de hele rail zou fysiek gemeten totale
-    afstanden tot elk raildeel vereisen, en die zijn niet verzameld. Het
-    gerapporteerde maximum (9.9\,mm) is dus een cijfer binnen één raildeel.
-  \item \textbf{De DV2(b)-pass is marginaal ten opzichte van de
-    meetonzekerheid.} Het maximum van 9.88\,mm ligt 0.12\,mm onder de
-    10\,mm-drempel, terwijl de meetlint-aflezing een onzekerheid van
-    $\approx\pm$1\,mm heeft en de richtingsherhaalbaarheid 4.1\,mm bedraagt.
-    Strikt genomen valt de pass daarmee binnen de onzekerheid van de meting
-    zelf: een herhaalde run kan het criterium even goed nipt overschrijden als
-    halen. De pass moet daarom worden gelezen als ``binnen tolerantie op deze
-    run'', niet als een ruime marge.
+    raildeel plus een met meetlint gemeten offset \emph{binnen} dat raildeel. Dat
+    legt de nauwkeurigheid binnen een raildeel vast, maar niet de totale drift
+    over raildelen heen; het gerapporteerde maximum (9.9\,mm) is dus een cijfer
+    binnen één raildeel.
+  \item \textbf{De DV2(b)-pass is marginaal ten opzichte van de meetonzekerheid.}
+    Het maximum van 9.88\,mm ligt 0.12\,mm onder de 10\,mm-drempel, terwijl de
+    meetlint-aflezing $\approx\pm$1\,mm onzeker is en de richtingsherhaalbaarheid
+    4.1\,mm bedraagt. De pass valt daarmee binnen de meetonzekerheid zelf: een
+    herhaalde run zou het criterium even goed nipt kunnen missen als halen. Hij moet
+    worden gelezen als ``binnen tolerantie op deze run'', niet als een ruime marge.
   \item \textbf{Smoothness slaagde bij 0.04\,\%, niet een letterlijke nul.}
     DV3(b) is geschreven als ``0 pieken''; de gemeten rate is 0.04\,\% van de
-    frames (enkele geïsoleerde, milde snelheidsvariaties, meer dan twee ordes
-    van grootte onder de staircase-signatuur). De test is eenmaal per platform
-    uitgevoerd. Het terugtraject van de continue rit was minder uniform: 60\,\%
-    van de frames in beweging tegen 95\,\%, over een venster van 156\,s tegen
-    94\,s, met de swivel-as die alleen bij de twee horizontale bochten bewoog.
-    Dat verlaagde de mediane $|v|$ en blies de relatieve piek-rate daar op
-    (swivel 1.21\,\%, 17 pieken; traction 0.06\,\%; swivel over het hele venster
-    0.78\,\%). Het stabiele traject van onder naar boven wordt daarom als
+    frames (enkele geïsoleerde, milde snelheidsvariaties). De test is eenmaal per
+    platform uitgevoerd. Het terugtraject van de continue rit was minder uniform
+    (minder beweging, lagere mediane $|v|$, wat de relatieve piek-rate daar
+    opblies); het stabiele traject van onder naar boven is daarom als
     representatief genomen.
   \item \textbf{Render-framerate op de doelhardware.} De tablet hield
-    $\sim$42--53\,fps tijdens de runs, onder de 60\,fps van de
-    desktop-voorloper, met incidentele haperingen (één frame van 153\,ms). Dit
-    is een rendering-performance-eigenschap, los van de
-    framerate-onafhankelijke snelheids-smoothness-maat (die slaagde), maar het
+    $\sim$42--53\,fps tijdens de runs, onder de 60\,fps van de desktop-voorloper,
+    met incidentele haperingen (één frame van 153\,ms). Dit staat los van de
+    framerate-onafhankelijke snelheids-smoothness-maat (die slaagde), maar
     beïnvloedt de waargenomen vloeiendheid op zwakkere hardware.
-  \item \textbf{Rail-configurator-precisie domineert de end-to-end fout.}
-    De fout tussen de weergegeven en de fysieke positie wordt gedomineerd door
-    de afwijking tussen de gecodeerde en de fysiek gemeten lengte van de
-    rail-configurator, niet door de pipeline (zie het encoder-mapping-antwoord
-    hierboven). De configurator wordt behandeld als
-    een gegeven invoer voor de pipeline (Sectie~\ref{sec:method-q1}); de
-    bijbehorende vervolgstudie staat onder Aanbevelingen.
-  \item \textbf{Experimentele filter-tuning.} De Kalman-tuning-parameters en de
-    0.85/0.15-spindle-blend-verhouding zijn geconfigureerde waarden in de
-    implementatie in plaats van afleidingen uit een gemeten sensor-ruismodel.
-    Een formele gevoeligheidsanalyse ontbreekt.
+  \item \textbf{Rail-configurator-precisie domineert de end-to-end fout.} De fout
+    tussen weergegeven en fysieke positie komt vooral uit de
+    configurator-geometrie, niet uit de pipeline (zie het encoder-mapping-antwoord
+    en Aanbevelingen).
+  \item \textbf{Experimentele filter-tuning.} De Kalman-parameters en de
+    0.85/0.15-spindle-blend zijn ingestelde waarden, geen afleidingen uit een
+    gemeten ruismodel; een formele gevoeligheidsanalyse ontbreekt (zie Wiskundige
+    modellen).
   \item \textbf{Bochtovergangsfout niet ontleed.} Referentiemarkers staan op
-    rechte raildelen; de positiefout bij de bochten zelf wordt niet direct
-    gemeten en kan niet individueel worden toegeschreven aan de
-    pulskost-constanten uit de firmware, mechanische speling, of het
-    arc-tracing-schema zonder instrumentatie per component.
-    Vergelijking~\ref{eq:arctracing-error} sluit het arc-tracing-schema uit als
-    dominante bron bij de huidige segmentresolutie, maar de overige bronnen
-    worden niet apart gemeten.
+    rechte raildelen; de fout in de bochten zelf is niet direct gemeten en kan
+    zonder instrumentatie per component niet worden toegeschreven aan de
+    pulskost-constanten, mechanische speling of het arc-tracing-schema.
+    Vergelijking~\ref{eq:arctracing-error} sluit dat laatste uit als dominante
+    bron bij de huidige segmentresolutie; de overige bronnen worden niet apart
+    gemeten.
   \item \textbf{Oriëntatie-referenties zijn gemengd.} De spindle-zittinghoek is
-    gevalideerd tegen een externe digitale waterpas (max 1.05$^\circ$). De
-    swivel-hoek is echter alleen gevalideerd tegen de tablet-gyroscoop, en die
-    heeft drift ($\sim$2.6$^\circ$ over een sweep). De absolute nauwkeurigheid
-    van de swivel-hoek wordt daardoor begrensd door de referentie, niet volledig
-    vastgesteld. Bovendien wordt de compass-gebaseerde bocht-yaw-correctie door
-    diezelfde gyroscoop gegenereerd en daaraan gerelateerd gerapporteerd; het
-    blijft dus een interne-consistentiecontrole. Een driftvrije
-    gradenboog-template zou de swivel- en correctie-cijfers aanscherpen. Anders
-    dan bij DV1(b)/DV3(b) waren de pass-drempels voor spindle ($\sim$1--2$^\circ$)
-    en swivel ($\pm$3.5$^\circ$) niet scherp vooraf geregistreerd vóór hun runs
-    van 2026-06-04; de pre-registratie vermeldde ze als ``nog te bevestigen''. Het
-    $\pm$3.5$^\circ$-cijfer is bovendien de inherente tolerantie tussen encoder
-    en fysieke hoek, gebruikt als grens in plaats van een onafhankelijk
-    vastgelegd doel. De oriëntatie-pass moet daarom worden gelezen
-    als een grove controle op grove afwijkingen, niet als een strikt vooraf
-    geregistreerde test.
-  \item \textbf{Zelf-validatie.} De auteur definieerde de pass/fail-criteria,
-    voerde de runs uit, en kende de pass/fail-labels toe. De criteria zijn vóór
-    de tweede meetronde vooraf geregistreerd, maar geen onafhankelijke tweede
-    waarnemer scoorde de resultaten. Zo'n onafhankelijke scoring was voorzien in
-    het meetontwerp (een expliciet aanbevolen extra in de pre-registratie) en is
-    alleen wegens tijd geschrapt, dus dit is een bekende, vooraf
-    geïdentificeerde leemte; voor de eerste meetronde, waarvan de criteria
-    post-hoc zijn, geldt de labeling door één auteur ook.
+    gevalideerd tegen een externe digitale waterpas (max 1.05$^\circ$), maar de
+    swivel-hoek alleen tegen de tablet-gyroscoop, die drift heeft
+    ($\sim$2.6$^\circ$ over een sweep). De absolute swivel-nauwkeurigheid wordt
+    daardoor begrensd door de referentie, niet volledig vastgesteld; en omdat de
+    compass-bocht-yaw-correctie door diezelfde gyroscoop wordt gegenereerd, blijft
+    dat een interne-consistentiecontrole. Een driftvrije gradenboog-template zou
+    deze cijfers aanscherpen. De oriëntatie-pass leest daarom als een grove
+    controle op grove afwijkingen, niet als een strikt vooraf geregistreerde test.
   \item \textbf{Robuustheid niet adversarieel getest.} De afhandeling van
-    byte-level-corruptie door de protocol parser wordt door de architectuur
-    ondersteund maar is niet beproefd onder fault-injection; de observatie dat
-    er tijdens de runs geen corruptie optrad, staat niet gelijk aan een
+    byte-corruptie door de protocol-parser wordt door de architectuur ondersteund
+    maar is niet beproefd onder fault-injection (zie het pipeline-antwoord en
+    Aanbevelingen); dat er tijdens de runs geen corruptie optrad, is geen
     robuustheidstest.
 \end{itemize}
 
 \subsection{Aanbevelingen}
 \begin{itemize}[leftmargin=*]
-  \item \textbf{Rail-configurator-precisiestudie.} De afwijking tussen de
-    gecodeerde en de fysiek gemeten lengte die de end-to-end positiefout
-    domineert (Sectie~\ref{sec:results-validation}, Beperkingen) ligt buiten de
-    pipeline.
-    Een speciale studie die een rail door de configurator-workflow traceert met
-    een externe referentie (laserafstandsmeter) zou deze bron apart
-    kwantificeren en mogelijk corrigeren.
-  \item \textbf{High-speed video voor zichtbare lag.} Met DV3(b)-smoothness nu
-    gemeten uit positie-logging op frame-niveau en DV1(b)-latency uit
-    round-trip-percentielen, blijft zichtbare lag (de offset tussen de fysieke
-    en weergegeven stoel tijdens beweging) de enige gebruikersgerichte
-    eigenschap die nog alleen observationeel wordt beoordeeld. Een
-    high-speed-video-vergelijking op pilot-snelheid zou dit omzetten in een
-    gemeten frame-offset en de laatste kwalitatieve leemte rond DV1(b) dichten.
-  \item \textbf{Driftvrije swivel- en yaw-referentie.} De spindle-zittinghoek
-    wordt nu gevalideerd tegen een externe waterpas, maar de swivel-hoek en de
-    compass-gebaseerde bochtcorrectie worden nog gecontroleerd tegen de
-    driftende tablet-gyroscoop. Een driftvrije referentie (digitale gradenboog
-    of laser-hoekmeter) zou de swivel en de yaw-correctie dezelfde externe grond
-    geven die de spindle al heeft.
-  \item \textbf{Filter-tuning gegrond in gemeten tussen-sample-gaten en
-    snelheidsprofiel.} Leid $\sigma_a$ en de dead-reckoning-vervalconstante
-    opnieuw af uit een gemeten verdeling van tussen-sample-gaten en typische
-    stoelsnelheden (data voor beide is al aanwezig in de logs van de huidige
-    validatieruns), zodat de tuning gemotiveerd is in plaats van op het oog
-    geschat.
-  \item \textbf{Robuustheidstests.} Pas fault-injection toe (gecorrumpeerde
-    bytes, geforceerde disconnects, latency-pieken) om de claims over
-    byte-level-corruptie-afhandeling en transport-laag-herstel uit
-    Sectie~\ref{sec:results-q1} onder adversariële omstandigheden te verifiëren.
-  \item \textbf{Historische playback.} Neem telemetriesessies op voor latere
-    replay om post-incident-analyse mogelijk te maken zonder live verbinding.
-  \item \textbf{Organisatorische inbedding.} Adoptie in de praktijk vraagt om
-    het inbouwen van de live weergave in de service-workflow. Daarbij moet worden
-    beslist waar ze draait (een service-tablet bij de lift of een externe
-    supportdesk), hoe ze aan een specifieke installatie wordt gekoppeld, en hoe
-    haar ruimtelijke uitvoer het bestaande tekst-en-code-storingskanaal aanvult
-    in plaats van vervangt. Een kleine pilot met een groep service-engineers zou
-    deze integratie-eisen blootleggen vóór een bredere uitrol.
+  \item \textbf{Rail-configurator-precisiestudie.} De configurator-lengtefout die
+    de end-to-end positiefout domineert (Beperkingen) ligt buiten de pipeline. Een
+    aparte studie die een rail door de configurator-workflow traceert met een
+    externe referentie (laserafstandsmeter) kwantificeert en corrigeert die bron.
+  \item \textbf{High-speed video voor zichtbare lag.} Zichtbare lag (de offset
+    tussen de fysieke en weergegeven stoel) is de enige gebruikersgerichte
+    eigenschap die nog alleen observationeel is beoordeeld. Een
+    high-speed-video-vergelijking op pilot-snelheid maakt er een gemeten
+    frame-offset van en dicht de laatste kwalitatieve leemte rond DV1(b).
+  \item \textbf{Driftvrije swivel- en yaw-referentie.} De swivel-hoek en de
+    compass-bochtcorrectie worden nog gecontroleerd tegen de driftende
+    tablet-gyroscoop (Beperkingen). Een driftvrije referentie (digitale gradenboog
+    of laser-hoekmeter) geeft ze dezelfde externe grond als de spindle al heeft.
+  \item \textbf{Filter-tuning gronden in gemeten data.} Leid $\sigma_a$ en de
+    dead-reckoning-vervalconstante opnieuw af uit de gemeten tussen-sample-gaten
+    en stoelsnelheden (beide staan al in de huidige logs), zodat de tuning
+    onderbouwd is in plaats van geschat (Beperkingen).
+  \item \textbf{Robuustheidstests.} Pas fault-injection toe (gecorrumpeerde bytes,
+    geforceerde disconnects, latency-pieken) om de claims over fout-afhandeling en
+    transport-herstel (Sectie~\ref{sec:results-q1}) onder adversariële
+    omstandigheden te verifiëren.
 \end{itemize}
 
 \textbf{Opschalen naar het functionele probleem.} De bovenstaande aanbevelingen
@@ -1845,13 +1798,17 @@ functionele probleem dat haar motiveerde (Sectie~\ref{sec:introduction}): de
 moeite die service-engineers hebben om tekstuele foutcodes ruimtelijk te
 interpreteren. De gevalideerde pipeline is een noodzakelijke bouwsteen voor dat
 doel: ze plaatst de stoel op de rail met submillimeter-pipeline-nauwkeurigheid,
-binnen 10\,mm end-to-end, en geeft de storingstoestand ruimtelijk weer. Of ze
-daadwerkelijk de diagnosetijd verkort of bezoeken ter plaatse vermindert, is een
-experimentele human-factors-vraag die dit verslag bewust buiten scope heeft gehouden
-(Sectie~\ref{sec:introduction}). De natuurlijke vervolgstap is een
-kleine veldstudie die de diagnosetijd met en zonder de live visualisatie op
-echte serviceoproepen vergelijkt; de hier geleverde pipeline is de voorwaarde
-die zo'n studie mogelijk maakt.
+binnen 10\,mm end-to-end, en geeft de storingstoestand ruimtelijk weer. Of ze de
+diagnosetijd ook echt verkort of bezoeken ter plaatse vermindert, is een
+experimentele human-factors-vraag die dit verslag bewust buiten scope heeft
+gehouden (Sectie~\ref{sec:introduction}). Adoptie in de praktijk vraagt bovendien
+om inbedding in de service-workflow: waar de weergave draait (een service-tablet
+bij de lift of een externe supportdesk), hoe ze aan een installatie wordt
+gekoppeld, en hoe ze het bestaande tekst-en-code-storingskanaal aanvult in plaats
+van vervangt. De natuurlijke vervolgstap verenigt beide: een kleine veldstudie met
+service-engineers die de diagnosetijd met en zonder de live visualisatie
+vergelijkt én de integratie-eisen blootlegt vóór bredere uitrol. De hier geleverde
+pipeline is de voorwaarde die zo'n studie mogelijk maakt.
 
 \textbf{Overdracht naar andere domeinen.} De technische kern (het afbeelden van
 één enkele incrementele-encoder-telling op een niet-uniform gebogen pad met
