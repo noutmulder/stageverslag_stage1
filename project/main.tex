@@ -1373,25 +1373,12 @@ $v[i]=(p[i{+}1]-p[i])/\Delta t[i]$ geanalyseerd op pieken boven
 
 \begin{figure}[H]
 \centering
-\begin{subfigure}{\columnwidth}
-\centering
-% TODO: cal_run_screenshot.png en cal_run_zoom.png tonen een KALIBRATIERUN; vervang door live-mode-screenshots (de werkelijke meetcontext).
-\includegraphics[width=0.92\columnwidth]{images/cal_run_screenshot.png}
-\caption{De 3D-visualisatie tijdens de rit: de ghost chair volgt de lift langs de rail.}
-\label{fig:calibration-run-view}
-\end{subfigure}
-\\[4pt]
-\begin{subfigure}{\columnwidth}
-\centering
-\includegraphics[width=0.5\columnwidth]{images/cal_run_zoom.png}
-\caption{Het live-mode-paneel dat de telemetrie toont die elke tick wordt gepolld.}
-\label{fig:calibration-run-panel}
-\end{subfigure}
-\caption{De live-mode-weergave tijdens een meetrit. (a) De ghost chair volgt de fysieke liftpositie langs de 3D-rail. (b) Het bedieningspaneel toont de telemetrie die elke tick wordt gepolld (traction-encoder-telling, spindle-hoek) samen met de gyroscoop-geïntegreerde compass-heading die wordt gebruikt om de hoekcorrectie bij horizontale bochten te berekenen (Vergelijking~\ref{eq:anglecorrection}).}
-\label{fig:calibration-run}
+\includegraphics[width=\columnwidth]{images/live_mode.jpg}
+\caption{De live-mode-weergave tijdens een meetrit. Rechts volgt de ghost chair de fysieke liftpositie en -oriëntatie langs de 3D-rail; links toont het bedieningspaneel de live telemetrie die elke tick wordt gepolld (traction- en spindle-encoder, swivel) en de validatie-besturing (stationaire baseline, marker-passage, frame-log met CSV-sessielogging), plus de gyroscoop-geïntegreerde compass-heading voor de hoekcorrectie bij horizontale bochten (Vergelijking~\ref{eq:anglecorrection}).}
+\label{fig:livemode}
 \end{figure}
 
-\textbf{Meetprotocol.} Figuur~\ref{fig:calibration-run} toont de live
+\textbf{Meetprotocol.} Figuur~\ref{fig:livemode} toont de live
 3D-weergave tijdens een meetrit. De gedurende de rit gelogde telemetrie (de
 kanalen uit Tabel~\ref{tab:telemetry}, gepolld zoals beschreven in
 Sectie~\ref{sec:results-q1}) vormt de meetdata.
@@ -1509,25 +1496,28 @@ begin van elk raildeel vereisen, en die zijn hier niet verzameld. Het primaire D
 afwijkingen tussen de gecodeerde en de fysieke lengte per ontwerp (het is de fout die een
 service-engineer zou zien), terwijl de secundaire maat de pipeline isoleert.
 
-\textbf{DV3(b): smoothness.} De snelheidsgebaseerde smoothness-test is
-uitgevoerd op een speciale continue rit (geen tussenstops, vrijwel volledige
-rail) op de 5428\,mm-rail, waarbij de weergegeven positie op framerate werd
-gelogd (13\,596 frames, $\sim$53\,fps op de tablet). Op het stabiele traject van
-onder naar boven traden snelheidspieken boven 5$\times$ de mediane $|v|$ op bij
-0.04\,\% van de frames voor de traction-as (0.04\,\% spindle, 0.21\,\% swivel).
-Ter referentie: een last-value-hold-rendering (de staircase-faalmodus die
-het criterium moet detecteren) zou ruwweg één piek per tien frames produceren
-($\sim$10\,\%). De waargenomen rate ligt dus meer dan twee ordes van grootte
-(een factor $\sim$250) onder die signatuur: er is geen staircase aanwezig.
-De enkele geïsoleerde pieken treden op normale frame-intervallen op en zijn milde snelheidsvariaties in plaats van
-een getrapt patroon. De enkele
-render-hapering van 153\,ms in de log produceerde geen positiepiek, omdat de
-dead-reckoning die overbrugde. Een desktop-voorloperrun (60\,fps, gelogd 2026-06-02) gaf 0, 0 en 1 piek op de
-drie assen: hetzelfde gedrag, maar zonder de lagere, variabelere framerate van
-de tablet. Deze run dateert van vóór de pre-registratie van 2026-06-04 en is dus
-ondersteunend, niet bevestigend. Render-framerate is een afzonderlijke
-performance-eigenschap en telt niet mee in de snelheidsgebaseerde smoothness-maat
-(Sectie~\ref{sec:method-q3}).
+\textbf{DV3(b): smoothness.} Deze test meet of de weergegeven beweging vloeiend
+verloopt of juist met sprongetjes. Hij is uitgevoerd op één continue rit (geen
+tussenstops, vrijwel de volledige 5428\,mm-rail), waarbij de weergegeven positie
+per frame werd gelogd: 13\,596 frames op $\sim$53\,fps op de tablet.
+
+Op het stabiele traject van onder naar boven kwamen snelheidspieken boven
+5$\times$ de mediane snelheid $|v|$ zelden voor: bij 0.04\,\% van de frames voor
+de traction-as, 0.04\,\% voor spindle en 0.21\,\% voor swivel. Ter vergelijking:
+een weergave die tussen metingen op de laatste positie blijft staan en pas bij de
+volgende meting verspringt (de \emph{staircase}- of trapjes-faalmodus die de test
+moet betrappen) zou ongeveer één piek per tien frames geven ($\sim$10\,\%). De
+gemeten waarde ligt daar ruim twee ordes van grootte onder, een factor $\sim$250:
+er is dus geen trapjespatroon. De paar losse pieken vallen op normale
+frame-intervallen en zijn milde snelheidsvariaties, geen trapjes.
+
+De enige render-hapering in de log (153\,ms) leverde geen positiepiek op, omdat de
+dead-reckoning dat gat overbrugde. Een eerdere desktop-run (60\,fps, gelogd
+2026-06-02) gaf 0, 0 en 1 piek op de drie assen: hetzelfde gedrag, maar zonder de
+lagere, wisselende framerate van de tablet. Die run dateert van vóór de
+pre-registratie (2026-06-04) en is daarom ondersteunend, niet bevestigend. De
+render-framerate zelf is een aparte prestatie-eigenschap en telt niet mee in deze
+snelheidsgebaseerde maat (Sectie~\ref{sec:method-q3}).
 
 \textbf{Oriëntatienauwkeurigheid (spindle, swivel).} Twee statische tests
 controleerden de weergegeven zittingoriëntatie tegen externe referenties. Voor
