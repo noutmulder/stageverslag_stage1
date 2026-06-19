@@ -1257,8 +1257,8 @@ snelheidsgebaseerde DV3(b)-test en twee statische oriëntatietests (spindle en
 swivel). Het systeem pollt telemetrie op een totale $\sim$10\,Hz aan
 round-trips tijdens de runs (gedeeld over alle kanalen,
 Sectie~\ref{sec:results-q1}) en logt elke gebeurtenis met milliseconde-timestamps
-via de in-app TestLogger-module; representatieve logfragmenten per event-type
-staan in Bijlage~\ref{app:logs}.
+via de in-app TestLogger-module (Figuur~\ref{fig:livemode}); representatieve
+logfragmenten per event-type staan in Bijlage~\ref{app:logs}.
 
 \textbf{Meetmethodologie.} Referentiemarkers worden vóór de runs op bekende
 offsets op rechte raildelen geplaatst (vijf op de 3403\,mm-rail; vijf op de
@@ -1270,19 +1270,16 @@ offset-meting zijn gefotografeerd in Bijlage~\ref{app:opstelling-markers}; de ti
 de meetrondes ingevulde meetbladen staan in Bijlage~\ref{app:meetbladen}. De positienauwkeurigheid wordt
 geëvalueerd op de twee niveaus die het DV2(b)-ontwerp voorschrijft:
 \begin{itemize}[leftmargin=*]
-  \item \emph{Display vs.\ fysiek} (primair): de weergegeven positie wordt
-    vergeleken met de fysieke markerpositie. Die fysieke positie is het
-    firmware-encoded begin van het raildeel van de marker, plus de met meetlint
-    gemeten offset daarbinnen. Door elke marker te refereren aan de oorsprong van
-    zijn raildeel legt deze maat de end-to-end nauwkeurigheid binnen dat raildeel
-    vast, inclusief de eigen schaling tussen de door de firmware gecodeerde en de fysiek gemeten positie. Dat is precies wat een
-    service-engineer zou zien.
-  \item \emph{Display vs.\ firmware-encoded} (secundair): de weergegeven
-    positie wordt vergeleken met de firmware-encoded positie afgeleid uit
-    dezelfde encoder-meting via de kalibratiekaart
+  \item \emph{Display vs.\ fysiek} (primair): de weergegeven positie versus de
+    fysieke markerpositie, namelijk het firmware-encoded begin van het raildeel
+    plus de met meetlint gemeten offset daarbinnen. Dit legt de end-to-end
+    nauwkeurigheid binnen een raildeel vast, inclusief de schaling tussen de
+    firmware-gecodeerde en de fysieke positie.
+  \item \emph{Display vs.\ firmware-encoded} (secundair): de weergegeven positie
+    versus de uit dezelfde encoder-meting afgeleide firmware-positie
     (Sectie~\ref{sec:results-q2}). Dit isoleert de pipeline-integratiefout; het
-    verschil tussen de twee maten is precies de bijdrage van de bovenliggende
-    rail-configurator, expliciet gerapporteerd in plaats van uitgesteld.
+    verschil tussen beide maten is de bijdrage van de bovenliggende
+    rail-configurator.
 \end{itemize}
 De Bluetooth round-trip-latency wordt per request/response-paar gemeten door de
 applicatielaag (5295 round-trips op de eerste rail, 5872 op de tweede). De
@@ -1298,11 +1295,6 @@ $v[i]=(p[i{+}1]-p[i])/\Delta t[i]$ geanalyseerd op pieken boven
 \caption{De live-mode-weergave tijdens een meetrit. Rechts volgt de ghost chair de fysieke liftpositie en -oriëntatie langs de 3D-rail; links toont het bedieningspaneel de live telemetrie die elke tick wordt gepolld (traction- en spindle-encoder, swivel) en de validatie-besturing (stationaire baseline, marker-passage, frame-log met CSV-sessielogging), plus de gyroscoop-geïntegreerde compass-heading voor de hoekcorrectie bij horizontale bochten (Vergelijking~\ref{eq:anglecorrection}).}
 \label{fig:livemode}
 \end{figure}
-
-\textbf{Meetprotocol.} Figuur~\ref{fig:livemode} toont de live
-3D-weergave tijdens een meetrit. De gedurende de rit gelogde telemetrie (de
-kanalen uit Tabel~\ref{tab:telemetry}, gepolld zoals beschreven in
-Sectie~\ref{sec:results-q1}) vormt de meetdata.
 
 \textbf{Hoekcorrectie.} Bij horizontale bochten meet de compass tracker
 (draaiend op de Android-tablet, die zijn gyroscoop uitleest) de geaccumuleerde
@@ -1369,16 +1361,13 @@ Stationaire baseline puls-variatie & 0 (const.\ 16\,030) & n/a & sensor-jitter i
 
 \textbf{DV1(b): latency.} De Bluetooth round-trip-latency voldeed op beide rails
 aan de vooraf geregistreerde percentieldrempels: P95 was 113\,ms (rail 1) en
-112\,ms (rail 2), en P99 was 135\,ms en 134\,ms, tegen de drempels van 150\,ms
-en 250\,ms (gemiddelden 89\,ms en 88\,ms over 5295 en 5872 round-trips).
-Figuur~\ref{fig:rtt-hist} toont de verdeling voor de tweede meetronde: het gros
-van de round-trips clustert rond 80--90\,ms en de hele verdeling ligt onder de
-150\,ms-P95-grens, op een dunne staart na. Die staart bestaat uit één maximum van 167\,ms op rail 2 en
-één uitschieter van 543\,ms op rail 1. Omdat het Kalman filter en
-dead-reckoning de latency van een enkel sample aan de displayzijde maskeren, komt deze
-latency niet als zichtbare lag naar voren. De percentielgrens houdt de
-round-trip-gaten bovendien binnen de 0.8\,s-horizon waarvoor de
-dead-reckoning-extrapolatie is ontworpen (Sectie~\ref{sec:results-q3}).
+112\,ms (rail 2), en P99 135\,ms en 134\,ms, tegen drempels van 150\,ms en
+250\,ms (gemiddelden 89\,ms en 88\,ms over 5295 en 5872 round-trips).
+Figuur~\ref{fig:rtt-hist} toont de verdeling: het gros clustert rond 80--90\,ms,
+onder de 150\,ms-P95-grens, op een dunne staart na (één maximum van 167\,ms op
+rail 2 en één uitschieter van 543\,ms op rail 1). Het Kalman filter en de
+dead-reckoning maskeren deze latency aan de displayzijde, zodat ze niet als
+zichtbare lag naar voren komt (Sectie~\ref{sec:results-q3}).
 
 \input{fig_rtt_dist}
 
