@@ -165,7 +165,7 @@ statusbits weergegeven.
 \label{sec:introduction}
 
 DeVi Comfort ontwerpt en produceert trapliftsystemen en ontwikkelt de
-bijbehorende besturingssoftware in eigen huis. Een DeVi traplift bestaat uit een
+bijbehorende besturingssoftware in eigen huis. Een UP traplift, het product van DeVi bestaat uit een
 stoel die over een rail rijdt. Die rail is met een modulair ontwerp aan de trap gemonteerd.
 De stoel wordt aangedreven door een traction-motor, terwijl een spindle-motor
 de zittinghoek instelt en een swivel-motor de zitting bij overlooppunten draait.
@@ -732,8 +732,8 @@ De instrument-criteria van Secties~\ref{sec:method-q1}--\ref{sec:method-q3}
 zijn gebundeld onder de labels DV1, DV2 en DV3 (\textit{deelvalidatie}
 1--3), één per onderzoeksdeelvraag. Elk is opgesplitst in een
 analytisch subcriterium (a) (afleiding herleidbaar tot literatuur of
-firmware-constanten) en een empirisch subcriterium (b) (gemeten op fysieke
-kalibratieruns). De empirische subcriteria staan in
+firmware-constanten) en een empirisch subcriterium (b) (gemeten in live mode op
+fysieke hardware). De empirische subcriteria staan in
 Tabel~\ref{tab:validation-criteria}; de analytische subcriteria staan in de
 bijbehorende methodesecties.
 
@@ -780,7 +780,7 @@ moeten worden geverifieerd onder reële omstandigheden waar mechanische
 toleranties, Bluetooth-variabiliteit, encoder-kwantisatie en sensorruis allemaal
 op elkaar inwerken. Alleen een fysiek experiment kan vaststellen dat de
 theoretisch correcte modellen ook in de praktijk correct blijven.\\
-\textbf{Aanpak:} Kalibratieruns worden uitgevoerd op meerdere
+\textbf{Aanpak:} De metingen worden in live mode uitgevoerd op meerdere
 traplift-installaties met verschillende rail-configuraties (variërende lengte,
 aantal bochten en bochttypes). Tijdens elke run wordt de lift van het
 onderstation naar het bovenstation en terug gereden. Het prototype logt ruwe
@@ -849,7 +849,7 @@ MSG\,111 & Spindle-encoder (16-bit) & 20\,Hz & Zittinghoek \\
 MSG\,168 & Swivel via AppToBus (16-bit) & 20\,Hz & Zittingrotatie \\
 MSG\,114 & Systeemstatusbits & 0.5\,Hz & Arm-/gordel-status \\
 MSG\,113 & Voetsteun-status & 0.5\,Hz & Voetsteun-positie \\
-MSG\,44  & Pilot-status & Op aanvraag & Kalibratierun \\
+MSG\,44  & Pilot-status & Op aanvraag & Keep-alive \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -1326,7 +1326,7 @@ gerapporteerd in Sectie~\ref{sec:conclusion}.
 Deze sectie rapporteert het empirische bewijs voor de DV1--DV3-criteria die
 fysieke meting vereisen. Het prototype is gevalideerd over twee meetrondes op
 fysieke traplifthardware. De eerste meetronde was op een 3403\,mm-rail (11
-raildelen, één horizontale 90$^\circ$-bocht): twee kalibratieruns, van onder naar
+raildelen, één horizontale 90$^\circ$-bocht): twee live-mode-runs, van onder naar
 boven en van boven naar onder, met vooraf een stationaire baseline van 13\,s. De
 tweede meetronde was op een langere 5428\,mm-rail (acht rechte secties en zeven
 bochten: twee horizontale en vijf verticale). Foto's van beide
@@ -1375,6 +1375,7 @@ $v[i]=(p[i{+}1]-p[i])/\Delta t[i]$ geanalyseerd op pieken boven
 \centering
 \begin{subfigure}{\columnwidth}
 \centering
+% TODO: cal_run_screenshot.png en cal_run_zoom.png tonen een KALIBRATIERUN; vervang door live-mode-screenshots (de werkelijke meetcontext).
 \includegraphics[width=0.92\columnwidth]{images/cal_run_screenshot.png}
 \caption{De 3D-visualisatie tijdens de rit: de ghost chair volgt de lift langs de rail.}
 \label{fig:calibration-run-view}
@@ -1383,22 +1384,17 @@ $v[i]=(p[i{+}1]-p[i])/\Delta t[i]$ geanalyseerd op pieken boven
 \begin{subfigure}{\columnwidth}
 \centering
 \includegraphics[width=0.5\columnwidth]{images/cal_run_zoom.png}
-\caption{Het kalibratierun-paneel dat de live telemetrie toont die elke tick wordt gepolld.}
+\caption{Het live-mode-paneel dat de telemetrie toont die elke tick wordt gepolld.}
 \label{fig:calibration-run-panel}
 \end{subfigure}
-\caption{Een kalibratierun. (a) De ghost chair volgt de fysieke liftpositie langs de 3D-rail. (b) Het bedieningspaneel toont de live telemetrie die elke tick wordt gepolld (traction-encoder-telling, spindle-hoek) samen met de gyroscoop-geïntegreerde compass-heading die wordt gebruikt om de hoekcorrectie bij horizontale bochten te berekenen (Vergelijking~\ref{eq:anglecorrection}).}
+\caption{De live-mode-weergave tijdens een meetrit. (a) De ghost chair volgt de fysieke liftpositie langs de 3D-rail. (b) Het bedieningspaneel toont de telemetrie die elke tick wordt gepolld (traction-encoder-telling, spindle-hoek) samen met de gyroscoop-geïntegreerde compass-heading die wordt gebruikt om de hoekcorrectie bij horizontale bochten te berekenen (Vergelijking~\ref{eq:anglecorrection}).}
 \label{fig:calibration-run}
 \end{figure}
 
-\textbf{Kalibratierun-protocol.} Figuur~\ref{fig:calibration-run} toont een
-kalibratierun in uitvoering. De kalibratierun-service van de applicatie pollt
-zes datapunten per tick:
-lock-status, traction-encoder, pilot-status (keep-alive), spindle-encoder,
-liftlocatie, en (elke 4e tick) foutstatus. De snelheid wordt automatisch beheerd
-via het speed-setting-register van de firmware (percentage van de
-geconfigureerde maximumsnelheid van de lift, zoals gedefinieerd in MPLAB): het
-protocol schrijft 50\,\% (normaal) voor rechte secties en 20\,\% (gereduceerd)
-voor bochten en voor korte rechte stukken onder 250\,mm.
+\textbf{Meetprotocol.} Figuur~\ref{fig:calibration-run} toont de live
+3D-weergave tijdens een meetrit. De gedurende de rit gelogde telemetrie (de
+kanalen uit Tabel~\ref{tab:telemetry}, gepolld zoals beschreven in
+Sectie~\ref{sec:results-q1}) vormt de meetdata.
 
 \textbf{Hoekcorrectie.} Bij horizontale bochten meet de compass tracker
 (draaiend op de Android-tablet, die zijn gyroscoop uitleest) de geaccumuleerde
