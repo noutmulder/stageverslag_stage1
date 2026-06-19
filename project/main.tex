@@ -146,7 +146,7 @@ display en fysieke positie bedroeg op de 5428\,mm-rail maximaal 9.9\,mm, binnen
 de 10\,mm-tolerantie voor rails langer dan 5\,m, al was de marge kleiner dan de
 meetonzekerheid. De Bluetooth round-trip-latency voldeed ruim aan de vooraf
 geregistreerde drempels. Het DV3-criterium van nul snelheidspieken werd formeel
-niet gehaald, al vertoonde de beweging geen systematisch trapjespatroon. Binnen
+niet gehaald, al vertoonde de beweging geen systematisch stappatroon. Binnen
 de geteste configuraties levert één verwerkingspipeline zo een stabiele,
 nauwkeurige live 3D-weergave van de trapliftpositie op.
 
@@ -276,7 +276,7 @@ Er ontstaat een tijdelijke mismatch doordat nieuwe sensordata
 veel trager binnenkomt dan de display-framerate, waardoor frames tussen 
 metingen moeten worden gevuld met voorspelde waarden. Wordt de laatste meting 
 simpelweg constant gehouden tot de volgende arriveert, dan ontstaan zichtbare 
-getrapte sprongen op het scherm. De traplift-traction-encoder is een digitale 
+stapsgewijze sprongen op het scherm. De traplift-traction-encoder is een digitale 
 incrementele pulse-counter~\cite{merry2010encoder}: hij geeft geen kwantisatieruis 
 per sample bij een stilstaande stoel, maar levert wel gesamplede posities op een 
 snelheid ruim onder de display-framerate. Hierdoor is het invullen van ontbrekende 
@@ -381,7 +381,7 @@ Het wordt geselecteerd omdat het als enige beide dingen tegelijk doet: een
 continue snelheid schatten uit de discrete pulse-counter-stream, én de positie
 tussen metingen voorspellen. Beide zijn nodig om een 60\,fps-display te voeden uit
 een sensorstream die per kanaal enkele keren trager binnenkomt, zonder zichtbare
-getrapte sprongen.
+stapsgewijze sprongen.
 
 \subsubsection{Spline-interpolatie}
 Om vloeiende positie- en oriëntatie-overgangen langs discrete rail-controlepunten
@@ -631,7 +631,7 @@ afleidingsstap in benoemde vergelijkingen staat, herleidbaar tot de geciteerde
 bronnen, en (b) de weergegeven positie de snelheidsgebaseerde
 DV3(b)-vloeiendheidstest doorstaat: tijdens continue beweging geen
 frame-tot-frame-snelheidspieken boven 5$\times$ de mediane $|v|$ (de signatuur van
-een last-value-hold-trapjespatroon, Sectie~\ref{sec:method-validation}). Het Kalman
+een last-value-hold-stappatroon, Sectie~\ref{sec:method-validation}). Het Kalman
 filter werkt hier vooral als \emph{temporele} interpolator, niet als
 ruisonderdrukking: de traction-encoder is een digitale pulse-counter zonder
 value-jitter, dus de relevante kwaliteit is de gladheid waarmee de
@@ -680,7 +680,7 @@ Deze resultaten worden naast de hoofdcriteria gerapporteerd in Sectie~\ref{sec:r
 \midrule
 DV1(b) & Sectie~\ref{sec:method-q1} & Bluetooth round-trip P95\,$<$\,150\,ms \emph{en} P99\,$<$\,250\,ms, per run \\
 DV2(b) & Sectie~\ref{sec:method-q2} & Display vs.\ fysieke positie $<$\,5\,mm (rails $\leq$\,5\,m), $<$\,10\,mm (langer); secundair: display vs.\ firmware-encoded positie (pipeline-isolatie) \\
-DV3(b) & Sectie~\ref{sec:method-q3} & 0 snelheidspieken $>$\,5$\times$ de mediane $|v|$ tijdens continue beweging (geen trapjespatroon) \\
+DV3(b) & Sectie~\ref{sec:method-q3} & 0 snelheidspieken $>$\,5$\times$ de mediane $|v|$ tijdens continue beweging (geen stappatroon) \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1390,11 +1390,11 @@ Op het stabiele traject van onder naar boven kwamen snelheidspieken boven
 5$\times$ de mediane snelheid $|v|$ zelden voor: bij 0.04\,\% van de frames voor
 de traction-as, 0.04\,\% voor spindle en 0.21\,\% voor swivel. Ter vergelijking:
 een weergave die tussen metingen op de laatste positie blijft staan en pas bij de
-volgende meting verspringt (de trapjes-faalmodus die de test
+volgende meting verspringt (het stappatroon dat de test
 moet betrappen) zou ongeveer één piek per tien frames geven ($\sim$10\,\%). De
 gemeten waarde ligt daar ruim twee ordes van grootte onder, een factor $\sim$250:
-er is dus geen trapjespatroon. De paar losse pieken vallen op normale
-frame-intervallen en zijn milde snelheidsvariaties, geen trapjes.
+er is dus geen stappatroon. De paar losse pieken vallen op normale
+frame-intervallen en zijn milde snelheidsvariaties, geen stappatroon.
 
 De enige render-hapering in de log (153\,ms) leverde geen positiepiek op, omdat de
 dead-reckoning dat gat overbrugde. Een andere desktop-run (60\,fps, gelogd
@@ -1521,8 +1521,8 @@ Het Kalman filter met constante snelheid, de dead-reckoning, de
 Catmull-Rom-tangent en de quaternion-compositie leveren samen een vloeiende,
 stabiele weergave. Het herziene DV3(b)-criterium is kwantitatief getoetst en
 substantieel gehaald: de gemeten piek-rate ligt meer dan twee ordes van grootte
-onder de signatuur van een trapjes-weergave (Sectie~\ref{sec:results-validation}),
-dus er is geen trapjespatroon (de letterlijke ``0 pieken''-drempel wordt nipt
+onder de signatuur van een stapsgewijze weergave (Sectie~\ref{sec:results-validation}),
+dus er is geen stappatroon (de letterlijke ``0 pieken''-drempel wordt nipt
 overschreden; zie Beperkingen).
 
 De rol van het Kalman filter is hier geen ruisreductie maar
@@ -1558,7 +1558,7 @@ Tabel~\ref{tab:validation}.
 \midrule
 DV1 (latency) & Pass & P95/P99 ruim onder de grens \\
 DV2 (positie) & Pass (deze run) & Max 9.9\,mm; marge binnen de meetonzekerheid \\
-DV3 (vloeiendheid) & Formeel niet gehaald & 0.04--0.21\,\% pieken; geen trapjespatroon \\
+DV3 (vloeiendheid) & Formeel niet gehaald & 0.04--0.21\,\% pieken; geen stappatroon \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1583,7 +1583,7 @@ latency (DV1(b)) slaagt volledig; positienauwkeurigheid (DV2(b)) slaagt, maar
 met een marge die binnen de meetonzekerheid valt (zie Beperkingen); en
 vloeiendheid (DV3(b)) wordt letterlijk nipt gemist (de ``0 pieken''-drempel
 wordt door enkele milde pieken overschreden), maar is substantieel gehaald: de
-piek-rate ligt meer dan twee ordes onder de trapjes-signatuur. De cijfers per
+piek-rate ligt meer dan twee ordes onder de signatuur van het stappatroon. De cijfers per
 criterium staan in de antwoorden hierboven en in Tabel~\ref{tab:validation}.
 
 De latency- en pipeline-integratiematen beslaan beide rail-configuraties
@@ -1663,7 +1663,7 @@ geïmplementeerd.
     gemeten ruismodel; een formele gevoeligheidsanalyse ontbreekt. Het filter is
     bovendien niet empirisch vergeleken met eenvoudiger alternatieven
     (last-value-hold, lineaire interpolatie, alpha-beta) op dezelfde logdata: de
-    trapjes-vergelijking in Sectie~\ref{sec:results-validation} is analytisch,
+    vergelijking met het stappatroon in Sectie~\ref{sec:results-validation} is analytisch,
     niet gemeten. Aangetoond is dat de gekozen oplossing de drempels haalt, niet
     dat ze nodig of beter is dan een simpeler model.
   \item \textbf{Bochtovergangsfout niet ontleed.} Referentiemarkers staan op
