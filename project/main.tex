@@ -1635,7 +1635,7 @@ tablet-gyroscoop; cijfers in Sectie~\ref{sec:results-validation}), waarbij een d
 van de swivel-spreiding drift in de gyroscoop-referentie is. De
 Kalman-tuning-parameters (Tabel~\ref{tab:kalman}) en de spindle-pitch-verhouding
 blijven ingestelde waarden, geen afleidingen uit een ruismodel; hoe gevoelig het
-resultaat daarvoor is, is niet formeel begrensd (zie Beperkingen).
+resultaat daarvoor is, is niet formeel begrensd.
 
 \subsection{Antwoord op de centrale vraag}
 De pipeline die nodig is om live traplift-telemetrie om te zetten in een
@@ -1721,19 +1721,10 @@ geïmplementeerd.
     (minder beweging, lagere mediane $|v|$, wat de relatieve piek-rate daar
     opblies); het stabiele traject van onder naar boven is daarom als
     representatief genomen.
-  \item \textbf{Render-framerate op de doelhardware.} De tablet hield
-    $\sim$42--53\,fps tijdens de runs, onder de 60\,fps van de desktop-voorloper,
-    met incidentele haperingen (één frame van 153\,ms). Dit staat los van de
-    framerate-onafhankelijke snelheids-smoothness-maat (die slaagde), maar
-    beïnvloedt de waargenomen vloeiendheid op zwakkere hardware.
   \item \textbf{Rail-configurator-precisie.} De fout
     tussen weergegeven en fysieke positie komt vooral uit de
     configurator-geometrie, niet uit de pipeline (zie het encoder-mapping-antwoord
     en Aanbevelingen).
-  \item \textbf{Experimentele filter-tuning.} De Kalman-parameters en de
-    0.85/0.15-spindle-blend zijn ingestelde waarden, geen afleidingen uit een
-    gemeten ruismodel; een formele gevoeligheidsanalyse ontbreekt (zie Wiskundige
-    modellen).
   \item \textbf{Bochtovergangsfout niet ontleed.} Referentiemarkers staan op
     rechte raildelen; de fout in de bochten zelf is niet direct gemeten en kan
     zonder instrumentatie per component niet worden toegeschreven aan de
@@ -1754,19 +1745,10 @@ geïmplementeerd.
     gat tussen de echte stoel en de stoel op het scherm) is als enige nog alleen op
     het oog beoordeeld. Film de rit op pilot-snelheid met een high-speed camera. Dan wordt het een gemeten waarde en is ook dit laatste stuk van DV1(b)
     hard onderbouwd.
-  \item \textbf{Driftvrije swivel- en yaw-referentie.} De swivel-hoek en de
-    bochtcorrectie worden nu getoetst aan de tablet-gyroscoop, en die drijft weg
-    (zie Beperkingen). Gebruik in plaats daarvan een stabiele referentie, zoals een
-    digitale gradenboog of laser-hoekmeter. Dan rusten ze op dezelfde harde basis
-    als de spindle.
-  \item \textbf{Filter-tuning op gemeten data.} De tuning is nu op het oog gekozen
-    (zie Beperkingen). Leid $\sigma_a$ en de dead-reckoning-constante opnieuw af
+  \item \textbf{Filter-tuning op gemeten data.} De tuning is nu op het oog gekozen.
+    Leid $\sigma_a$ en de dead-reckoning-constante opnieuw af
     uit de gemeten gaten tussen samples en de stoelsnelheid. Beide staan al in de
     huidige logs, dus de tuning wordt onderbouwd in plaats van geschat.
-  \item \textbf{Robuustheidstests.} Test de robuustheid bewust: voer fouten in
-    (kapotte bytes, geforceerde verbroken verbindingen, latency-pieken). Zo
-    controleer je of de fout-afhandeling en het verbindingsherstel
-    (Sectie~\ref{sec:results-q1}) ook onder zware omstandigheden werken.
 \end{itemize}
 
 \textbf{Opschalen naar het functionele probleem.} De aanbevelingen hierboven
@@ -1800,41 +1782,9 @@ per segmenttype en de oriëntatie-assen moet je opnieuw instellen.
 \section{Discussie}
 \label{sec:discussion}
 
-Deze sectie reflecteert op het onderzoeksproces zelf: wat de gekozen aanpak
-aantoont over de competenties die van een Technische Informatica-engineer worden
-verwacht, en wat achteraf gezien anders had gekund.
+Deze sectie reflecteert op het onderzoeksproces zelf: wat achteraf gezien anders
+had gekund.
 
-\subsection{Aangetoonde competenties}
-Het onderzoek vertrok vanuit een functioneel probleem (onleesbare tekstuele
-storingsuitvoer) en isoleerde een technische kern (niet-lineaire
-encoder-mapping, recursieve toestandsschatting, singulariteitsvrije
-oriëntatiereconstructie). De weg van probleem naar gevalideerd prototype oefende
-drie engineering-competenties expliciet:
-
-\begin{itemize}[leftmargin=*]
-  \item \textbf{Formele analyse gegrond in literatuur.} Elk van de drie
-    wiskundige modellen (Kalman, Catmull-Rom, quaternionen) is tegen
-    alternatieven geselecteerd via een vergelijking van gevestigde
-    eigenschappen, niet uit persoonlijke voorkeur. De keuzes zijn herleidbaar
-    tot geciteerde bronnen, en de afleidingen in Sectie~\ref{sec:results-q3}
-    zijn reproduceerbaar.
-  \item \textbf{Architecturale decompositie.} De vijflaagse pipeline isoleert
-    concerns per ontwerp: elke geïdentificeerde faalmodus (bit-level-corruptie,
-    message-level-corruptie, verbindingsverlies, sample-rate / tussen-sample-gat,
-    frame drop) wordt op één laag afgebeeld, wat in principe laag-lokale
-    containment mogelijk maakt. Het aantonen van containment onder adversariële
-    omstandigheden is een afzonderlijke taak die dit verslag niet onderneemt.
-  \item \textbf{Validatie tegen meetbare drempels.} De pass/fail-criteria zijn
-    kwantitatief en, voor de beslissende tweede meetronde, vooraf geregistreerd
-    vóór de runs in plaats van gekalibreerd op de resultaten. Waar de
-    oorspronkelijke criteria ongeschikt bleken voor de sensor, zijn ze
-    transparant geherformuleerd en opnieuw geregistreerd
-    (Sectie~\ref{sec:conclusion}, Beperkingen) in plaats van stilletjes
-    aangepast. Gemeten waarden worden gerapporteerd in
-    Sectie~\ref{sec:results-validation} met expliciete pass/fail-labels tegen de
-    criteria zoals gedefinieerd.
-\end{itemize}
-\newpage
 \subsection{Wat anders had gekund}
 Waar Beperkingen beschrijft wat de runs wel en niet vaststellen, reflecteert deze
 subsectie op de procesbeslissingen erachter.
